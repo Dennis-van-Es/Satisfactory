@@ -124,12 +124,12 @@ export const phases: PhasePlan[] = [
       t('p1-depot-bays', 'Complete labeled Depot bays even when Steel Pipe delays the uploader itself.'),
     ],
     factories: [
-      { ...f('A-IRON-INGOT-S01', 'A', 'Iron Ingot', 'Smelter', 6, '170.556/min', 'varies', 'Iron Ingot', 'No storage or Depot.'), groups: [
+      { ...f('A-IRON-INGOT-S01', 'A', 'Iron Ingot', 'Smelter', 6, '170.556/min', 'varies', 'Iron Ingot', 'Node-side source shed between (-2601, -277) and (-2639, -308); no storage or Depot.'), groups: [
         { label: 'Iron Plate bank', count: 2, output: '30/min each', route: '60/min → Plates' },
         { label: 'Iron Rod bank', count: 2, output: '27.5/min each', route: '55/min → Rods' },
         { label: 'Iron Wire bank', count: 2, output: '27.778/min each', route: '55.556/min → Wire' },
       ] },
-      f('A-COPPER-INGOT-S01', 'A', 'Copper Ingot', 'Smelter', 2, '60/min', '30/min', 'Copper Ingot', 'Direct to Copper Sheets; no storage or Depot.'),
+      f('A-COPPER-INGOT-S01', 'A', 'Copper Ingot', 'Smelter', 2, '60/min', '30/min', 'Copper Ingot', 'Node-side source shed at (-2667, -513), direct to Copper Sheets; no storage or Depot.'),
       f('A-COPPER-SHEET-C01', 'A', 'Copper Sheet', 'Constructor', 3, '30/min', '10/min'),
       f('A-CONCRETE-C01', 'A', 'Concrete', 'Constructor', 3, '40/min', '13.333/min'),
       { ...f('A-IRON-PLATE-C01', 'A', 'Iron Plate', 'Constructor', 3, '40/min', 'varies'), groups: [
@@ -248,7 +248,7 @@ export const phases: PhasePlan[] = [
     factories: [
       f('C-SILICA-C01', 'C', 'Silica', 'Constructor', 8, '60/min', '7.5/min', 'Silica', 'Hall is sized for its Phase 4 peak.'),
       f('C-QUARTZ-CRYSTAL-C01', 'C', 'Quartz Crystal', 'Constructor', 2, '30/min', '15/min'),
-      f('C-CATERIUM-INGOT-S01', 'C', 'Caterium Ingot', 'Smelter', 8, '15/min', '1.875/min', 'Caterium Ingot', 'No ingot storage.'),
+      f('C-CATERIUM-INGOT-S01', 'C', 'Caterium Ingot', 'Smelter', 8, '15/min', '1.875/min', 'Caterium Ingot', 'Separate source satellite at (-1785, -798); no ingot storage.'),
       f('D-PLASTIC-R01', 'D', 'Plastic', 'Refinery', 6, '120/min', '20/min'),
       f('D-RUBBER-R01', 'D', 'Rubber', 'Refinery', 6, '120/min', '20/min'),
       f('D-EMERGENCY-FUEL-R01', 'D', 'Fuel', 'Refinery', 3, '120 m³/min', '40 m³/min', 'Residual Fuel'),
@@ -329,7 +329,7 @@ export const phases: PhasePlan[] = [
       f('G-NITRO-POWER-P01', 'G', 'Rocket Fuel power', 'Fuel Generator', 72, '18,000 MW', '250 MW', 'Nitro Rocket Fuel', 'Two independently switched 36-generator districts.', '47 × 22 foundations · 1 floor'),
       f('H-COPPER-INGOT-F01', 'H', 'Copper Ingot', 'Foundry', 12, '1,200/min', '100/min', 'Copper Alloy Ingot', 'Two Mk.5 storage-free lanes.'),
       f('H-COPPER-POWDER-C01', 'H', 'Copper Powder', 'Constructor', 2, '100/min', '50/min'),
-      f('A-IRON-INGOT-S01', 'A', 'Iron Ingot', 'Smelter', 52, '1,544.795/min', '29.708/min', 'Iron Ingot', 'Three separate miner feeds; no storage.'),
+      f('A-IRON-INGOT-S01', 'A', 'Iron Ingot', 'Smelter', 52, '1,544.795/min', '29.708/min', 'Iron Ingot', 'Expand the node-edge source sheds for three separate miner feeds; no storage.'),
       f('B-STEEL-INGOT-F01', 'B', 'Steel Ingot', 'Foundry', 14, '820.833/min', '58.631/min', 'Solid Steel Ingot', 'Two equal-rate Mk.5 dispatch banks.'),
       f('B2-CONCRETE-C01', 'B2', 'Concrete', 'Constructor', 12, '180/min', '15/min'),
       f('C-SILICA-C01', 'C', 'Silica', 'Constructor', 10, '300/min', '30/min'),
@@ -406,7 +406,7 @@ export const phases: PhasePlan[] = [
         { label: 'Dark Matter Crystal bank', count: 5, output: '13.6/min each', route: '68/min → Q' },
         { label: 'Time Crystal bank', count: 1, output: '10/min', route: '→ Q' },
       ] },
-      f('A-IRON-INGOT-S01', 'A', 'Iron Ingot', 'Smelter', 48, '1,440/min', '30/min', 'Iron Ingot', 'Two Mk.6 lanes; no storage.'),
+      f('A-IRON-INGOT-S01', 'A', 'Iron Ingot', 'Smelter', 48, '1,440/min', '30/min', 'Iron Ingot', 'Run the node-edge source sheds into two Mk.6 lanes; no storage.'),
       f('B-STEEL-INGOT-F01', 'B', 'Steel Ingot', 'Foundry', 10, '600/min', '60/min', 'Solid Steel Ingot'),
       f('B2-CONCRETE-C01', 'B2', 'Concrete', 'Constructor', 16, '240/min', '15/min'),
       f('C-SILICA-C01', 'C', 'Silica', 'Constructor', 8, '240/min', '30/min'),

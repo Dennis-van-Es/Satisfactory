@@ -175,6 +175,8 @@ button, label { -webkit-tap-highlight-color: transparent; }
 .district-block > strong { margin-top: .28rem; font-family: var(--font-geist-mono); font-size: .76rem; color: #8b1e1e; }
 .district-block > small { margin-top: .3rem; color: #514e48; font-size: .72rem; line-height: 1.35; }
 .district-wide { grid-column: 1 / -1; }
+.district-source { border-color: #a84d1e; background: #f0c09f; }
+.district-source > strong { color: #702d12; }
 .district-power { border-color: #8b1e1e; background: #34383d; color: white; }
 .district-power > strong { color: #f6c945; }
 .district-power > small { color: #e7e4dd; }

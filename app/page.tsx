@@ -249,28 +249,33 @@ function Metric({ label, value, note }: { label: string; value: string; note: st
 function Spec({ label, value }: { label: string; value: string }) { return <div><span>{label}</span><strong>{value}</strong></div>; }
 
 function SiteStandard({ phase, sites }: { phase: number; sites: string }) {
-  return <div className="site-standard"><div className="flex gap-3"><Route className="mt-1 size-6 shrink-0 text-[#8b1e1e]" /><div><h3>Apply the same campus grammar at {sites}</h3><p>Build each hall on a one-foundation-high local datum. Put terminals on the three-foundation freight edge, leave one full foundation between shells, and keep service galleries open beneath or beside production.</p></div></div><div className="site-rule-grid"><span><strong>01</strong> Terrain-responsive extraction</span><span><strong>02</strong> Lift to the raised production datum</span><span><strong>03</strong> Direct belts between neighboring consumers</span><span><strong>04</strong> Reserve a 10 × 8 truck court at the terminal edge</span></div><p className="font-mono text-xs text-muted-foreground">PHASE 0{phase} STANDARD · roads are optional access; belts and pipes remain the logistics system.</p></div>;
+  return <div className="site-standard"><div className="flex gap-3"><Route className="mt-1 size-6 shrink-0 text-[#8b1e1e]" /><div><h3>Apply the same campus grammar at {sites}</h3><p>Miners stay on the terrain. Put source-owned processing—such as Smelters making bus Ingots—on a small one-foundation-high pad beside the node. Only the finished commodity belt climbs to the main campus. Other halls use the raised datum, with one full foundation between shells and open service galleries.</p></div></div><div className="site-rule-grid"><span><strong>01</strong> Miner directly on the terrain node</span><span><strong>02</strong> Commodity machine in a node-side source shed</span><span><strong>03</strong> Storage-free commodity belt to the campus</span><span><strong>04</strong> 10 × 8 truck court only beside a permanent terminal</span></div><p className="font-mono text-xs text-muted-foreground">PHASE 0{phase} STANDARD · roads are optional access; belts and pipes remain the logistics system.</p></div>;
 }
 
 function PhaseSitePlans({ phase, sites }: { phase: number; sites: string }) {
   const plans = sitePlansByPhase[phase] ?? [];
-  const codes = Array.from(new Set(plans.map((plan) => plan.site)));
-  return <div className="space-y-4"><SiteStandard phase={phase} sites={sites} /><SiteLocationIndex codes={codes} /><div className="map-count"><span>{plans.length} district {plans.length === 1 ? 'map' : 'maps'}</span><strong>All dimensions in foundations</strong></div>{plans.map((plan) => <DistrictMap key={plan.id} plan={plan} />)}</div>;
+  return <div className="space-y-4"><SiteStandard phase={phase} sites={sites} /><SiteLocationIndex plans={plans} /><div className="map-count"><span>{plans.length} district {plans.length === 1 ? 'map' : 'maps'}</span><strong>All constructed dimensions in foundations</strong></div>{plans.map((plan) => <DistrictMap key={plan.id} plan={plan} />)}</div>;
 }
 
-function SiteLocationIndex({ codes }: { codes: string[] }) {
-  return <section className="site-location-index"><div className="site-location-title"><span>WHERE TO BUILD</span><strong>Enter X and Y in the map coordinate search</strong></div><div className="site-location-grid">{codes.map((code) => { const location = siteLocations[code]; return <div key={code} className="site-location-row"><span className="site-code">SITE {code}</span><div><strong>{location.name}</strong><p>X {location.x.toLocaleString('en-US')} · Y {location.y.toLocaleString('en-US')}</p></div></div>; })}</div></section>;
+function SiteLocationIndex({ plans }: { plans: SitePlan[] }) {
+  const entries = Array.from(new Map(plans.map((plan) => {
+    const code = plan.code ?? plan.site;
+    const location = plan.location ?? siteLocations[plan.site];
+    return [code, { code, location }];
+  })).values());
+  return <section className="site-location-index"><div className="site-location-title"><span>WHERE TO BUILD</span><strong>Enter X and Y in the map coordinate search</strong></div><div className="site-location-grid">{entries.map(({ code, location }) => <div key={code} className="site-location-row"><span className="site-code">SITE {code}</span><div><strong>{location.name}</strong><p>X {location.x.toLocaleString('en-US')} · Y {location.y.toLocaleString('en-US')}</p></div></div>)}</div></section>;
 }
 
 function DistrictMap({ plan }: { plan: SitePlan }) {
-  const location = siteLocations[plan.site];
+  const location = plan.location ?? siteLocations[plan.site];
+  const code = plan.code ?? plan.site;
   return <article className="district-map">
-    <header className="district-map-head"><div><span className="site-code">SITE {plan.site}</span><p>{location.name} · X {location.x.toLocaleString('en-US')} · Y {location.y.toLocaleString('en-US')}</p><h3>{plan.title}</h3><small>District placement: {plan.anchor}</small></div><strong>{plan.reserve}</strong></header>
+    <header className="district-map-head"><div><span className="site-code">SITE {code}</span><p>{location.name} · X {location.x.toLocaleString('en-US')} · Y {location.y.toLocaleString('en-US')}</p><h3>{plan.title}</h3><small>District placement: {plan.anchor}</small></div><strong>{plan.reserve}</strong></header>
     <div className="district-flow"><span>FLOW</span>{plan.flow}</div>
-    <div className="district-grid" role="img" aria-label={`${plan.title} schematic. ${plan.blocks.map((block) => `${block.label}, ${block.size} foundations`).join('. ')}`}>
+    <div className="district-grid" role="img" aria-label={`${plan.title} schematic. ${plan.blocks.map((block) => `${block.label}, ${block.displaySize ?? `${block.size} foundations`}`).join('. ')}`}>
       <div className="north-mark" aria-hidden="true">N ↑</div>
-      {plan.blocks.map((block) => <div key={`${plan.id}-${block.label}`} className={`district-block district-${block.kind} ${block.wide ? 'district-wide' : ''}`}><span>{block.label}</span><strong>{block.size} foundations</strong><small>{block.note}</small></div>)}
-      <div className="district-boulevard"><span>TERMINAL / FREIGHT EDGE</span><strong>3 foundations clear</strong></div>
+      {plan.blocks.map((block) => <div key={`${plan.id}-${block.label}`} className={`district-block district-${block.kind} ${block.wide ? 'district-wide' : ''}`}><span>{block.label}</span><strong>{block.displaySize ?? `${block.size} foundations`}</strong><small>{block.note}</small></div>)}
+      <div className="district-boulevard"><span>{plan.edgeLabel ?? 'TERMINAL / FREIGHT EDGE'}</span><strong>{plan.edgeNote ?? '3 foundations clear'}</strong></div>
     </div>
     <p className="district-note">{plan.note}</p>
   </article>;

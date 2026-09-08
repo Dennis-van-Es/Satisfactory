@@ -1,23 +1,30 @@
 export type PlanBlock = {
   label: string;
   size: string;
+  displaySize?: string;
   note: string;
-  kind: 'production' | 'power' | 'fluid' | 'terminal' | 'utility' | 'reserve';
+  kind: 'source' | 'production' | 'power' | 'fluid' | 'terminal' | 'utility' | 'reserve';
   wide?: boolean;
 };
+
+export type SiteLocation = { name: string; x: number; y: number };
 
 export type SitePlan = {
   id: string;
   site: string;
+  code?: string;
+  location?: SiteLocation;
   title: string;
   anchor: string;
   reserve: string;
   flow: string;
   note: string;
+  edgeLabel?: string;
+  edgeNote?: string;
   blocks: PlanBlock[];
 };
 
-export const siteLocations: Record<string, { name: string; x: number; y: number }> = {
+export const siteLocations: Record<string, SiteLocation> = {
   A: { name: 'Rocky Desert western basin', x: -2633, y: -267 },
   B: { name: 'Northwest coal basin', x: -2760, y: -1630 },
   B2: { name: 'Northwest limestone spur', x: -2615, y: -1165 },
@@ -33,13 +40,32 @@ export const siteLocations: Record<string, { name: string; x: number; y: number 
 export const sitePlansByPhase: Record<number, SitePlan[]> = {
   1: [
     {
-      id: 'p1-a-components', site: 'A', title: 'Permanent component quarter', anchor: 'east of the Phase 0 Elevator plaza', reserve: '64 × 48 foundations', flow: 'Ore edge → ingot sheds → constructor street → assembler court → terminal boulevard', note: 'Build east from the Phase 0 plaza. Every named block is a separate finished shell; the street labels describe adjacency, not mixed buildings.',
+      id: 'p1-a-iron-source', site: 'A', code: 'A-I', location: { name: 'Rocky Desert twin Iron nodes', x: -2620, y: -293 }, title: 'Iron source terrace', anchor: 'low pad between the nodes at (-2601, -277) and (-2639, -308)', reserve: '34 × 22 foundations', flow: 'Two terrain Miners → shared node-side Smelter shed → three storage-free Iron Ingot belts', note: 'The Miners sit directly on the terrain. Build the finished Smelter shell on a one-foundation-high pad between them; this is a source satellite, not part of the raised component quarter. Reserve the larger terrace now for the Phase 4 source tower.', edgeLabel: 'IRON INGOT DISPATCH EDGE', edgeNote: '3 labeled belts · no terminal or storage',
       blocks: [
-        { label: 'Iron Ingot', size: '10 × 6', note: '6 Smelters · no storage', kind: 'production' },
-        { label: 'Copper Ingot', size: '6 × 6', note: '2 Smelters · direct to sheets', kind: 'production' },
+        { label: 'Pure Iron Miner 1', size: '0 × 0', displaySize: 'Terrain node · no foundations', note: 'X -2,601 · Y -277', kind: 'source' },
+        { label: 'Pure Iron Miner 2', size: '0 × 0', displaySize: 'Terrain node · no foundations', note: 'X -2,639 · Y -308', kind: 'source' },
+        { label: 'Iron Ingot shed', size: '10 × 6', note: '6 Smelters · three destination banks', kind: 'production', wide: true },
+        { label: 'Ingot dispatch throat', size: '10 × 4', note: '60 Plates · 55 Rods · 55.556 Wire', kind: 'utility', wide: true },
+        { label: 'Phase 4 source tower reserve', size: '26 × 6', note: 'Keep this footprint clear beside the initial shed', kind: 'reserve', wide: true },
+      ],
+    },
+    {
+      id: 'p1-a-copper-source', site: 'A', code: 'A-CU', location: { name: 'Rocky Desert south Copper node', x: -2667, y: -513 }, title: 'Copper source satellite', anchor: 'small low pad beside the node at (-2667, -513)', reserve: '14 × 12 foundations', flow: 'Terrain Miner → node-side Smelter shed → storage-free Copper Ingot belt to Sheets', note: 'Keep this satellite compact and ground-hugging. The Copper Sheet hall and its terminal remain at A; only the Miner and Smelters belong here.', edgeLabel: 'COPPER INGOT DISPATCH EDGE', edgeNote: '1 labeled belt · no terminal or storage',
+      blocks: [
+        { label: 'Pure Copper Miner', size: '0 × 0', displaySize: 'Terrain node · no foundations', note: 'X -2,667 · Y -513', kind: 'source' },
+        { label: 'Copper Ingot shed', size: '6 × 6', note: '2 Smelters · 30/min each', kind: 'production' },
+        { label: 'Ingot dispatch throat', size: '6 × 4', note: '60/min direct to Copper Sheets', kind: 'utility', wide: true },
+      ],
+    },
+    {
+      id: 'p1-a-components', site: 'A', title: 'Permanent component quarter', anchor: 'east of the Phase 0 Elevator plaza', reserve: '60 × 48 foundations', flow: 'Ingot bus arrivals → constructor street → assembler court → terminal boulevard', note: 'Iron and Copper Ingots arrive from their node-side source satellites. Every named production block is a separate finished shell; the street labels describe adjacency, not mixed buildings.',
+      blocks: [
+        { label: 'Iron Ingot arrivals', size: '8 × 4', note: 'Three storage-free source belts', kind: 'utility' },
+        { label: 'Copper Ingot arrival', size: '6 × 4', note: 'One storage-free source belt', kind: 'utility' },
         { label: 'Plate + Rod street', size: '2 × 6 × 6', note: 'Two separate Constructor halls', kind: 'production', wide: true },
         { label: 'Wire hall', size: '10 × 6', note: '6 Constructors · three destination banks', kind: 'production' },
         { label: 'Cable + Sheets', size: '2 × 6 × 6', note: 'Two separate Constructor halls', kind: 'production' },
+        { label: 'Concrete hall', size: '6 × 6', note: '3 Constructors · temporary A supply', kind: 'production' },
         { label: 'Assembler court', size: '18 × 6', note: 'RIP, Rotor and Smart Plating shells', kind: 'production', wide: true },
         { label: 'Component terminal', size: '20 × 6', note: 'Container row · unique Depots · Sink', kind: 'terminal', wide: true },
         { label: 'Truck court reserve', size: '10 × 8', note: 'Leave empty until Tier 3', kind: 'reserve' },
@@ -88,13 +114,20 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
   ],
   3: [
     {
-      id: 'p3-c-quartz', site: 'C', title: 'Quartz and Caterium campus', anchor: 'open shelf outside the northern cave portal', reserve: '38 × 28 foundations', flow: 'Cave portals → ore lifts → dry Constructor sheds → terminal on the open northern face', note: 'Keep the cave mouth and exploration path unobstructed; the reserve SAM spur stays isolated until Phase 5.',
+      id: 'p3-c-quartz', site: 'C', title: 'Quartz campus', anchor: 'open shelf outside the northern cave portal', reserve: '30 × 24 foundations', flow: 'Cave portals → ore lifts → dry Constructor sheds → terminal on the open northern face', note: 'Keep the cave mouth and exploration path unobstructed; the reserve SAM spur stays isolated until Phase 5. Caterium smelting is at its own source satellite, not here.',
       blocks: [
         { label: 'Silica hall', size: '10 × 6', note: '8 Constructors · room for peak', kind: 'production' },
         { label: 'Quartz Crystal', size: '6 × 6', note: '2 Constructors', kind: 'production' },
-        { label: 'Caterium Ingot', size: '10 × 6', note: '8 Smelters · no storage', kind: 'production' },
         { label: 'Quartz terminal', size: '14 × 6', note: 'Silica + Crystal cells · Sink', kind: 'terminal', wide: true },
         { label: 'SAM reserve spur', size: '8 × 5', note: 'Marked; not connected', kind: 'reserve' },
+      ],
+    },
+    {
+      id: 'p3-c-caterium-source', site: 'C', code: 'C-CA', location: { name: 'Northern Rocky caterium node', x: -1785, y: -798 }, title: 'Caterium source satellite', anchor: 'low finished pad beside the node at (-1785, -798)', reserve: '16 × 12 foundations', flow: 'Terrain Miner → node-side Smelter shed → storage-free Caterium Ingot belt', note: 'This is physically separate from the Quartz cave campus. Keep the eight-Smelter shell here for later phases and send Caterium Ingots onward without a container or Depot.', edgeLabel: 'CATERIUM INGOT DISPATCH EDGE', edgeNote: '1 labeled belt · no terminal or storage',
+      blocks: [
+        { label: 'Pure Caterium Miner', size: '0 × 0', displaySize: 'Terrain node · no foundations', note: 'X -1,785 · Y -798', kind: 'source' },
+        { label: 'Caterium Ingot shed', size: '10 × 6', note: '8 Smelters · initially 15/min total', kind: 'production', wide: true },
+        { label: 'Ingot dispatch throat', size: '8 × 4', note: 'Storage-free commodity bus', kind: 'utility', wide: true },
       ],
     },
     {
@@ -120,6 +153,14 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
     },
   ],
   4: [
+    {
+      id: 'p4-a-iron-source', site: 'A', code: 'A-I', location: { name: 'Rocky Desert Iron source terrace', x: -2601, y: -294 }, title: 'Iron source tower expansion', anchor: 'the reserved source terrace around the three nodes at (-2601, -277), (-2639, -308) and (-2562, -296)', reserve: '34 × 22 foundations', flow: 'Three terrain Miners → one-item Smelter floors → separate storage-free Ingot dispatch lanes', note: 'Expand vertically on the reserved node-side footprint. Every production floor contains only Smelters making Iron Ingots; the component campus still receives belts and never houses these Smelters.', edgeLabel: 'IRON INGOT DISPATCH EDGE', edgeNote: 'Separate Mk.5 lanes · no terminal or storage',
+      blocks: [
+        { label: 'Three Pure Iron Miners', size: '0 × 0', displaySize: 'Terrain nodes · no foundations', note: 'Three independent ore feeds', kind: 'source', wide: true },
+        { label: 'Iron Ingot source tower', size: '26 × 6', note: '52 Smelters installed · 3 same-item floors', kind: 'production', wide: true },
+        { label: 'Lane dispatch gallery', size: '18 × 5', note: 'Keep miner feeds and ingot outputs labeled', kind: 'utility', wide: true },
+      ],
+    },
     {
       id: 'p4-d-fuel', site: 'D', title: 'Diluted Fuel power expansion', anchor: 'Gold Coast · inland power terrace', reserve: '44 × 28 foundations', flow: 'Existing oil works → Blender hall → switched generator field', note: 'Keep the Jetpack-fuel annex independent so its Depot refills while a generator line is disabled.',
       blocks: [

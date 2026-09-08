@@ -42,7 +42,7 @@ Build each site as a raised, world-grid-aligned campus rather than placing finis
 - Reserve a **24 m, three-foundation terminal boulevard** along the freight edge. Production halls face this boulevard; the terminal, container row and Sink sit on its outer side.
 - Reserve a **10×8 foundation truck court** beside each permanent terminal. Keep it empty until Tier 3 and build Truck Stations only for routes you actually use. The reservation fits two stations plus a three-foundation turning/through lane.
 - On steep sites, make separate level terraces and join them with straight ramps or bridges instead of forcing one enormous floating slab.
-- Miners, extractors and well pressurizers remain terrain-responsive. Lift their products to the campus datum at a labeled dispatch throat.
+- Miners, extractors and well pressurizers remain terrain-responsive. When the extracted resource becomes a bus commodity at source, put that first processing step on a small, finished, one-foundation-high source pad beside the extractor: Smelters beside ore Miners, source Foundries beside the relevant paired nodes, and wet processing beside fluid extraction. The finished commodity—not the raw input—then leaves through a labeled, storage-free dispatch throat. These source satellites are separate from the raised component campus and never receive a terminal, container or Depot for Ingots.
 
 Roads are optional access infrastructure. A reserved truck court preserves that option without making vehicles the default freight system.
 
@@ -593,8 +593,8 @@ Do not wait for Steel Rotor; it is not eligible until Basic Steel Production aft
 
 ### Build order at A
 
-1. `A-IRON-INGOT-S01`: six Smelters, **170.556 Iron Ingot/min**, supplied by two Pure Miner Mk.1s at 85.278 ore/min each. Use destination banks: 60/min to Iron Plates (two Smelters at 30), 55/min to Iron Rods (two at 27.5), and 55.556/min to Iron Wire (two at 27.778). No Iron Ingot container or Depot is built.
-2. `A-COPPER-INGOT-S01`: two Smelters, **60 Copper Ingot/min**, 30 each, belted directly to the Copper Sheet hall. Run one Pure Miner Mk.1 at 60 ore/min. Give the lane a `02D-INGOT-DISPATCH` throat but no container or Depot.
+1. `A-IRON-INGOT-S01`: beside the two western-basin Iron nodes at approximately `(-2601,-277)` and `(-2639,-308)`, build a low **10×6-foundation source shed** between the terrain Miners. Install six Smelters for **170.556 Iron Ingot/min**, supplied by two Pure Miner Mk.1s at 85.278 ore/min each. Use destination banks: 60/min to Iron Plates (two Smelters at 30), 55/min to Iron Rods (two at 27.5), and 55.556/min to Iron Wire (two at 27.778). Send those three storage-free belts to the component quarter; no Iron Ingot container or Depot is built.
+2. `A-COPPER-INGOT-S01`: beside the south Copper node at approximately `(-2667,-513)`, build a low **6×6-foundation source shed** for two Smelters making **60 Copper Ingot/min**, 30 each. Run one Pure Miner Mk.1 at 60 ore/min and belt the Ingots directly to the Copper Sheet hall at the main component quarter. Give the lane a `02D-INGOT-DISPATCH` throat but no container or Depot.
 3. `A-COPPER-SHEET-C01`: three Constructors, **30 Copper Sheet/min**, 10 each, consuming the Sheet bank's full 60 Copper Ingot/min. Send the output to the Copper Sheet terminal and Depot; these sheets are the permanent stock for pipes, fluid buildings, MAM work and later electronics. The same three-machine hall is retargeted rather than rebuilt in Phase 3.
 4. `A-CONCRETE-C01`: three Constructors, **40 Concrete/min**, 13.333 each, consuming 120 Limestone/min.
 5. `A-IRON-PLATE-C01`: three Constructors, **40 Iron Plate/min**. The RIP bank is one Constructor at 16.667/min; the two-machine terminal bank makes the remaining 23.333/min at 11.667/min each. The machines differ only because they feed separate destination belts.
@@ -723,14 +723,14 @@ Also bank these now for Phase 4:
 - **Silicon High-Speed Connector**.
 - **Insulated Crystal Oscillator**.
 
-### Build C — Quartz and caterium source
+### Build C — Quartz source and separate Caterium satellite
 
 The northern Rocky cave around `(-1880,-1415)` contains the quartz pin at `(-1942,-1404)` and SAM at `(-1822,-1424)`. Expect spiders and blocked approaches; bring Blade Runners, Gas Filters, Nobelisks, healing supplies and lighting.
 
 1. Build a white/graphite/violet cave portal instead of walling over the entire cave.
 2. Build an eight-Constructor Silica hall sized for the Phase 4 peak; run it at **60 Silica/min** initially.
 3. Build a separate Quartz Crystal hall and start at **30/min** for oscillators and exploration supplies.
-4. At caterium `(-1785,-798)`, build an eight-Smelter shell but initially run **15 Caterium Ingot/min**.
+4. At caterium `(-1785,-798)`, well south of the Quartz cave, build a separate **10×6-foundation node-side source shed** for eight Smelters but initially run only **15 Caterium Ingot/min**. Send its storage-free Caterium Ingot belt onward; do not place the Smelters in the Quartz campus.
 5. Give Silica its only global depot here. Raw Quartz may leave on a labeled solid freight belt; it is not a fluid.
 6. Mark the SAM node as a future reserve, but do not build the Tier 9 factory here.
 
@@ -906,7 +906,7 @@ Source targets:
 | Plastic at D | 60/min required; retain the 120/min building |
 | Rubber at D | 240/min |
 
-The 820.833 Steel Ingot/min target uses fourteen Solid Steel Foundries at **58.631/min each**, consuming 547.222 Iron Ingot/min and the same Coal rate. Use two Mk.5 Steel dispatch lanes because one cannot carry more than 780/min; divide the Foundries into two equal-rate lane banks. A's 1,544.795 Iron Ingot/min target uses 52 Smelters at **29.708/min each**. Run three Pure Mk.3 iron miners at 514.932, 514.932 and 514.931/min and keep their three feeds separate into the smelter hall.
+The 820.833 Steel Ingot/min target uses fourteen Solid Steel Foundries at **58.631/min each**, consuming 547.222 Iron Ingot/min and the same Coal rate. Use two Mk.5 Steel dispatch lanes because one cannot carry more than 780/min; divide the Foundries into two equal-rate lane banks. A's 1,544.795 Iron Ingot/min target uses 52 Smelters at **29.708/min each**. Expand into finished node-edge Smelter sheds beside the three active Pure Mk.3 iron miners, which run at 514.932, 514.932 and 514.931/min. Keep their feeds and storage-free Ingot dispatch lanes separate until the component-campus arrival throats.
 
 These raised source targets fund explicit Phase 4 construction reserves while the Elevator chain runs: **20 Iron Plate/min, 60 Wire/min, 30 Cable/min, 20 Steel Pipe/min, 15 Steel Beam/min and 30 Concrete/min** to their terminal rows. The extra Cable bank consumes another 60 Wire/min, so the Wire hall target rises by 120/min in total. Switch a reserve bank off only when its terminal and Depot are full; never divert ingots into storage.
 
