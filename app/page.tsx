@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Factory, MapPinned, Route } from 'lucide-react';
+import { Factory, Route } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress, ProgressLabel, ProgressValue } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { allTaskIds, phases, type FactoryPlan, type Task } from '@/lib/guide-data';
+import { sitePlansByPhase, type SitePlan } from '@/lib/site-plans';
 
 type CheckedState = Record<string, boolean>;
 type ModelContext = {
@@ -164,7 +165,7 @@ export default function Home() {
           <TabsContent value="site" className="space-y-4">
             <SectionHeading eyebrow="Campus standard" title="Raised, readable and controller-friendly" />
             <div className="grid gap-3 sm:grid-cols-3"><Metric label="Service plinth" value="1 × 4 m" note="One full foundation high" /><Metric label="Building alley" value="1 foundation" note="Clear between shells" /><Metric label="Terminal boulevard" value="3 foundations" note="Clear along the freight edge" /></div>
-            {phase.number === 0 ? <CampusPlan /> : <SiteStandard phase={phase.number} sites={phase.sites} />}
+            {phase.number === 0 ? <CampusPlan /> : <PhaseSitePlans phase={phase.number} sites={phase.sites} />}
           </TabsContent>
           <TabsContent value="recipes" className="space-y-3"><SectionHeading eyebrow="Hard Drive ledger" title="Alternate recipes to unlock" /><RecipeChecklist tasks={phase.recipes} checked={checked} onToggle={toggle} /></TabsContent>
           <TabsContent value="mam" className="space-y-3"><SectionHeading eyebrow="Research route" title="MAM branches to clear" /><Checklist tasks={phase.mam} checked={checked} onToggle={toggle} /></TabsContent>
@@ -251,8 +252,26 @@ function SiteStandard({ phase, sites }: { phase: number; sites: string }) {
   return <div className="site-standard"><div className="flex gap-3"><Route className="mt-1 size-6 shrink-0 text-[#8b1e1e]" /><div><h3>Apply the same campus grammar at {sites}</h3><p>Build each hall on a one-foundation-high local datum. Put terminals on the three-foundation freight edge, leave one full foundation between shells, and keep service galleries open beneath or beside production.</p></div></div><div className="site-rule-grid"><span><strong>01</strong> Terrain-responsive extraction</span><span><strong>02</strong> Lift to the raised production datum</span><span><strong>03</strong> Direct belts between neighboring consumers</span><span><strong>04</strong> Reserve a 10 × 8 truck court at the terminal edge</span></div><p className="font-mono text-xs text-muted-foreground">PHASE 0{phase} STANDARD · roads are optional access; belts and pipes remain the logistics system.</p></div>;
 }
 
+function PhaseSitePlans({ phase, sites }: { phase: number; sites: string }) {
+  const plans = sitePlansByPhase[phase] ?? [];
+  return <div className="space-y-4"><SiteStandard phase={phase} sites={sites} /><div className="map-count"><span>{plans.length} district {plans.length === 1 ? 'map' : 'maps'}</span><strong>All dimensions in foundations</strong></div>{plans.map((plan) => <DistrictMap key={plan.id} plan={plan} />)}</div>;
+}
+
+function DistrictMap({ plan }: { plan: SitePlan }) {
+  return <article className="district-map">
+    <header className="district-map-head"><div><span className="site-code">SITE {plan.site}</span><p>{plan.anchor}</p><h3>{plan.title}</h3></div><strong>{plan.reserve}</strong></header>
+    <div className="district-flow"><span>FLOW</span>{plan.flow}</div>
+    <div className="district-grid" role="img" aria-label={`${plan.title} schematic. ${plan.blocks.map((block) => `${block.label}, ${block.size} foundations`).join('. ')}`}>
+      <div className="north-mark" aria-hidden="true">N ↑</div>
+      {plan.blocks.map((block) => <div key={`${plan.id}-${block.label}`} className={`district-block district-${block.kind} ${block.wide ? 'district-wide' : ''}`}><span>{block.label}</span><strong>{block.size} foundations</strong><small>{block.note}</small></div>)}
+      <div className="district-boulevard"><span>TERMINAL / FREIGHT EDGE</span><strong>3 foundations clear</strong></div>
+    </div>
+    <p className="district-note">{plan.note}</p>
+  </article>;
+}
+
 function CampusPlan() {
-  return <figure className="campus-plan"><div className="campus-plan-title"><div><p className="section-eyebrow">Top-down schematic · not terrain scale</p><h3>Phase 0 home campus</h3></div><span>54 × 38 foundation reserve</span></div>
+  return <figure className="campus-plan"><div className="campus-plan-title"><div><p className="section-eyebrow">Top-down schematic · not terrain scale</p><h3>Phase 0 home campus</h3><p>Required in Phase 0: 411 foundations</p></div><span>54 × 38 foundation reserve</span></div>
     <svg viewBox="0 0 900 650" role="img" aria-labelledby="campus-title campus-desc">
       <title id="campus-title">Top-down plan for the Rocky Desert home campus</title><desc id="campus-desc">A raised campus with a fifteen by fifteen foundation Space Elevator plaza, HUB and MAM, a twelve by eight foundation black-start power building, production halls, a reserved truck court, service alleys and terminal boulevard.</desc>
       <defs><pattern id="foundation-grid" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M 16 0 L 0 0 0 16" fill="none" stroke="#7c786f" strokeWidth="0.7" opacity="0.42" /></pattern><pattern id="hazard" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="12" fill="#f6c945" /><rect x="6" width="6" height="12" fill="#26292d" /></pattern></defs>
@@ -267,7 +286,5 @@ function CampusPlan() {
       <rect x="548" y="548" width="270" height="56" className="plan-truck" /><text x="683" y="572" textAnchor="middle" className="svg-title">RESERVED TRUCK COURT · 10 × 8</text><text x="683" y="592" textAnchor="middle" className="svg-note">two stations + turning lane; build in Tier 3 only if used</text>
       <path d="M518 56v410" className="utility-spine" /><text x="532" y="302" transform="rotate(-90 532 302)" textAnchor="middle" className="svg-dimension">1 FOUNDATION UTILITY SPINE</text><path d="M172 450v32M404 450v32M683 450v32M683 530v18" className="belt-link" />
     </svg>
-    <div className="campus-schedule"><div><span>Gross campus reserve</span><strong>54 × 38 = 2,052 foundations</strong><small>Includes all future blocks, gaps and freight space shown.</small></div><div><span>Phase 0 construction</span><strong>411 foundations</strong><small>225 plaza + 45 HUB/MAM + 45 workshop + 96 black-start.</small></div><div><span>Future production bay</span><strong>14 × 6 = 84 foundations each</strong><small>Replace each generic bay with the exact factory-card footprint.</small></div><div><span>Future terminal</span><strong>17 × 6 = 102 foundations</strong><small>Plus the separate 10 × 8 truck-court reservation.</small></div></div>
-    <figcaption><MapPinned className="size-5 shrink-0" /><span>Unlock foundations first. The plaza is the visual center; black-start occupies the protected power edge, and the unbuilt truck court preserves a clean freight option without committing you to roads.</span></figcaption>
   </figure>;
 }
