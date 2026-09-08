@@ -128,20 +128,22 @@ button, label { -webkit-tap-highlight-color: transparent; }
 .campus-plan-title > span { border: 1px solid #f6c945; padding: .25rem .45rem; font-family: var(--font-geist-mono); font-size: .65rem; color: #f6c945; }
 .campus-plan svg { display: block; width: 100%; height: auto; border-top: 1px solid #55595e; background: #d8d2c6; }
 .plan-plaza { fill: #f4f0e7; stroke: #8b1e1e; stroke-width: 4; stroke-dasharray: 9 5; }
+.plan-elevator-footprint { fill: #f6c945; fill-opacity: .32; stroke: #8b1e1e; stroke-width: 3; }
 .plan-hub { fill: #d96b27; stroke: #282b2f; stroke-width: 2; }
 .plan-utility { fill: #c9a227; stroke: #282b2f; stroke-width: 2; }
 .plan-power { fill: #34383d; stroke: #8b1e1e; stroke-width: 4; }
 .plan-hall { fill: #d7d2c7; stroke: #32363b; stroke-width: 3; }
+.plan-reserve-zone { fill: #f7f4ec; fill-opacity: .72; stroke: #8b1e1e; stroke-width: 3; stroke-dasharray: 10 6; }
 .plan-terminal { fill: #b8c1c8; stroke: #32363b; stroke-width: 3; }
 .plan-truck { fill: #c9a227; fill-opacity: .38; stroke: #8b1e1e; stroke-width: 3; stroke-dasharray: 8 5; }
 .plan-boulevard { fill: #62676c; stroke: #26292d; stroke-width: 2; }
 .campus-plan svg text { paint-order: stroke fill; stroke: #f7f4ec; stroke-width: 4px; stroke-linejoin: round; }
-.svg-title { fill: #111315; font-family: Arial, sans-serif; font-size: 17px; font-weight: 900; }
+.svg-title { fill: #111315; font-family: Arial, sans-serif; font-size: 18px; font-weight: 900; }
 .plan-power + .svg-title, .plan-boulevard + .svg-title { fill: #fff; }
-.svg-label { fill: #111315; font-family: Consolas, monospace; font-size: 14px; font-weight: 900; }
-.svg-note { fill: #303236; font-family: Arial, sans-serif; font-size: 13px; font-weight: 700; }
-.svg-on-dark { fill: #fff; stroke: #222529 !important; }
-.svg-dimension { fill: #741919; font-family: Consolas, monospace; font-size: 13px; font-weight: 900; }
+.svg-label { fill: #111315; font-family: Consolas, monospace; font-size: 15px; font-weight: 900; }
+.svg-note { fill: #303236; font-family: Arial, sans-serif; font-size: 14px; font-weight: 700; }
+.svg-on-dark { fill: #fff !important; stroke: #191b1e !important; stroke-width: 5px !important; }
+.svg-dimension { fill: #741919; font-family: Consolas, monospace; font-size: 14px; font-weight: 900; }
 .dimension-line { fill: none; stroke: #8b1e1e; stroke-width: 2; }
 .alley-line { fill: none; stroke: #c9a227; stroke-width: 10; stroke-dasharray: 4 4; }
 .utility-spine { fill: none; stroke: #23b5d3; stroke-width: 10; stroke-dasharray: 4 4; }

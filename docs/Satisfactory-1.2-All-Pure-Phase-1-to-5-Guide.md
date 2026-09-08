@@ -548,15 +548,18 @@ Blueprints are placement aids, not permission to mix items. If a four-Constructo
 ## 5. Phase 0 — establish the permanent grid
 
 1. Select **Rocky Desert** as the starting biome.
-2. Walk to the western flat basin around `(-2633,-267)` before committing the HUB.
-3. Complete the **Tier 1 Base Building milestone**. Foundations are a Phase 0 prerequisite, not something to postpone until production begins.
-4. Place the HUB, MAM and eventual Space Elevator plaza on the world grid. Finish a 15×15 foundation plaza for the Elevator and landscaped setback.
-5. Reserve a north–south utility spine. Put machine halls on one side and the 24 m terminal boulevard on the other.
-6. Mark an empty 10×8 foundation truck court beside the future terminal. It is expansion space for two stations and a turning lane; do not build stations before Vehicular Transport or unless a useful route exists.
-7. Build a finished 12×8 foundation biomass power house with 16 Biomass Burners. Automate Solid Biofuel delivery but retain manual fuel loading. Treat this as the permanent black-start building.
-8. After Base Building, prioritize Logistics, Part Assembly, Obstacle Clearing, Resource Sink Bonus Program and Logistics Mk.2.
-9. Buy concrete foundations, wall power outlets, modern railings, signs, lights, conveyor floor holes and wall/roof pieces before decorative statues.
-10. Place map markers for A, B, B2, C and D before building the first remote route.
+2. Use a small temporary camp near the landing point to complete onboarding through **HUB Upgrade 6**. Do not beautify this camp or treat it as permanent.
+3. Complete **Tier 1 Field Research first**. This unlocks the in-game map, its coordinate search and the MAM.
+4. Open the map, enter `(-2633,-267)`, and place the permanent Site A marker. Only now dismantle the temporary HUB, carry it to the western flat basin and recommission it there.
+5. Complete the **Tier 1 Base Building milestone**. Foundations are a Phase 0 prerequisite, not something to postpone until production begins.
+6. Place the permanent HUB, MAM and eventual Space Elevator plaza on the world grid. Build an **11×11 foundation plaza**: the Elevator occupies approximately 7×7 foundations and the remaining two-foundation apron provides access, lighting and landscaping.
+7. Mark—but do not build—the dashed Phase 1 component-quarter and terminal-frontage reserves shown on the Phase 0 map. The item-specific buildings are defined by the Phase 1 maps; there are no generic empty production halls to finish in Phase 0.
+8. Reserve a north–south utility spine and the 24 m terminal boulevard.
+9. Mark an empty 10×8 foundation truck court beside the future terminal. It is expansion space for two stations and a turning lane; do not build stations before Vehicular Transport or unless a useful route exists.
+10. Build a finished 12×8 foundation biomass power house with 16 Biomass Burners. Automate Solid Biofuel delivery but retain manual fuel loading. Treat this as the permanent black-start building.
+11. After Base Building, prioritize Logistics, Part Assembly, Obstacle Clearing, Resource Sink Bonus Program and Logistics Mk.2.
+12. Buy concrete foundations, wall power outlets, modern railings, signs, lights, conveyor floor holes and wall/roof pieces before decorative statues.
+13. Place map markers for A, B, B2, C and D before building the first remote route.
 
 ### Research, Shop and artifact ledger
 

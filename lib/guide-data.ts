@@ -70,9 +70,11 @@ export const phases: PhasePlan[] = [
     sites: 'A · Rocky Desert basin',
     doFirst: [
       t('p0-settings', 'Start a fresh world with Default nodes and All Pure purity.'),
-      t('p0-home', 'Move the HUB to the western flat basin at (-2633, -267).'),
+      t('p0-bootstrap', 'Use a small temporary landing-zone camp to complete onboarding through HUB Upgrade 6.', 'Do not beautify or treat this camp as permanent.'),
+      t('p0-field-research', 'Complete Tier 1 Field Research first to unlock the map and MAM.'),
+      t('p0-home', 'Open the map, enter (-2633, -267), place the Site A marker, then dismantle and move the HUB there.'),
       t('p0-base-building', 'Complete the Tier 1 Base Building milestone.', 'Foundations are mandatory before the permanent campus work begins.'),
-      t('p0-plaza', 'Reserve a landscaped 15 × 15 Elevator plaza beside the HUB and MAM.'),
+      t('p0-plaza', 'Build an 11 × 11 Elevator plaza beside the HUB and MAM.', 'The Elevator occupies about 7 × 7; the two-foundation apron provides access and landscaping.'),
       ...campusStandard.map((x) => ({ ...x, id: `p0-${x.id}` })),
       t('p0-spine', 'Mark the north–south utility spine and terminal boulevard.'),
       t('p0-markers', 'Place map markers for A, B, B2, C and D.'),
@@ -84,12 +86,12 @@ export const phases: PhasePlan[] = [
       t('p0-artifacts', 'Mark Mercer Spheres and Somersloops; do not spend them without updating the ledger.'),
     ],
     utilities: [
-      t('p0-milestones', 'After Base Building, prioritize Logistics, Part Assembly, Obstacle Clearing, Sink Program and Logistics Mk.2.'),
+      t('p0-milestones', 'After reaching Site A and completing Base Building, prioritize Logistics, Part Assembly, Obstacle Clearing, Sink Program and Logistics Mk.2.'),
       t('p0-shop', 'Buy concrete foundations, wall outlets, signs, lights, railings and conveyor holes before statues.'),
       t('p0-blueprint-datum', 'Prepare the 01-GRID-4X4 datum pattern by hand until Blueprints unlock.'),
     ],
     factories: [f('A-BLACK-START-P00', 'A', 'Black-start power', 'Biomass Burner', 16, '480 MW max', '30 MW', 'Biomass power', 'Automated Solid Biofuel delivery; manual Burner loading.', '12 × 8 foundations · 1 floor')],
-    gate: [...commonGate(0), t('p0-gate-grid', 'The HUB, MAM, Elevator plaza and future halls all share the same datum.'), t('p0-gate-power', 'The black-start building can energize A without remote power.')],
+    gate: [...commonGate(0), t('p0-gate-grid', 'The HUB, MAM, Elevator plaza and dashed Phase 1 reserve share the same datum.'), t('p0-gate-power', 'The black-start building can energize A without remote power.')],
   },
   {
     number: 1,
