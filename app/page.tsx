@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress, ProgressLabel, ProgressValue } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { allTaskIds, phases, type FactoryPlan, type Task } from '@/lib/guide-data';
-import { sitePlansByPhase, type SitePlan } from '@/lib/site-plans';
+import { siteLocations, sitePlansByPhase, type SitePlan } from '@/lib/site-plans';
 
 type CheckedState = Record<string, boolean>;
 type ModelContext = {
@@ -254,12 +254,18 @@ function SiteStandard({ phase, sites }: { phase: number; sites: string }) {
 
 function PhaseSitePlans({ phase, sites }: { phase: number; sites: string }) {
   const plans = sitePlansByPhase[phase] ?? [];
-  return <div className="space-y-4"><SiteStandard phase={phase} sites={sites} /><div className="map-count"><span>{plans.length} district {plans.length === 1 ? 'map' : 'maps'}</span><strong>All dimensions in foundations</strong></div>{plans.map((plan) => <DistrictMap key={plan.id} plan={plan} />)}</div>;
+  const codes = Array.from(new Set(plans.map((plan) => plan.site)));
+  return <div className="space-y-4"><SiteStandard phase={phase} sites={sites} /><SiteLocationIndex codes={codes} /><div className="map-count"><span>{plans.length} district {plans.length === 1 ? 'map' : 'maps'}</span><strong>All dimensions in foundations</strong></div>{plans.map((plan) => <DistrictMap key={plan.id} plan={plan} />)}</div>;
+}
+
+function SiteLocationIndex({ codes }: { codes: string[] }) {
+  return <section className="site-location-index"><div className="site-location-title"><span>WHERE TO BUILD</span><strong>Enter X and Y in the map coordinate search</strong></div><div className="site-location-grid">{codes.map((code) => { const location = siteLocations[code]; return <div key={code} className="site-location-row"><span className="site-code">SITE {code}</span><div><strong>{location.name}</strong><p>X {location.x.toLocaleString('en-US')} · Y {location.y.toLocaleString('en-US')}</p></div></div>; })}</div></section>;
 }
 
 function DistrictMap({ plan }: { plan: SitePlan }) {
+  const location = siteLocations[plan.site];
   return <article className="district-map">
-    <header className="district-map-head"><div><span className="site-code">SITE {plan.site}</span><p>{plan.anchor}</p><h3>{plan.title}</h3></div><strong>{plan.reserve}</strong></header>
+    <header className="district-map-head"><div><span className="site-code">SITE {plan.site}</span><p>{location.name} · X {location.x.toLocaleString('en-US')} · Y {location.y.toLocaleString('en-US')}</p><h3>{plan.title}</h3><small>District placement: {plan.anchor}</small></div><strong>{plan.reserve}</strong></header>
     <div className="district-flow"><span>FLOW</span>{plan.flow}</div>
     <div className="district-grid" role="img" aria-label={`${plan.title} schematic. ${plan.blocks.map((block) => `${block.label}, ${block.size} foundations`).join('. ')}`}>
       <div className="north-mark" aria-hidden="true">N ↑</div>
@@ -271,7 +277,7 @@ function DistrictMap({ plan }: { plan: SitePlan }) {
 }
 
 function CampusPlan() {
-  return <figure className="campus-plan"><div className="campus-plan-title"><div><p className="section-eyebrow">Top-down schematic · not terrain scale</p><h3>Phase 0 home campus</h3><p>Required in Phase 0: 411 foundations</p></div><span>54 × 38 foundation reserve</span></div>
+  return <figure className="campus-plan"><div className="campus-plan-title"><div><p className="section-eyebrow">Top-down schematic · not terrain scale</p><h3>Phase 0 home campus</h3><p>Rocky Desert western basin · X -2,633 · Y -267</p><p>Required in Phase 0: 411 foundations</p></div><span>54 × 38 foundation reserve</span></div>
     <svg viewBox="0 0 900 650" role="img" aria-labelledby="campus-title campus-desc">
       <title id="campus-title">Top-down plan for the Rocky Desert home campus</title><desc id="campus-desc">A raised campus with a fifteen by fifteen foundation Space Elevator plaza, HUB and MAM, a twelve by eight foundation black-start power building, production halls, a reserved truck court, service alleys and terminal boulevard.</desc>
       <defs><pattern id="foundation-grid" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M 16 0 L 0 0 0 16" fill="none" stroke="#7c786f" strokeWidth="0.7" opacity="0.42" /></pattern><pattern id="hazard" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="12" fill="#f6c945" /><rect x="6" width="6" height="12" fill="#26292d" /></pattern></defs>

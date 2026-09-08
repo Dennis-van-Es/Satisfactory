@@ -17,10 +17,23 @@ export type SitePlan = {
   blocks: PlanBlock[];
 };
 
+export const siteLocations: Record<string, { name: string; x: number; y: number }> = {
+  A: { name: 'Rocky Desert western basin', x: -2633, y: -267 },
+  B: { name: 'Northwest coal basin', x: -2760, y: -1630 },
+  B2: { name: 'Northwest limestone spur', x: -2615, y: -1165 },
+  C: { name: 'Northern Rocky cave', x: -1880, y: -1415 },
+  D: { name: 'Gold Coast oil field', x: -2525, y: 698 },
+  E: { name: 'Gold Coast / Red Jungle aluminum wharf', x: -1960, y: 720 },
+  F: { name: 'Western nitrogen mesa', x: -1440, y: 1220 },
+  G: { name: 'Blue Crater power basin', x: 1450, y: 2200 },
+  H: { name: 'Dune Desert copper field', x: 3300, y: -1450 },
+  Q: { name: 'Red Jungle / Crater Lakes quantum campus', x: -1436, y: 207 },
+};
+
 export const sitePlansByPhase: Record<number, SitePlan[]> = {
   1: [
     {
-      id: 'p1-a-components', site: 'A', title: 'Permanent component quarter', anchor: 'Rocky Desert · (-2633, -267)', reserve: '64 × 48 foundations', flow: 'Ore edge → ingot sheds → constructor street → assembler court → terminal boulevard', note: 'Build east from the Phase 0 plaza. Every named block is a separate finished shell; the street labels describe adjacency, not mixed buildings.',
+      id: 'p1-a-components', site: 'A', title: 'Permanent component quarter', anchor: 'east of the Phase 0 Elevator plaza', reserve: '64 × 48 foundations', flow: 'Ore edge → ingot sheds → constructor street → assembler court → terminal boulevard', note: 'Build east from the Phase 0 plaza. Every named block is a separate finished shell; the street labels describe adjacency, not mixed buildings.',
       blocks: [
         { label: 'Iron Ingot', size: '10 × 6', note: '6 Smelters · no storage', kind: 'production' },
         { label: 'Copper Ingot', size: '6 × 6', note: '2 Smelters · direct to sheets', kind: 'production' },
@@ -35,7 +48,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
   ],
   2: [
     {
-      id: 'p2-b-coal', site: 'B', title: 'Coal power district', anchor: 'Northwest coal basin · (-2760, -1630)', reserve: '32 × 26 foundations', flow: 'Coal ridge → split feed spine → two generator halls; water rises from the basin edge', note: 'Keep water and coal on opposite service faces. The two eight-generator halls have independent switches so one half can be commissioned at a time.',
+      id: 'p2-b-coal', site: 'B', title: 'Coal power district', anchor: 'lower basin terrace beside the water', reserve: '32 × 26 foundations', flow: 'Coal ridge → split feed spine → two generator halls; water rises from the basin edge', note: 'Keep water and coal on opposite service faces. The two eight-generator halls have independent switches so one half can be commissioned at a time.',
       blocks: [
         { label: 'Generator Hall 1', size: '11 × 16', note: '8 Coal Generators', kind: 'power' },
         { label: 'Generator Hall 2', size: '11 × 16', note: '8 Coal Generators', kind: 'power' },
@@ -55,7 +68,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
       ],
     },
     {
-      id: 'p2-b2-concrete', site: 'B2', title: 'Limestone and Concrete works', anchor: 'Northwest limestone spur · (-2615, -1165)', reserve: '28 × 18 foundations', flow: 'Pure limestone → raised Constructor hall → terminal row → A freight route', note: 'Finish the full sixteen-machine shell now, but energize only the four Phase 2 Constructors.',
+      id: 'p2-b2-concrete', site: 'B2', title: 'Limestone and Concrete works', anchor: 'raised pad beside the Pure Limestone node', reserve: '28 × 18 foundations', flow: 'Pure limestone → raised Constructor hall → terminal row → A freight route', note: 'Finish the full sixteen-machine shell now, but energize only the four Phase 2 Constructors.',
       blocks: [
         { label: 'Concrete hall', size: '18 × 6', note: '16-Constructor shell · 4 active', kind: 'production', wide: true },
         { label: 'Concrete terminal', size: '10 × 6', note: 'Two containers · sole Depot · Sink', kind: 'terminal' },
@@ -75,7 +88,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
   ],
   3: [
     {
-      id: 'p3-c-quartz', site: 'C', title: 'Quartz and Caterium campus', anchor: 'Northern Rocky cave · (-1880, -1415)', reserve: '38 × 28 foundations', flow: 'Cave portals → ore lifts → dry Constructor sheds → terminal on the open northern face', note: 'Keep the cave mouth and exploration path unobstructed; the reserve SAM spur stays isolated until Phase 5.',
+      id: 'p3-c-quartz', site: 'C', title: 'Quartz and Caterium campus', anchor: 'open shelf outside the northern cave portal', reserve: '38 × 28 foundations', flow: 'Cave portals → ore lifts → dry Constructor sheds → terminal on the open northern face', note: 'Keep the cave mouth and exploration path unobstructed; the reserve SAM spur stays isolated until Phase 5.',
       blocks: [
         { label: 'Silica hall', size: '10 × 6', note: '8 Constructors · room for peak', kind: 'production' },
         { label: 'Quartz Crystal', size: '6 × 6', note: '2 Constructors', kind: 'production' },
@@ -85,7 +98,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
       ],
     },
     {
-      id: 'p3-d-petrochem', site: 'D', title: 'Gold Coast petrochemical works', anchor: 'Pure oil field · (-2525, 698)', reserve: '56 × 38 foundations', flow: 'Oil pads → refinery pipe street → products terminal; every fluid loop closes inside D', note: 'Build the wet process parallel to the shoreline. Put packaged Jetpack fuel at the dry terminal end, never across a site boundary as liquid.',
+      id: 'p3-d-petrochem', site: 'D', title: 'Gold Coast petrochemical works', anchor: 'shoreline terrace running east–west through the Pure Oil field', reserve: '56 × 38 foundations', flow: 'Oil pads → refinery pipe street → products terminal; every fluid loop closes inside D', note: 'Build the wet process parallel to the shoreline. Put packaged Jetpack fuel at the dry terminal end, never across a site boundary as liquid.',
       blocks: [
         { label: 'Plastic refinery hall', size: '17 × 7', note: '6 Refineries', kind: 'fluid' },
         { label: 'Rubber refinery hall', size: '17 × 7', note: '6 Refineries', kind: 'fluid' },
@@ -116,7 +129,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
       ],
     },
     {
-      id: 'p4-e-aluminum', site: 'E', title: 'Aluminum wharf', anchor: 'Gold Coast / Red Jungle · (-1960, 720)', reserve: '42 × 34 foundations', flow: 'Bauxite edge → wet refinery loop → ingot shed → dry aluminum terminal', note: 'Put the recycled-water junction in an exposed gallery with a labeled cold-start valve.',
+      id: 'p4-e-aluminum', site: 'E', title: 'Aluminum wharf', anchor: 'coastal terrace below the bauxite approach', reserve: '42 × 34 foundations', flow: 'Bauxite edge → wet refinery loop → ingot shed → dry aluminum terminal', note: 'Put the recycled-water junction in an exposed gallery with a labeled cold-start valve.',
       blocks: [
         { label: 'Alumina Solution', size: '7 × 7', note: '2 Refineries · Sloppy Alumina', kind: 'fluid' },
         { label: 'Aluminum Scrap', size: '7 × 7', note: '2 Refineries · water return', kind: 'fluid' },
@@ -127,7 +140,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
       ],
     },
     {
-      id: 'p4-f-nitrogen', site: 'F', title: 'Nitrogen finishing campus', anchor: 'Western nitrogen mesa · (-1440, 1220)', reserve: '30 × 24 foundations', flow: 'Well pad → local gas header → Blender sheds → dry parts dispatch', note: 'No Nitrogen pipe leaves F. The well and buffer sit lower than the raised production terrace.',
+      id: 'p4-f-nitrogen', site: 'F', title: 'Nitrogen finishing campus', anchor: 'mesa-top terrace south of the well pad', reserve: '30 × 24 foundations', flow: 'Well pad → local gas header → Blender sheds → dry parts dispatch', note: 'No Nitrogen pipe leaves F. The well and buffer sit lower than the raised production terrace.',
       blocks: [
         { label: 'Well and buffer', size: '10 × 6', note: 'Pressurizer + local header', kind: 'fluid', wide: true },
         { label: 'Fused Frames', size: '7 × 7', note: '1 Blender', kind: 'production' },
@@ -136,7 +149,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
       ],
     },
     {
-      id: 'p4-g-rocket-power', site: 'G', title: 'Nitro Rocket Fuel power campus', anchor: 'Blue Crater · (1450, 2200)', reserve: '54 × 50 foundations', flow: 'Crater resources → Nitro process terrace → two independent 36-generator districts', note: 'Commission one 9 GW district at a time. Preserve the outer two district pads for the Phase 5 doubling.',
+      id: 'p4-g-rocket-power', site: 'G', title: 'Nitro Rocket Fuel power campus', anchor: 'western crater shelf above the water', reserve: '54 × 50 foundations', flow: 'Crater resources → Nitro process terrace → two independent 36-generator districts', note: 'Commission one 9 GW district at a time. Preserve the outer two district pads for the Phase 5 doubling.',
       blocks: [
         { label: 'Nitro process terrace', size: '24 × 12', note: 'Oil, water, sulfur, coal and Nitrogen', kind: 'fluid', wide: true },
         { label: 'Generator District 1', size: '47 × 10', note: '36 Fuel Generators · 9 GW', kind: 'power', wide: true },
@@ -146,7 +159,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
       ],
     },
     {
-      id: 'p4-h-copper', site: 'H', title: 'Dune Copper Works', anchor: 'Dune Desert · (3300, -1450)', reserve: '48 × 34 foundations', flow: 'Copper + iron edge → alloy Foundries → two ingot dispatch lanes → Powder hall', note: 'Copper Ingots use storage-free lanes. The terminal serves Copper Powder only.',
+      id: 'p4-h-copper', site: 'H', title: 'Dune Copper Works', anchor: 'central flat shelf between the marked Copper nodes', reserve: '48 × 34 foundations', flow: 'Copper + iron edge → alloy Foundries → two ingot dispatch lanes → Powder hall', note: 'Copper Ingots use storage-free lanes. The terminal serves Copper Powder only.',
       blocks: [
         { label: 'Copper Alloy Hall 1', size: '18 × 6', note: '6 Foundries', kind: 'production' },
         { label: 'Copper Alloy Hall 2', size: '18 × 6', note: '6 Foundries', kind: 'production' },
@@ -168,7 +181,7 @@ export const sitePlansByPhase: Record<number, SitePlan[]> = {
   ],
   5: [
     {
-      id: 'p5-q-quantum', site: 'Q', title: 'Quantum campus', anchor: 'Red Jungle / Crater Lakes · (-1436, 207)', reserve: '54 × 42 foundations', flow: 'SAM + imported solids → Converter street → Accelerator court → Encoder courtyard → dry final dispatch', note: 'Use low black/violet halls around the white-lit courtyard. Dark Matter fluids remain entirely inside Q.',
+      id: 'p5-q-quantum', site: 'Q', title: 'Quantum campus', anchor: 'ridge shelf beside the SAM anchor and local lake', reserve: '54 × 42 foundations', flow: 'SAM + imported solids → Converter street → Accelerator court → Encoder courtyard → dry final dispatch', note: 'Use low black/violet halls around the white-lit courtyard. Dark Matter fluids remain entirely inside Q.',
       blocks: [
         { label: 'SAM Constructor hall', size: '10 × 6', note: '7 Constructors · two banks', kind: 'production' },
         { label: 'Converter street', size: '26 × 8', note: 'Ficsite, EPM, DMR and Time Crystal shells', kind: 'fluid', wide: true },
