@@ -242,7 +242,11 @@ Two things from it that shape the current plan: the elevator requirement is at
 versatile framework needs a widened shed — that instruction came from a ×10 save and
 does not apply here. And the hard drive pool
 only offers recipes your unlocked tiers can already make, so scan right after a tier
-flip rather than banking indefinitely.
+flip rather than banking indefinitely. The exception is worth knowing: **the +6
+inventory slots unlock has no prerequisites at all**, so it is in the pool from the
+first drive and is always worth taking the moment it appears. The MAM trees carry
+their own +6 inventory and +1 toolbelt unlocks, but those want a lot of one item and
+land much later.
 
 ---
 
