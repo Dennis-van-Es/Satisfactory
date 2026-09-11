@@ -142,27 +142,45 @@ Coordinates in game are read in **metres**.
 
 ## Phase 1 — Site A, Grass Fields
 
-Deck **33 × 28 foundations**, 20 plots, 112 machines. Draw ~322 MW against 420.
+Deck **33 × 32 foundations**, 19 plots, 115 machines. Draw ~345 MW against 420.
 
-| row | contents |
-|---|---|
-| sf 0 | HUB 6×6, biomass 6×6, sink 4×4, Space Elevator 7×6 |
-| sf 8 | depot terminal 12×2 |
-| sf 10 | container row 12×2 |
-| sf 14 | iron plate, iron rod, screws, wire, smart plating |
-| sf 22 | reinforced plate, modular frame, rotor, cable, copper sheet |
+Bands north to south, in metres from the site's north-west corner:
 
-Columns pair supplier over consumer: plate→reinforced plate, rod→frame,
-**screws→rotor on two dedicated lanes**, wire→cable, smart plating→elevator.
+| band | depth | contents |
+|---|---|---|
+| 0–48 | 48 m | HUB, biomass, Space Elevator (208–264 east) |
+| 64–88 | **24 m** | depot terminal (0–96) + sink and shop (96–128) |
+| 88–104 | 16 m | container row (0–96) |
+| 104–128 | **24 m** | west road branch, truck stops |
+| 128–192 | **64 m** | iron plate, rod, screws, wire, smart plating |
+| 208–256 | 48 m | reinforced plate, frame, rotor, cable, copper sheet |
 
-Counts: plate 3 constructors (60/min), rod 5 (75), screws 4 Cast Screw (200),
-wire 5 at 27 each (135), cable 2 (30), copper sheet 2 (20), reinforced plate 2
-assemblers Stitched (11.25), rotor 2 (8), frame 2 (4), smart plating 2 (4),
+A **three-foundation road runs north–south at 176–200 m east**, clear through all
+256 m, with the west branch meeting it at the terminal. Columns pair supplier over
+consumer: plate→reinforced plate, rod→frame, **screws→rotor on two lanes of 100**,
+wire→cable. Smart plating sits at 208–240 to line up under the elevator rather than
+on the regular pitch, and copper sheet was moved to match it — which is what opens
+the road corridor.
+
+The production row is **64 m deep rather than 48** because A4 runs seven wire
+constructors, 55.3 m of machine. No 4 × 6 plot anywhere in the plan holds more than
+five.
+
+Counts: plate 4 constructors at 17.5 each (70/min), rod 5 (75), screws 4 Cast Screw
+(200), wire 7 at 28.57 each (200), cable 1 (30), copper sheet 1 (10), reinforced
+plate **3 assemblers** Stitched on three dedicated lanes — 6 to frames at 106.7%,
+4 to plating, 5.625 banked (15.625) — rotor 2 (8), frame 2 (4), smart plating 2 (4),
 biomass 14 burners all connected + 3 constructors.
 
-Node bill: **2 iron sheds** (240 vs 215 demand), **1 copper** (120 vs 108),
-1 limestone. Concrete outpost is 2 constructors set to 20 each and holds its own
-Dimensional Depot, keeping 40/min of overflow out of the town sushi belt.
+Node bill: **one iron shed on two nodes** (230 of 240), **1 copper** (120 of 120,
+fully spent), 1 limestone. The shed is eight smelters sending three
+destination-rated lanes — 105 plate, 75 rod, 50 screws — so no belt ever carries
+undifferentiated ingot and nothing needs merging. Concrete outpost is 2 constructors
+set to 20 each and holds its own Dimensional Depot, keeping 40/min of overflow out
+of the town sushi belt.
+
+Banked per minute: plate 17.9, wire 35.8, cable 30, RIP 5.6, rotor 4, frame 4,
+sheet 10, concrete 40.
 
 Depot row: 8 items — plate, rod, wire, cable, copper sheet, reinforced plate, rotor,
 frame. Screws and smart plating never go in. Steady overflow ~93/min, which is why

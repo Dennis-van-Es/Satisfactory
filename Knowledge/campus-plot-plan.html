@@ -16,6 +16,8 @@
     --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  /* an author display rule beats the UA sheet's [hidden], and .tabs is display:flex */
+  [hidden]{display:none!important}
   body{margin:0 auto;background:var(--bg);color:var(--text);font-family:var(--sans);
     font-size:15px;line-height:1.4;padding:14px 12px 70px;max-width:680px;
     background-image:radial-gradient(circle at 50% -8%,rgba(248,155,60,.05),transparent 60%)}
@@ -210,6 +212,7 @@
 </style>
 
 <div class="phasebar">
+  <button class="phasepill" data-p="0">Phase 0</button>
   <button class="phasepill active" data-p="1">Phase 1</button>
   <button class="phasepill" data-p="2">Phase 2</button>
   <button class="phasepill" data-p="3">Phase 3</button>
@@ -222,7 +225,15 @@
   <button class="tab" data-t="order">Build order</button>
   <button class="tab" data-t="research">Research</button>
   <button class="tab" data-t="alts">Alt recipes</button>
-  <button class="tab" data-t="colors">Colours</button>
+</div>
+
+<div id="view-phase0" hidden>
+  <div class="card">
+    <div class="card-h">Before anything is poured</div>
+    <p>Nothing on this tab belongs to a phase. The rule governs every site, and the paint is one scheme for
+      the whole campus — both used to reprint themselves above each phase's plots, which is what pushed the
+      plots down the page.</p>
+  </div>
 </div>
 
 <div id="view-plots">
@@ -257,8 +268,10 @@
     <div id="bkpMsg" class="bkp-msg"></div>
   </div>
 
-  <div class="card">
-    <div class="card-h">The rule</div>
+  <div class="card" id="ruleCard">
+    <div class="card-h" id="ruleToggle" style="cursor:pointer">The rule<span id="ruleChev"
+      style="float:right;font-family:var(--mono);font-size:11px;color:var(--muted);font-weight:400">read</span></div>
+    <div id="ruleBody" hidden>
     <p>One item per building, on one machine type. A constructor floor and an assembler floor do not want the
       same lane widths, lift positions or door spacing, and refineries want none of it — so they get separate
       shells, which also makes each shell blueprintable.</p>
@@ -304,6 +317,7 @@
     <p>Reserve two foundations more than the plan in each direction. Terrain eats the difference, and it leaves
       room for belts round the outside rather than through the middle. Lifting a plant onto stilts is usually
       cheaper than terracing the hill it sits on.</p>
+    </div>
   </div>
 
   <div id="groundRoot"></div>
@@ -348,14 +362,14 @@ const KEY="sf_plotplan_v5";
 
 /* ---------------- sites ---------------- */
 const DECK={
- 1:"Site A decks at 32 × 22 foundations, about 704 of them. That is less than the 750 the individual reserve envelopes come to, because the skirts overlap in the gaps you were leaving anyway. Pour the two road corridors first — 128 foundations, roughly half an hour of concrete — then the row you are working on. Same grid, so it grows without rework.",
+ 1:"Site A decks at 33 × 32 foundations, 1,056 in all. It grew south twice: once when the production row went to eight foundations deep to house A4's seven wire constructors, and once for the three-foundation road. Pour the road corridors first — the north-south run is 3 × 32 and the west branch 22 × 3, about 153 foundations together — because they fix every other edge on the site. Then the row you are working on. Same grid, so it grows without rework.",
  2:"Site C decks at 26 × 24. Concrete is no longer the constraint by now, and blueprints make deck tiles a stamp, so pour it in one go before the plants rather than around them.",
  3:"Site D is the exception: extractors are pinned to the nodes and the refineries follow the fluid, so pad the extraction end and deck only the parts side where boards, computers and engines sit.",
  4:"Site E decks, but plan the water return loop before you pour — pipes under a deck are far easier than pipes threaded between finished buildings.",
  5:"Site G decks generously and leaves whole tiles empty. Accelerator and converter halls are the largest footprints in the game and you will not guess their final count right."
 };
 const BELTS={
- 1:{m:"Mk.2",r:120,d:"One lane carries 120 a minute. Screws at 250 are three lanes, wire at 135 is two, and the two iron shed lanes cannot merge into one. Everything else fits on a single belt."},
+ 1:{m:"Mk.2",r:120,d:"One lane carries 120 a minute, and only screws exceed it — 200 runs as two lanes of 100 straight down to the rotors. The shed sends 105, 75 and 50 on three destination-rated lanes, every one inside a single belt: splitting at the source is what stops a shared ingot trunk ever having to carry 240, which Mk.2 cannot do."},
  2:{m:"Mk.3",r:270,d:"270 a minute. The steel trunk and the coal trunk both fit one lane again, and the Phase 1 iron lanes can finally merge. Verify which tier actually hands you Mk.3 before planning a single-lane trunk."},
  3:{m:"Mk.4",r:480,d:"480 a minute, and fluids move by pipe rather than belt anyway. Plastic and rubber leaving Site D fit one lane each with room to spare."},
  4:{m:"Mk.5",r:780,d:"780 a minute. Bandwidth stops being the binding constraint here and power takes over."},
@@ -746,18 +760,18 @@ const PLOTS=[
    {item:"MAM",recipe:"Research, every hard drive",rate:0,unit:"",bld:"MAM",n:1,mw:0},
    {item:"Workbench and workshop",recipe:"Hand-craft and equipment",rate:0,unit:"",bld:"Bench",n:2,mw:0}]}]},
 
-{id:"A0B",phase:1,site:"A",name:"Depot terminal",ef:0,sf:8,wf:12,df:2,
- flex:"Pinned to the bus along its whole length — lanes enter the long wall wherever their item sits. Two foundations deep is deliberate: from outside it should read as the belts passing through with one extra belt on the flank.",
- belts:"Every bus lane in the north wall, one lane per item straight out the south wall into its container. One sushi lane out the east end.",
+{id:"A0B",phase:1,site:"A",name:"Depot terminal",ef:0,sf:8,wf:12,df:3,
+ flex:"Pinned to the bus along its whole length — lanes enter the long wall wherever their item sits. Three foundations deep rather than two: the splitter-and-lift stack needs the room, and the sink now sits against the east end instead of at the far side of town.",
+ belts:"Every bus lane in the north wall, one lane per item straight out the south wall into its container. One sushi lane out the east end, straight into the sink next door.",
  note:"Narrow terminal, and the only enclosed part of the whole arrangement. Splitters, lifts and mergers live here; nothing is stored. Each Smart Splitter sends its item out the south wall to the container and lifts the overflow to the sushi belt running the length of the roof space.",
  warn:"Twelve foundations long, which is twelve container slots at an 8 m pitch, against eight items the town stores. That is the right kind of slack — lengthening a terminal with live lanes through its walls is a job you do not want, but there is no point sizing it for items that will be stored at another site.",
- out:"Sushi belt east to A0F.",
+ out:"Sushi belt east into A0F, which is now the next plot along rather than a run across town.",
  floors:[{name:"Ground — sorting",lines:[
    {item:"Smart Splitters",recipe:"One per lane · Any on the centre output, Overflow to the lift",rate:0,unit:"",bld:"Smart Splitter",n:8,mw:0},
    {item:"Overflow lifts",recipe:"4 m rise to the sushi belt",rate:0,unit:"",bld:"Conveyor Lift",n:8,mw:0},
    {item:"Mergers",recipe:"Chained along the sushi belt",rate:0,unit:"",bld:"Merger",n:7,mw:0}]}]},
 
-{id:"A0E",phase:1,site:"A",name:"Container row",ef:0,sf:10,wf:12,df:2,
+{id:"A0E",phase:1,site:"A",name:"Container row",ef:0,sf:11,wf:12,df:2,
  flex:"Outdoors, against the terminal’s south wall, on the same pitch as the lanes so nothing crosses. Leave the aisle in front of it generous — that is where you stand to use the depots.",
  belts:"One lane in per container, straight through the terminal wall.",
  note:"Containers at an 8 m pitch — one per foundation, 3 m between them for the lifts, and everything stays on the snap grid. A Dimensional Depot on top of each. No walls, no roof; walking the row is the point. Eight here: plate, rod, wire, cable, copper sheet, reinforced plate, rotor, frame. Concrete gets its depot out at the limestone node.",
@@ -766,8 +780,8 @@ const PLOTS=[
    {item:"Item containers",recipe:"One per item, 8 m pitch · room for 12",rate:0,unit:"",bld:"Container",n:8,mw:0},
    {item:"Dimensional Depots",recipe:"Snapped on top of each container",rate:0,unit:"",bld:"Depot",n:8,mw:0,check:true}]}]},
 
-{id:"A0F",phase:1,site:"A",name:"Sink and shop",ef:16,sf:0,wf:4,df:4,
- flex:"At whichever end the sushi belt leaves. Small, and the only part of the arrangement that draws power.",
+{id:"A0F",phase:1,site:"A",name:"Sink and shop",ef:12,sf:8,wf:4,df:3,
+ flex:"Butted against the terminal's east end, on the same three-foundation depth, so the sushi lane leaves one wall and enters the next. It used to sit up in the north row, which meant a sushi belt running the length of the town to reach it — that belt is gone.",
  belts:"One sushi lane in. Nothing out.",
  note:"One sink is enough because the town’s steady overflow, once every container is full, is about 93/min: plate 22.5, rod 11, cable 30, copper sheet 20, reinforced plate 1.25, rotor 4, frame 4, screws and wire normally nothing. Concrete’s 40 would push that past a Mk.2 lane and force a second sushi belt and a second sink, which is the other reason its depot lives at the node. Its own plot rather than part of the row, because it is the one thing there that is neither storage nor sorting. The container in front of it is the important part: it is where you dump inventory you no longer want, so junk becomes coupons without you hand-feeding the sink.",
  warn:"Never plumb a bus lane straight into the sink. The sink draws its 30 MW only while sinking, but the burner bank has no margin for the spike — that is what the two spare pads at A0D are for.",
@@ -795,44 +809,44 @@ const PLOTS=[
   {name:"Ground — generation",lines:[
    {item:"Power",recipe:"Biomass Burner · all fourteen connected",rate:420,unit:"MW",bld:"Biomass Burner",n:14,mw:30,gen:true}]}]},
 
-{id:"A1",phase:1,site:"A",name:"Iron plate",ef:0,sf:14,wf:4,df:6,
- belts:"Out 60: one lane down to A7 with 37.5, one onto the bus with the rest. In one ingot lane.",
- flex:"Free. Ingot in off the trunk, plate out onto the bus — no neighbour involved. Same shell as A2 to A6.",
- raw:[["Iron ingot",90]],
- note:"Three constructors. 37.5 plate to the reinforced plate building, the rest to the bus and the Depot.",
+{id:"A1",phase:1,site:"A",name:"Iron plate",ef:0,sf:16,wf:4,df:8,
+ belts:"Out 70 on two lanes: 52.08 straight down to A7, 17.92 onto the bus. In the shed's plate lane, 105 ingot.",
+ flex:"Free. Ingot in off its own shed lane, plate out onto the bus — no neighbour involved. Same shell as A2 to A6.",
+ raw:[["Iron ingot, shed plate lane",105]],
+ note:"Four constructors set to 17.5 each. 52.08 plate to the reinforced plate building, 17.92 banked. The ingot the two nodes were not using goes here, which is what takes the plate bank from 3.75 a minute to nearly 18.",
  out:"Onto the parts bus and down to the depot row.",
  floors:[{name:"Ground",lines:[
-   {item:"Iron plate",recipe:"Iron Plate",rate:60,unit:"/min",bld:"Constructor",n:3,mw:4}]}]},
+   {item:"Iron plate",recipe:"Iron Plate · set each to 17.5/min",rate:70,unit:"/min",bld:"Constructor",n:4,mw:4}]}]},
 
-{id:"A2",phase:1,site:"A",name:"Iron rod",ef:6,sf:14,wf:4,df:6,
- belts:"Out 75 on three lanes: 24 straight down to A9, 40 to A8 which is not straight down — rod is in column 6 and rotor in column 12, so that leg runs east underdeck then turns south — and 11 onto the bus. In one ingot lane.",
+{id:"A2",phase:1,site:"A",name:"Iron rod",ef:6,sf:16,wf:4,df:8,
+ belts:"Out 75 on three lanes: 24 straight down to A9, 40 to A8 which is not straight down — rod is in column 6 and rotor in column 12, so that leg runs east underdeck then turns south — and 11 onto the bus. In the shed's rod lane, 75 ingot, which is exactly what this building eats.",
  flex:"Pinned above A9 for the frame line. The rotor line cannot also be vertical — rotor sits under the screw column because 200 screw/min on two lanes has the stronger claim — so accept a 48 m lateral leg underdeck for the 40 rod/min.",
- raw:[["Iron ingot",75]],
+ raw:[["Iron ingot, shed rod lane",75]],
  note:"Five constructors. 24 to frames, 40 to rotors, the rest banked.",
  out:"Onto the parts bus and down to the depot row.",
  floors:[{name:"Ground",lines:[
    {item:"Iron rod",recipe:"Iron Rod",rate:75,unit:"/min",bld:"Constructor",n:5,mw:4}]}]},
 
-{id:"A3",phase:1,site:"A",name:"Screws",ef:12,sf:14,wf:4,df:6,
- belts:"Out 200 on two lanes, both straight down to A8. Screws never touch the bus. In one ingot lane.",
+{id:"A3",phase:1,site:"A",name:"Screws",ef:12,sf:16,wf:4,df:8,
+ belts:"Out 200 on two lanes of 100 each, both straight down to A8 — 200 will not fit one Mk.2 lane. Screws never touch the bus. In the shed's screw lane, 50 ingot.",
  flex:"Free, but keep it directly above A8 — 200 a minute is two lanes and you do not want them crossing the town.",
- raw:[["Iron ingot",50]],
+ raw:[["Iron ingot, shed screw lane",50]],
  needs:["Cast Screw"],
  note:"Four constructors straight off ingot, feeding rotors and nothing else. Nobody stores screws, so there is no container and no bus lane here — that is what took this from five constructors to four.",
  out:"Two lanes down to A8. No container, no Depot feed, no sink branch.",
  floors:[{name:"Ground",lines:[
    {item:"Screw",recipe:"Cast Screw",rate:200,unit:"/min",bld:"Constructor",n:4,mw:4,alt:true}]}]},
 
-{id:"A4",phase:1,site:"A",name:"Wire",ef:18,sf:14,wf:4,df:6,
- belts:"Out 135 on two lanes: 60 down to A5, 75 across the bus to A7. In one ingot lane.",
- flex:"Free, though putting it on the copper end of the bus keeps the ingot trunk short.",
- raw:[["Copper ingot",68]],
- note:"Five constructors set to 27 each. 75 to reinforced plate, 60 to cable.",
+{id:"A4",phase:1,site:"A",name:"Wire",ef:18,sf:16,wf:4,df:8,
+ belts:"Out 200 on three lanes: 104.17 across the bus to A7, 60 down to A5, 35.83 onto the bus. In one ingot lane of 100.",
+ flex:"Free, though putting it on the copper end of the bus keeps the ingot trunk short. The deepest shed on the row — seven constructors is 55.3 m of machine, which is why this row is eight foundations rather than six.",
+ raw:[["Copper ingot",100]],
+ note:"Seven constructors set to 28.57 each, drinking every copper ingot CU1 has left after the sheet line. 104.17 to reinforced plate, 60 to cable, the rest banked.",
  out:"Onto the parts bus and down to the depot row.",
  floors:[{name:"Ground",lines:[
-   {item:"Wire",recipe:"Wire · set each to 27/min",rate:135,unit:"/min",bld:"Constructor",n:5,mw:4}]}]},
+   {item:"Wire",recipe:"Wire · set each to 28.57/min",rate:200,unit:"/min",bld:"Constructor",n:7,mw:4}]}]},
 
-{id:"A5",phase:1,site:"A",name:"Cable",ef:18,sf:22,wf:4,df:6,
+{id:"A5",phase:1,site:"A",name:"Cable",ef:18,sf:26,wf:4,df:6,
  belts:"Out 30 on one lane. In one wire lane straight down from A4.",
  flex:"Free.",
  raw:[["Wire, off the bus",60]],
@@ -841,28 +855,30 @@ const PLOTS=[
  floors:[{name:"Ground",lines:[
    {item:"Cable",recipe:"Cable",rate:30,unit:"/min",bld:"Constructor",n:1,mw:4}]}]},
 
-{id:"A6",phase:1,site:"A",name:"Copper sheet",ef:24,sf:22,wf:4,df:6,
- belts:"Out 20 on one lane. In one ingot lane.",
- flex:"Free.",
- raw:[["Copper ingot",40]],
- note:"Two constructors, added on the Tier 3 flip. Pure buildables: water extractors are 10 sheet each, and pipes, junctions and pumps all want it.",
+{id:"A6",phase:1,site:"A",name:"Copper sheet",ef:26,sf:26,wf:4,df:6,
+ belts:"Out 10 on one lane. In one ingot lane of 20.",
+ flex:"Free, but sits at column 26 rather than the regular pitch so it lines up under A10, which is itself pinned to the elevator. The 22 to 26 gap that leaves is the north-south road.",
+ raw:[["Copper ingot",20]],
+ note:"One constructor at 100%, added on the Tier 3 flip — 20 ingot in, 10 sheet out. Dropping the second one is what frees the copper that lets A4 run to 200 wire. Pure buildables: water extractors are 10 sheet each, and pipes, junctions and pumps all want it.",
  warn:"Build the shell in Phase 1 and leave it empty if the recipe is not open yet. Six water extractors is 60 sheet before you place a single pipe, so this wants a standing bank and a Depot feed before the coal power build starts.",
  out:"Onto the parts bus and down to the depot row.",
  floors:[{name:"Ground",lines:[
-   {item:"Copper sheet",recipe:"Copper Sheet",rate:20,unit:"/min",bld:"Constructor",n:2,mw:4,check:true}]}]},
+   {item:"Copper sheet",recipe:"Copper Sheet",rate:10,unit:"/min",bld:"Constructor",n:1,mw:4,check:true}]}]},
 
-{id:"A7",phase:1,site:"A",name:"Reinforced iron plate",ef:0,sf:22,wf:4,df:6,
- belts:"Out 11.25 on one lane. In two: plate from A1 above, wire from A4 across the bus.",
- flex:"Free. Both inputs come off the bus, which is the whole point of having one.",
- raw:[["Iron plate, off the bus",37.5],["Wire, off the bus",75]],
+{id:"A7",phase:1,site:"A",name:"Reinforced iron plate",ef:0,sf:26,wf:4,df:6,
+ belts:"Out 15.625 on three lanes, one per assembler: 6 to A9, 4 to A10, 5.625 onto the bus. In two: plate from A1 above, wire from A4 across the bus.",
+ flex:"Free. Both inputs come off the bus, which is the whole point of having one. Three assemblers is 27 m in a 48 m row with 8 m of lane either side — they go in a line north to south, not three abreast, which a 32 m wall will not take.",
+ raw:[["Iron plate, from A1",52.08],["Wire, off the bus",104.17]],
  needs:["Stitched Iron Plate"],
- note:"Two assemblers at 100% is 11.25 a minute: 6 to frames, 4 to smart plating, the rest banked. Assembler shell, so it gets its own building rather than a floor above the constructors.",
- out:"Onto the parts bus and down to the depot row.",
+ note:"One assembler per destination, so nothing here needs a splitter. The frames lane is the only overclock in Phase 1: 6 a minute against a 5.625 machine is 106.7%, one power shard, and it buys the third assembler a home inside the existing 4 × 6 plot. Inputs scale with output, not machine count — 15.625 plate a minute wants 52.08 plate and 104.17 wire, not three times a full machine.",
+ out:"Three lanes: A9, A10, and the bus down to the depot row.",
  floors:[{name:"Ground",lines:[
-   {item:"Reinforced iron plate",recipe:"Stitched Iron Plate",rate:11.25,unit:"/min",bld:"Assembler",n:2,mw:15,alt:true,check:true}]}]},
+   {item:"RIP → A9 frames",recipe:"Stitched Iron Plate · one assembler at 106.7%, one shard",rate:6,unit:"/min",bld:"Assembler",n:1,mw:15,alt:true,check:true},
+   {item:"RIP → A10 plating",recipe:"Stitched Iron Plate · one at 71.1%",rate:4,unit:"/min",bld:"Assembler",n:1,mw:15,alt:true},
+   {item:"RIP → storage",recipe:"Stitched Iron Plate · one at 100%",rate:5.625,unit:"/min",bld:"Assembler",n:1,mw:15,alt:true}]}]},
 
-{id:"A8",phase:1,site:"A",name:"Rotor",ef:12,sf:22,wf:4,df:6,
- belts:"Out 8 on one lane. In three: rod from A2 and two screw lanes from A3 directly above.",
+{id:"A8",phase:1,site:"A",name:"Rotor",ef:12,sf:26,wf:4,df:6,
+ belts:"Out 8 on one lane. In three: rod from A2, and two screw lanes of 100 each from A3 directly above.",
  flex:"Free.",
  raw:[["Iron rod, off the bus",40],["Screw, off the bus",200]],
  note:"Two assemblers, 8 a minute: 4 to smart plating, 4 banked. Rotors are one of the heaviest early buildables and every one you place at Sites B and C comes out of the Depot.",
@@ -870,8 +886,8 @@ const PLOTS=[
  floors:[{name:"Ground",lines:[
    {item:"Rotor",recipe:"Rotor",rate:8,unit:"/min",bld:"Assembler",n:2,mw:15}]}]},
 
-{id:"A9",phase:1,site:"A",name:"Modular frame",ef:6,sf:22,wf:4,df:6,
- belts:"Out 4 on one lane. In two: rod from A2 above, reinforced plate from A7 along the row.",
+{id:"A9",phase:1,site:"A",name:"Modular frame",ef:6,sf:26,wf:4,df:6,
+ belts:"Out 4 on one lane. In two: rod from A2 above, and A7's dedicated 6/min frames lane along the row.",
  flex:"Free.",
  raw:[["Reinforced plate, off the bus",6],["Iron rod, off the bus",24]],
  note:"Two assemblers, 4 a minute. Frames are the Tier 4 gate currency, so the bank matters more than the rate.",
@@ -879,35 +895,28 @@ const PLOTS=[
  floors:[{name:"Ground",lines:[
    {item:"Modular frame",recipe:"Modular Frame",rate:4,unit:"/min",bld:"Assembler",n:2,mw:15}]}]},
 
-{id:"A10",phase:1,site:"A",name:"Smart plating",ef:26,sf:14,wf:4,df:6,
- belts:"Out 4 on one lane straight north to the elevator. In two off the bus.",
- flex:"The one building with a real constraint: a clear belt north to the elevator. Its inputs come off the bus like everything else.",
- raw:[["Reinforced plate, off the bus",4],["Rotor, off the bus",4]],
+{id:"A10",phase:1,site:"A",name:"Smart plating",ef:26,sf:16,wf:4,df:8,
+ belts:"Out 4 on one lane straight north to the elevator. In two: A7's dedicated 4/min plating lane, and rotors off the bus.",
+ flex:"The one building with a real constraint: a clear belt north to the elevator. It sits at column 26 to line up under A0C rather than on the regular pitch, and A6 is placed to match it.",
+ raw:[["Reinforced plate, from A7",4],["Rotor, off the bus",4]],
  warn:"Smart plating goes to the Space Elevator only. Never to the Depot, never to the sink.",
  note:"Two assemblers. In Phase 3 this line stops feeding the elevator and starts feeding modular engines instead, so leave the belt run out of the north wall reusable.",
  out:"One belt north to A0C. No overflow branch at all.",
  floors:[{name:"Ground",lines:[
    {item:"Smart plating",recipe:"Smart Plating",rate:4,unit:"/min",bld:"Assembler",n:2,mw:15}]}]},
 
-{id:"FE1",phase:1,site:"A",name:"Iron smelting shed 1",remote:true,wf:4,df:8,
- raw:[["Iron ore, 1 pure node",120]],
- belts:"Out 120 on one lane — exactly one Mk.2 belt, which is why the shed is one miner and four smelters.",
- flex:"Fixed by the node. The pad can rotate, step down a slope or sit on stilts — the miner cannot move.",
- note:"The repeatable shed: one miner, four smelters, 120 ingot, one belt out. Lay the full 4 × 8 pad even though four smelters fill half of it — a Mk.2 miner doubles the node and wants eight.",
- out:"Ingot trunk to the town, dropped into the corridor between the support row and the constructor row.",
+{id:"FE1",phase:1,site:"A",name:"Iron smelting shed",remote:true,wf:8,df:6,
+ raw:[["Iron ore, 2 pure nodes",230]],
+ belts:"In two ore lanes of 115, one per node. Out on three destination-rated lanes: 105 to A1 plate, 75 to A2 rod, 50 to A3 screws. Nothing on any lane reaches 120, so Mk.2 carries the lot and the old two-trunk problem — 240 ingot that will not merge until Mk.3 — stops existing.",
+ flex:"The two iron nodes are close enough to share one building; the second belts its ore in. Off the deck, so it can grow or shrink as the plan moves without touching the town.",
+ note:"Eight smelters, none overclocked, four belts' worth of exactness out of three lanes. Plate takes three at 100% plus 15 off the splitter; rod takes two at 100% plus the splitter's other half; screws take two at 83.3%. The splitter sits on one smelter running at 100% and halves its 30 evenly, which is how you get a 15 without a ninth machine or an overclock — the split sets the clock, not the other way round.",
+ out:"Three lanes into town, each already carrying exactly what its building eats. No splitter anywhere else in the iron chain.",
  floors:[{name:"Ground",lines:[
-   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
-   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
-
-{id:"FE2",phase:1,site:"A",name:"Iron smelting shed 2",remote:true,wf:4,df:8,
- raw:[["Iron ore, 1 pure node",120]],
- belts:"Out 120 on one lane. The two shed lanes stay parallel into town; do not merge them, 240 will not fit in one belt until Mk.3.",
- flex:"Fixed by the node.",
- note:"Two sheds is 240 ingot against a demand of 215. Dropping the duplicated plate, rod and wire lines is what took this from three sheds to two.",
- out:"Ingot trunk to the town.",
- floors:[{name:"Ground",lines:[
-   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
-   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+   {item:"Iron ore",recipe:"Miner Mk.1 on pure node · two nodes, one shed",rate:230,unit:"/min",bld:"Miner Mk.1",n:2,mw:5},
+   {item:"Ingot → plate lane",recipe:"Iron Ingot · three at 100%",rate:90,unit:"/min",bld:"Smelter",n:3,mw:4},
+   {item:"Ingot → rod lane",recipe:"Iron Ingot · two at 100%",rate:60,unit:"/min",bld:"Smelter",n:2,mw:4},
+   {item:"Ingot → splitter, 15 plate / 15 rod",recipe:"Iron Ingot · one at 100% into an even splitter",rate:30,unit:"/min",bld:"Smelter",n:1,mw:4},
+   {item:"Ingot → screw lane",recipe:"Iron Ingot · two at 83.3%",rate:50,unit:"/min",bld:"Smelter",n:2,mw:4}]}]},
 
 {id:"CU1",phase:1,site:"A",name:"Copper smelting shed",remote:true,wf:4,df:8,
  raw:[["Copper ore, 1 pure node",120]],
@@ -1221,7 +1230,8 @@ const RESEARCH={3:[
   {n:"Alien Organisms",d:"Inhalers, fabric, parachute, expanded toolbelt. Cheap quality of life."},
   {n:"Alien Technology",d:"Dimensional Depot, off Mercer Spheres. Worth a deliberate detour early: milestone materials reach you wherever you are instead of you walking back to a container. A0B is designed around it."},
   {n:"Caterium",d:"Quickwire, Mk.2 poles, zipline, Smart and Programmable Splitter. A0B's overflow topology needs Smart Splitters, so this is not optional. Also the road to Caterium Wire, which is the answer to the copper problem this rule created."},
-  {n:"Quartz",d:"Silica, blade runners, expanded inventory. Needs a quartz node in range, which from this campus is a trek."}]}
+  {n:"Quartz",d:"Silica, blade runners, expanded inventory. Needs a quartz node in range, which from this campus is a trek."},
+  {n:"Inventory slots, +6",d:"Taken the moment it appears, every time. Phase 1 is almost entirely hand-building and carrying capacity is the quiet constraint on every trip out to a node. Which tree or shop entry hands it over, and what it costs, are deliberately not written down here — confirm in game or at satisfactory.th.gl."}]}
 ],2:[
  {g:"MAM trees that open in Phase 2",items:[
   {n:"Sulfur",d:"Black powder, nobelisks, cluster nobelisks, explosive rebar, compacted coal. Gated on the O6 outpost anyway."},
@@ -1275,7 +1285,7 @@ const ALTS={3:[
 ]};
 
 /* ---------------- state ---------------- */
-let STATE={placed:{},collapsed:{},steps:{},res:{},alts:{},tab:"plots",phase:1,ax:-560,ay:2369,cx:0,cy:0,dx:0,dy:0,ex:0,ey:0,gx:0,gy:0};
+let STATE={placed:{},collapsed:{},steps:{},res:{},alts:{},tab:"plots",phase:1,rulesOpen:false,altsOpt:false,ax:-560,ay:2369,cx:0,cy:0,dx:0,dy:0,ex:0,ey:0,gx:0,gy:0};
 const lkey=(p,fi,li)=>p.id+"|"+fi+"|"+li;
 const plotLines=p=>p.floors.reduce((a,f)=>a.concat(f.lines),[]);
 const plotTotal=p=>plotLines(p).reduce((s,l)=>s+l.n,0);
@@ -1415,11 +1425,11 @@ function buildGround(){
     `<div class="card"><div class="card-h">Ground</div><p>${deck}</p>
      <p>Deck the town sites, pad the node sites. A shared plane is worth it where buildings feed each other and
        belts have to line up; it is worth nothing where the position is decided by ore or water.</p>
-     <p><b>One shell language across the town.</b> Concrete deck and pillars in natural grey, lower wall course
-       charcoal, upper courses warm light grey, charcoal roofs. Orange for doors, wall-hole collars and external
-       lifts. One identity panel beside each door: muted red for iron products, oxidised teal for copper, safety
-       yellow for assembly, dark green for biomass, orange for the terminal, white for the civic buildings.
-       One panel wide, not a whole wall — enough to read the town at a glance without it becoming a rainbow.</p>
+     <p><b>One shell language across the town.</b> Concrete deck and pillars stay natural grey and unpainted —
+       concrete does not take paint the way steel does, and the deck is the largest surface here. Everything on
+       top is two shell colours and one accent, so no building wears more than three. The accent goes on machine
+       bodies and door frames and says what the building does, not which phase built it. Full swatches with hex
+       values are on the Phase 0 tab, and every plot card below carries the accent it should wear.</p>
      <p>Raise the deck on 4 m pillars with 1 m foundations on top, not on 4 m foundations — that leaves about 3 m of usable clearance underneath rather than a solid block.
        That gives a service void for the bus, keeps the roads clean on top, and means you never terrace.
        Foundations refund in full, so an early mistake costs time rather than materials.</p></div>`;
@@ -1584,6 +1594,7 @@ function rowHtml(done,title,sub,extra,n){
 function buildOrder(){
   const root=document.getElementById("orderRoot");
   const steps=ORDER[STATE.phase];
+  if(!steps){root.innerHTML="";return;}
   root.innerHTML=`<div class="usec"><div class="usec-h"><span>Phase ${STATE.phase} sequence</span><span class="ln"></span></div>`+
     steps.map((s,i)=>rowHtml(!!STATE.steps[STATE.phase+"|"+i],s.t,s.d,"",i+1)).join("")+`</div>`;
   root.querySelectorAll(".urow").forEach((el,i)=>{
@@ -1592,6 +1603,7 @@ function buildOrder(){
 }
 function buildResearch(){
   const root=document.getElementById("researchRoot");
+  if(!RESEARCH[STATE.phase]){root.innerHTML="";return;}
   root.innerHTML=RESEARCH[STATE.phase].map(g=>
     `<div class="usec"><div class="usec-h"><span>${g.g}</span><span class="ln"></span></div>`+
     g.items.map(it=>rowHtml(!!STATE.res[it.n],it.n,it.d)).join("")+`</div>`).join("");
@@ -1603,13 +1615,28 @@ function buildResearch(){
 function buildAlts(){
   const root=document.getElementById("altsRoot");
   const list=ALTS[STATE.phase];
-  root.innerHTML=`<div class="usec"><div class="usec-h"><span>Phase ${STATE.phase} drives</span><span class="ln"></span></div>`+
-    list.map(a=>rowHtml(!!STATE.alts[a.n],a.n,a.d,
-      `${a.req?'<span class="reqb">required</span>':''}<span class="tierb t-${a.t}">${a.t}</span>`)).join("")+
-    `</div><div class="foot">Tier is the general community ranking. The reason line is why it matters to a campus of self-contained plants, which shifts the value of anything that shrinks a feed line.</div>`;
+  if(!list){root.innerHTML="";return;}
+  /* Required first and alone; the rest are folded away. They stay in the data because
+     the reasoning on a rejected recipe is the record of why it was rejected. */
+  const req=list.filter(a=>a.req), opt=list.filter(a=>!a.req), shown=req.concat(opt);
+  const row=a=>rowHtml(!!STATE.alts[a.n],a.n,a.d,
+    `${a.req?'<span class="reqb">required</span>':''}<span class="tierb t-${a.t}">${a.t}</span>`);
+  root.innerHTML=
+    `<div class="usec"><div class="usec-h"><span>Phase ${STATE.phase} — drives you must have</span><span class="ln"></span></div>`+
+    (req.length?req.map(row).join("")
+               :`<div class="sw-d" style="padding:6px 2px 2px">Nothing is required this phase.</div>`)+
+    `</div>`+
+    (opt.length
+      ?`<div class="usec"><div class="usec-h"><span>Worth having</span><span class="ln"></span>
+          <span id="optChev" style="font-family:var(--mono);font-size:11px;color:var(--muted);cursor:pointer">${STATE.altsOpt?"hide":opt.length+" more"}</span></div>
+        <div id="optBody"${STATE.altsOpt?"":" hidden"}>${opt.map(row).join("")}</div></div>`
+      :"")+
+    `<div class="foot">Tier is the general community ranking. The reason line is why it matters to a campus of self-contained plants, which shifts the value of anything that shrinks a feed line.</div>`;
   root.querySelectorAll(".urow").forEach((el,i)=>{
-    el.onclick=()=>{const n=list[i].n;STATE.alts[n]=!STATE.alts[n];el.classList.toggle("done");buildGate();save();};
+    el.onclick=()=>{const n=shown[i].n;STATE.alts[n]=!STATE.alts[n];el.classList.toggle("done");buildGate();save();};
   });
+  const chev=document.getElementById("optChev");
+  if(chev)chev.onclick=()=>{STATE.altsOpt=!STATE.altsOpt;buildAlts();save();};
 }
 
 function copyHex(txt,el){
@@ -1659,21 +1686,57 @@ function buildColors(){
 }
 
 /* ---------------- chrome ---------------- */
+const TABS=["plots","order","research","alts"];
 function applyTab(t){
+  /* "colors" was a tab before it became Phase 0; a saved state can still name it. */
+  if(TABS.indexOf(t)<0)t="plots";
   STATE.tab=t;
-  ["plots","order","research","alts","colors"].forEach(x=>{document.getElementById("view-"+x).hidden=(x!==t);});
+  TABS.forEach(x=>{document.getElementById("view-"+x).hidden=(x!==t);});
   document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.t===t));
   if(t==="order")buildOrder();
   if(t==="research")buildResearch();
   if(t==="alts")buildAlts();
-  if(t==="colors")buildColors();
 }
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{applyTab(b.dataset.t);save();});
 document.querySelectorAll(".phasepill").forEach(b=>b.onclick=()=>{
   STATE.phase=Number(b.dataset.p);
-  document.querySelectorAll(".phasepill").forEach(x=>x.classList.toggle("active",Number(x.dataset.p)===STATE.phase));
-  bindAnchor();buildPlots();applyTab(STATE.tab);save();
+  applyPhase();save();
 });
+
+/* Both were authored inside the Plots view; move them under Phase 0 once rather than
+   duplicating the markup. */
+(function(){
+  const p0=document.getElementById("view-phase0");
+  p0.appendChild(document.getElementById("ruleCard"));
+  const vc=document.getElementById("view-colors");
+  vc.hidden=false;p0.appendChild(vc);
+})();
+
+/* Phase 0 is the campus-wide material: the rule and the paint. Neither belongs to a
+   phase, and reprinting them above every phase's plots is what pushed the plots down
+   the page. The per-phase tabs make no sense there, so they go away with it. */
+function applyPhase(){
+  /* the pills are synced here, not by the click handler, so the highlight cannot
+     drift from STATE.phase on a restore or a reload */
+  document.querySelectorAll(".phasepill").forEach(x=>x.classList.toggle("active",Number(x.dataset.p)===STATE.phase));
+  const zero=STATE.phase===0;
+  document.getElementById("view-phase0").hidden=!zero;
+  document.querySelector(".tabs").hidden=zero;
+  if(zero){
+    ["plots","order","research","alts"].forEach(x=>{document.getElementById("view-"+x).hidden=true;});
+    applyRules();buildColors();
+  }else{
+    bindAnchor();buildPlots();applyTab(STATE.tab||"plots");
+  }
+}
+/* The rule is campus-wide, not per phase, so it sits folded away rather than
+   reprinting itself above every phase's plots. */
+function applyRules(){
+  const open=!!STATE.rulesOpen;
+  document.getElementById("ruleBody").hidden=!open;
+  document.getElementById("ruleChev").textContent=open?"close":"read";
+}
+document.getElementById("ruleToggle").onclick=()=>{STATE.rulesOpen=!STATE.rulesOpen;applyRules();save();};
 document.getElementById("expandAll").onclick=()=>{PLOTS.forEach(p=>STATE.collapsed[p.id]=false);buildPlots();save();};
 document.getElementById("collapseAll").onclick=()=>{PLOTS.forEach(p=>STATE.collapsed[p.id]=true);buildPlots();save();};
 document.getElementById("resetAll").onclick=()=>{if(!confirm("Reset all machine progress?"))return;STATE.placed={};buildPlots();save();};
@@ -1708,16 +1771,14 @@ document.getElementById("bkpRestore").onclick=()=>{
   if(!raw){m.className="bkp-msg err";m.textContent="Paste a code first.";return;}
   try{
     Object.assign(STATE,JSON.parse(decodeURIComponent(escape(atob(raw)))));
-    document.querySelectorAll(".phasepill").forEach(x=>x.classList.toggle("active",Number(x.dataset.p)===STATE.phase));
-    bindAnchor();buildPlots();applyTab(STATE.tab||"plots");save();
+    applyPhase();save();
     m.className="bkp-msg";m.textContent="Restored.";
   }catch(e){m.className="bkp-msg err";m.textContent="That code did not parse. Check you copied all of it.";}
 };
 
 (async()=>{
   await detect();await load();
-  document.querySelectorAll(".phasepill").forEach(x=>x.classList.toggle("active",Number(x.dataset.p)===STATE.phase));
-  bindAnchor();buildPlots();applyTab(STATE.tab||"plots");
+  applyPhase();
   ready=true;if(mode==="none")status("none");else flush();
 })();
 </script>
