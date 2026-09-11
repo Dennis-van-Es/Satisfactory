@@ -244,16 +244,28 @@ does not apply here. And the hard drive pool
 only offers recipes your unlocked tiers can already make, so scan right after a tier
 flip rather than banking indefinitely.
 
-**But a good number of unlocks have no prerequisites at all** and sit in the pool from
-the very first drive — the **+6 inventory slots** and **Cast Screw** among them, and
-several more not catalogued here. So early drives are never wasted; they simply cannot
-reach the gated recipes. Phase 1 shows both cases: Cast Screw is huntable immediately,
-while **Stitched Iron Plate cannot be offered until Part Assembly**, because the pool
-will not hand you a reinforced plate recipe before you can make one. Keep scanning
-across the Tier 2 flip rather than spending every drive early.
+**But some unlocks have no prerequisite at all** and sit in the pool from the very
+first drive. Phase 1 needs one of each kind, which is what makes the distinction worth
+knowing: **Cast Screw is ungated and huntable immediately, while Stitched Iron Plate
+cannot be offered until Tier 2 Part Assembly** — the pool will not hand you a
+reinforced plate recipe before you can make one. So keep scanning across the Tier 2
+flip rather than spending every drive early *or* holding them all back.
 
-The MAM trees carry their own +6 inventory and +1 toolbelt unlocks, but those want a
-lot of one item and land much later than the prerequisite-free drive version.
+Gates for everything the plan names, checked against satisfactory.wiki.gg's
+"Unlocked by" column on 2026-09-11, are recorded on each recipe in the tracker's Alt
+recipes tab. Phases 3 to 5 are **not** done — the wiki's table would not come back in
+bulk, and those phases are structural only anyway.
+
+> **One real error it caught.** Pure Iron Ingot and Pure Copper Ingot were listed among
+> the Phase 2 drives. Both need **Tier 5, Oil Processing**, so they cannot drop before
+> Phase 3. Wet Concrete, listed on the same line, needs Tier 3 Coal Power and is fine.
+
+On slots: the drive pool carries inventory expansions as well as recipes — the wiki
+tallies 107 alternate recipes and 2 inventory expansions against 118 drives. The MAM
+trees have three more +6 unlocks, and cost is what separates them: **Alien Organisms
+wants 3 Alien Protein**, Quartz wants 200 Silica, Sulfur wants 50 Smokeless Powder
+plus 50 Computer. The Alien Organisms one is the cheap early route, and its Expanded
+Toolbelt is 5 Alien DNA Capsule.
 
 ---
 
