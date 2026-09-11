@@ -511,10 +511,10 @@ const PLOTS=[
  raw:[["Wire, from C6",100]],
  belts:"Out 50 on one lane to C14. In one wire lane straight down from C6.",
  flex:"Pinned below C6.",
- note:"Four constructors set to 12.5 each. Automated wiring eats all of it — 50 cable per 7.5 wiring.",
+ note:"Two constructors set to 25 each. Automated wiring eats all of it — 50 cable per 7.5 wiring.",
  out:"To C14, plus a depot feed.",
  floors:[{name:"Ground",lines:[
-   {item:"Cable",recipe:"Cable · set each to 12.5/min",rate:50,unit:"/min",bld:"Constructor",n:4,mw:4}]}]},
+   {item:"Cable",recipe:"Cable · set each to 25/min",rate:50,unit:"/min",bld:"Constructor",n:2,mw:4}]}]},
 
 {id:"C12",phase:2,site:"C",name:"Iron rod",ef:26,sf:22,wf:4,df:6,
  raw:[["Iron ingot",50]],
@@ -821,10 +821,10 @@ const PLOTS=[
  belts:"Out 30 on one lane. In one wire lane straight down from A4.",
  flex:"Free.",
  raw:[["Wire, off the bus",60]],
- note:"Two constructors. Cable is a buildable more than a component at this stage — power poles and the elevator want it.",
+ note:"One constructor at 100% — 60 wire in, 30 cable out, which is exactly one machine. Cable is a buildable more than a component at this stage — power poles and the elevator want it.",
  out:"Onto the parts bus and down to the depot row.",
  floors:[{name:"Ground",lines:[
-   {item:"Cable",recipe:"Cable",rate:30,unit:"/min",bld:"Constructor",n:2,mw:4}]}]},
+   {item:"Cable",recipe:"Cable",rate:30,unit:"/min",bld:"Constructor",n:1,mw:4}]}]},
 
 {id:"A6",phase:1,site:"A",name:"Copper sheet",ef:24,sf:22,wf:4,df:6,
  belts:"Out 20 on one lane. In one ingot lane.",
@@ -951,11 +951,11 @@ const PLOTS=[
  flex:"Pinned to D3 for boards. Wire, cable and screws are made in-house because nothing else at Site D makes them.",
  raw:[["Copper ingot",20],["Iron ingot",20],["Circuit board, from D3",10],["Plastic, from D1",40]],
  needs:["Cast Screw"],
- note:"Seven machines for 2.5 computers a minute. Modest, but computers are only wanted by the control units and the Depot at this stage.",
+ note:"Six machines for 2.5 computers a minute. Modest, but computers are only wanted by the control units and the Depot at this stage.",
  out:"Computers to a container pair, Depot, rail feed to Site C.",
  floors:[{name:"Ground — feed lines",lines:[
    {item:"Wire",recipe:"Wire · set each to 20/min",rate:40,unit:"/min",bld:"Constructor",n:2,mw:4},
-   {item:"Cable",recipe:"Cable · set each to 10/min",rate:20,unit:"/min",bld:"Constructor",n:2,mw:4},
+   {item:"Cable",recipe:"Cable · set to 20/min",rate:20,unit:"/min",bld:"Constructor",n:1,mw:4},
    {item:"Screw",recipe:"Cast Screw · set each to 40/min",rate:80,unit:"/min",bld:"Constructor",n:2,mw:4,alt:true}]},
   {name:"Upper — manufacturing",lines:[
    {item:"Computer",recipe:"Computer",rate:2.5,unit:"/min",bld:"Manufacturer",n:1,mw:55}]}]},

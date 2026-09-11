@@ -29,9 +29,16 @@ produced 200 m square towers that were unpleasant to look at and no fun to build
    depot anywhere in the world, at the place it's made.
 6. **Buildings store nothing.** No input buffers, no output containers. Belts run to
    the terminal; the row is the only storage.
-7. **Set target output, not clock percent.** The machine derives the exact clock, so
-   awkward numbers cost nothing. Overclock to save a machine where a *node* is the
-   cap rather than the grid. Prefer integers.
+7. **Set target output, not clock percent — and the output split sets the target.**
+   The machine derives the exact clock, so awkward numbers cost nothing. Where a
+   destination lane's demand falls between machine boundaries, clock the machines to
+   serve the lane rather than adding a machine and a splitter to make up the
+   difference. Overclocking is allowed for this, bounded by **one power shard per
+   machine**: a reinforced plate assembler at 5.625 pushed to 6 costs one shard and
+   is fine, pushed to 9 it needs two and has to be argued — past one shard you are
+   using overclocking to avoid building machines rather than to close a split. Also
+   overclock to save a machine where a *node* is the cap rather than the grid. Prefer
+   integers, and prefer two clean ones to three repeating decimals.
 8. **Deck the town sites, pad the node sites.** 1 m foundations on 4 m pillars, about
    3 m of service void underneath for belts and pipes. Reserve two foundations more
    than the plan in each direction. Lifting a plant on stilts beats terracing.
@@ -99,7 +106,7 @@ Coordinates in game are read in **metres**.
 
 ## Phase 1 — Site A, Grass Fields
 
-Deck **33 × 28 foundations**, 20 plots, 113 machines. Draw ~326 MW against 420.
+Deck **33 × 28 foundations**, 20 plots, 112 machines. Draw ~322 MW against 420.
 
 | row | contents |
 |---|---|

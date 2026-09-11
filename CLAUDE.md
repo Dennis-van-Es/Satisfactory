@@ -31,9 +31,13 @@ behind each is in `Project_Knowledge.md` § The design rules — read it on dema
 
 - **One item per building, one machine type per building.** No mixed floors. Lane widths, lift positions
   and door spacing differ per machine type, so a shared shell fits neither.
-- **Production machines are never overclocked.** Set a target output and let the machine derive the
-  clock — awkward ratios cost nothing. Overclocking is reserved for extraction, and only where a *node*
-  is the cap rather than the grid.
+- **The output split governs the clock.** Set a target output and let the machine derive it — awkward
+  ratios cost nothing. Where a destination lane falls between machine boundaries, clock the machines to
+  serve that lane rather than adding a machine and a splitter. Overclocking is allowed to close a split,
+  bounded at **one power shard per machine** (so 5.625 → 6 yes, 5.625 → 9 needs arguing); also to save a
+  machine where a *node* is the cap rather than the grid. This bullet used to read "production machines
+  are never overclocked", which was stricter than the rule it summarised and contradicted O3's concrete
+  line — do not reintroduce it.
 - **Every node in the current save is pure.** Miner Mk.1 on pure is 120/min; size from that, not from
   the normal-purity figures most published plans assume.
 
