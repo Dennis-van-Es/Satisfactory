@@ -242,11 +242,18 @@ Two things from it that shape the current plan: the elevator requirement is at
 versatile framework needs a widened shed — that instruction came from a ×10 save and
 does not apply here. And the hard drive pool
 only offers recipes your unlocked tiers can already make, so scan right after a tier
-flip rather than banking indefinitely. The exception is worth knowing: **the +6
-inventory slots unlock has no prerequisites at all**, so it is in the pool from the
-first drive and is always worth taking the moment it appears. The MAM trees carry
-their own +6 inventory and +1 toolbelt unlocks, but those want a lot of one item and
-land much later.
+flip rather than banking indefinitely.
+
+**But a good number of unlocks have no prerequisites at all** and sit in the pool from
+the very first drive — the **+6 inventory slots** and **Cast Screw** among them, and
+several more not catalogued here. So early drives are never wasted; they simply cannot
+reach the gated recipes. Phase 1 shows both cases: Cast Screw is huntable immediately,
+while **Stitched Iron Plate cannot be offered until Part Assembly**, because the pool
+will not hand you a reinforced plate recipe before you can make one. Keep scanning
+across the Tier 2 flip rather than spending every drive early.
+
+The MAM trees carry their own +6 inventory and +1 toolbelt unlocks, but those want a
+lot of one item and land much later than the prerequisite-free drive version.
 
 ---
 
