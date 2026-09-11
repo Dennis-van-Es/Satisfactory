@@ -1,0 +1,230 @@
+# Satisfactory — Project Knowledge
+
+Reference doc for the Satisfactory project. Replaces the previous version, which
+described two older saves and a design approach that has since been superseded.
+
+Platform: **Xbox, controller only, no mods.** Version 1.x.
+Items marked **[verify]** are things I have inferred and Dennis should confirm in game.
+
+---
+
+## The design rules
+
+These replace the old "vertical towers, extend don't duplicate" approach, which
+produced 200 m square towers that were unpleasant to look at and no fun to build.
+
+1. **One item per building, one machine type per building.** No mixed floors. A
+   constructor floor and an assembler floor don't want the same lane widths, lift
+   positions or door spacing, and refineries want none of it.
+2. **Commodities are made at their source and arrive on a bus:** iron, copper and
+   steel ingot, plastic, rubber, concrete, silica. Fluids never leave their site.
+3. **No "pull from next door" exception.** Reinforced plate comes from the
+   reinforced plate building whether that's one plot away or four.
+4. **Belt bandwidth sets the column order.** A building sits directly above the one
+   it feeds heaviest, so the heavy lanes drop straight across the roadway and never
+   enter the bus. Anything over one lane goes point to point; only the remainder
+   joins the bus.
+5. **Every site gets its own terminal, container row and sink**, sized to what that
+   site makes. The Depot is global central storage, so an item needs exactly one
+   depot anywhere in the world, at the place it's made.
+6. **Buildings store nothing.** No input buffers, no output containers. Belts run to
+   the terminal; the row is the only storage.
+7. **Set target output, not clock percent.** The machine derives the exact clock, so
+   awkward numbers cost nothing. Overclock to save a machine where a *node* is the
+   cap rather than the grid. Prefer integers.
+8. **Deck the town sites, pad the node sites.** 1 m foundations on 4 m pillars, about
+   3 m of service void underneath for belts and pipes. Reserve two foundations more
+   than the plan in each direction. Lifting a plant on stilts beats terracing.
+9. **Machines in a single row along the long axis**, not opposed banks — a 4-wide
+   shed can't fit three machines across with belt lanes either side.
+10. Roads are the 2-foundation gaps between plots. Don't hand-place them; blueprint
+    road tiles after Tier 4.
+
+### Look
+Concrete deck and pillars natural grey; lower wall course charcoal, upper courses
+warm light grey; charcoal roofs. Orange for doors, wall-hole collars, lifts. One
+identity panel beside each door: muted red iron, oxidised teal copper, safety
+yellow assembly, dark green biomass, orange terminal, white civic.
+
+Decisions taken from the concept renders:
+- **Polished concrete inside the sheds, metal plate as the threshold and apron
+  outside.** Marks the doorway with no extra parts, and reads the same at every door.
+- **The burner house is open-topped**, walls with the stacks venting above the wall
+  line, rather than the sealed shed originally specced. More legible and it looks
+  deliberate.
+- **Railings along every deck edge.** Nearly free, they stop a 4 m fall, and they
+  draw the town's outline from a distance.
+- **Keep the aisle in front of the container row generous.** It is the one place you
+  stand still and interact with things, and every metre makes it read as a street
+  rather than a corridor.
+- **The underdeck void earns its keep visually**, not just functionally — pillars
+  with belts running through the shadow is what makes the raised deck look intended.
+- **One large sign on the terminal's blank wall** rather than a narrow identity
+  panel. Twelve foundations of grey needs breaking up.
+
+---
+
+## Current save — all pure nodes, ×1, new game
+
+**HUB: X −560, Y 2369, Grass Fields.** [verify the third X digit]
+Coordinates in game are read in **metres**.
+
+> There is more than one save on the go and sticking to one is the hard part. Every
+> figure below describes *this* save — all pure nodes, elevator parts at ×1. Settings
+> and unlocks do not carry across, so before acting on a number here, confirm which
+> save is loaded. The field log keeps a profile per save for exactly this reason.
+
+### Geography scouted
+- **3 iron nodes** north of the HUB, **copper** east on a plateau, **2 limestone**
+  east and west. This is a complete Phase 1 with a node to spare.
+- **West lake:** rejected. Gas pillars, no usable nodes.
+- **North-east lake, Grass Fields / Northern Forest border:** 4 coal nodes plus
+  water. This is Site B, coal power.
+- **South of the map:** coal, plentiful iron, copper, and a **caterium node blocked
+  by rock** needing a Nobelisk to clear. This is Site C, the steel town.
+- **Sulfur: not found.** The one input the plan has never placed. It gates the
+  nobelisk line and, through it, the blocked caterium.
+
+### Progress
+- Tier 1 complete; working through Tier 2. Jump pads deliberately skipped.
+- **Alt recipes unlocked: Cast Screw, Stitched Iron Plate.** Both are Phase 1
+  prerequisites and every floor count assumes them.
+- **Smart Splitter unlocked** via Caterium MAM, earlier than planned — the depot
+  overflow topology can be built day one rather than retrofitted.
+- Caterium tapped with portable miners; further caterium research blocked on copper
+  sheets, which currently come only from crash-site wreckage.
+- Drives banked. Crash sites in reach: several within a kilometre.
+
+---
+
+## Phase 1 — Site A, Grass Fields
+
+Deck **33 × 28 foundations**, 20 plots, 113 machines. Draw ~326 MW against 420.
+
+| row | contents |
+|---|---|
+| sf 0 | HUB 6×6, biomass 6×6, sink 4×4, Space Elevator 7×6 |
+| sf 8 | depot terminal 12×2 |
+| sf 10 | container row 12×2 |
+| sf 14 | iron plate, iron rod, screws, wire, smart plating |
+| sf 22 | reinforced plate, modular frame, rotor, cable, copper sheet |
+
+Columns pair supplier over consumer: plate→reinforced plate, rod→frame,
+**screws→rotor on two dedicated lanes**, wire→cable, smart plating→elevator.
+
+Counts: plate 3 constructors (60/min), rod 5 (75), screws 4 Cast Screw (200),
+wire 5 at 27 each (135), cable 2 (30), copper sheet 2 (20), reinforced plate 2
+assemblers Stitched (11.25), rotor 2 (8), frame 2 (4), smart plating 2 (4),
+biomass 14 burners all connected + 3 constructors.
+
+Node bill: **2 iron sheds** (240 vs 215 demand), **1 copper** (120 vs 108),
+1 limestone. Concrete outpost is 2 constructors set to 20 each and holds its own
+Dimensional Depot, keeping 40/min of overflow out of the town sushi belt.
+
+Depot row: 8 items — plate, rod, wire, cable, copper sheet, reinforced plate, rotor,
+frame. Screws and smart plating never go in. Steady overflow ~93/min, which is why
+one Mk.2 sushi belt and one sink suffice.
+
+---
+
+## Phase 2 — Sites B and C
+
+**Site B, the lake:** coal power only. 4 pure coal nodes = 480 coal = four 600 MW
+modules; build two, pad four. Fluid buffers in from the start — 3 extractors against
+8 generators at exact balance starves the middle ones. Check the shoreline supports
+12 extractors before planning four modules.
+
+**Site C, south:** 36 × 52 foundations, 19 buildings plus 5 outposts, 173 machines,
+~729 MW. Self-sufficient in ore.
+
+Vertical pairs: steel ingot→pipe (180/min), screws→rotor (250/min),
+wire→cable (100/min), nobelisk→black powder.
+
+Key counts: steel ingot 4 Foundries set to 75 each on Solid Steel Ingot (300/min);
+pipe 6 constructors (120); beam 2 (30); wire 7 (210 — stators 100, cable 100,
+reinforced plate 11); screws 5 (250, purely for 10 rotors/min); framework 1
+assembler (5/min); wiring 1 (7.5); motor 1 (5); encased beam 2 on Encased Industrial
+Pipe (8/min).
+
+Node bill: 3 iron, 1 copper, 2 coal, 1 sulfur. **Concrete is the only freighted
+input** — 40/min from Site A. Worth looking for limestone at Site C.
+
+Required drives: **Solid Steel Ingot, Steeled Frame, Encased Industrial Pipe.**
+None appear in the pool before the Tier 4 flip, so bank drives through Phase 1.
+Steel Rotor is strongly recommended but its rates are **[verify]**.
+
+---
+
+## Phases 3–5 — structural only
+
+Not re-cut against the current rules. They still show plants making their own
+intermediates, refineries sharing shells with constructors, and no terminal or
+container row at any site. Phase 4 and 5 machine counts are marked provisional in
+the tracker: sizing aluminium before the drives are scanned is work that gets thrown
+away, and Phase 5 can't be costed without knowing the Somersloop count.
+
+Shape as it stands: Phase 3 is an oil site (polymers, fuel power, boards, computers,
+modular engines) plus heavy frames and control units. Phase 4 is bauxite, aluminium
+products, supercomputers, assembly directors, and more power. Phase 5 is the
+accelerator, converter and quantum halls plus final assembly.
+
+---
+
+## Facts, rates and gating
+
+Moved to **Reference.md** — recipes, miner and belt rates, machine footprints, the
+tier and MAM gating map, Space Elevator requirements, and the lookup sites. That doc
+only changes when the game patches; this one changes as the save progresses.
+
+Two things from it that shape the current plan: the elevator requirement is at
+**×1**, the default, so the elevator is a trickle and neither smart plating nor
+versatile framework needs a widened shed — that instruction came from a ×10 save and
+does not apply here. And the hard drive pool
+only offers recipes your unlocked tiers can already make, so scan right after a tier
+flip rather than banking indefinitely.
+
+---
+
+## Assets
+
+- **`campus-plot-plan.html`** — the plan. Five phases, 67 plots, tabs for Plots,
+  Build order, Research and Alt recipes. Per-site anchors in metres, collision
+  checking, belt lane notes, siting tolerance per building, required-drive gates,
+  node bill per phase. Phases 1 and 2 are current; 3–5 are structural.
+- **`ficsit-field-log.html`** — 118 crash sites and 107 alt recipes, per-save
+  profiles. Coordinates display in metres. Layered storage (account → browser →
+  manual code) with a backup button. New profiles start empty; alt recipes are
+  per-save and seeding one save's unlocks into another is how you plan a factory you
+  can't build.
+- **`ficsit-field-log-offline.html`** — identical, fonts embedded, zero external
+  requests. This is the one on the phone home screen, reached via a file shortcut
+  made with Shortcut Maker (Chrome won't shortcut `file://`, and claude.ai's web
+  manifest hijacks "Add to Home screen" on published links).
+- Artifacts on a Team/Enterprise account can only be shared inside the
+  organisation and can't be published publicly. Unpublishing is permanent.
+
+## Working with other tools
+
+Building design and visualisation go to Dennis's personal ChatGPT account, which has
+its own Satisfactory project and knows the game — so prompts should use FICSIT part
+names and let it fill in what a Constructor bank looks like, rather than describing
+generic industrial buildings. It is good at interior layouts, wall-hole positions and
+parts lists, and it checks its own arithmetic.
+
+There is always a review step. It has been right about real geometry problems (the
+Space Elevator footprint, the 4 × 6 shed not fitting a Mk.1 blueprint, container
+pitch breaking foundation snap) and wrong about at least one thing that mattered
+(advising against connecting all fourteen burners, which is what gives the grid its
+headroom). Reusable prompts are in **Prompts.md**.
+
+Image models do not respect counts — expect roughly the right arrangement and the
+wrong number of sheds. Isometric technical illustration holds a grid layout far
+better than photorealism, which dissolves into generic refinery sprawl.
+
+## Working style
+
+Dennis is an expert player: skip basics, use precise terminology. Concise on mobile,
+depth on request. He reviews everything and has caught real errors repeatedly —
+defer to his live in-game readings over my recipe assumptions. Flag uncertainty
+rather than bluffing, and say when a correction has knock-on effects elsewhere in
+the plan rather than just fixing the item named.
