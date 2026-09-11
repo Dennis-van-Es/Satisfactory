@@ -1,0 +1,3 @@
+# The trackers are byte-sensitive single-file apps: keep LF, never CRLF.
+*.html text eol=lf
+*.md   text eol=lf

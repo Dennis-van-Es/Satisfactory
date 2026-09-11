@@ -1,0 +1,1615 @@
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&display=swap" rel="stylesheet">
+<title>Campus Plot Plan</title>
+<style>
+  :root{
+    --bg:#14171c; --panel:#1b2027; --panel-2:#232a33; --sunk:#12151a;
+    --border:#2c333d; --border-soft:#252b34;
+    --text:#e8ecf1; --muted:#8b97a6; --muted-2:#5f6b79;
+    --orange:#f89b3c; --orange-ink:#1a1206; --orange-dim:rgba(248,155,60,.14);
+    --green:#6fcf7f; --red:#e5705f; --alt:#c58af0; --blue:#63b7e8;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --disp:"Chakra Petch",system-ui,sans-serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0 auto;background:var(--bg);color:var(--text);font-family:var(--sans);
+    font-size:15px;line-height:1.4;padding:14px 12px 70px;max-width:680px;
+    background-image:radial-gradient(circle at 50% -8%,rgba(248,155,60,.05),transparent 60%)}
+  h1{font-family:var(--disp);font-weight:700;font-size:19px;letter-spacing:.02em;margin:0}
+  .sub{color:var(--muted);font-size:12px;margin-top:2px}
+
+  .tabs{display:flex;gap:6px;margin-bottom:12px}
+  .tab{flex:1;font-family:var(--disp);font-size:11.5px;font-weight:600;letter-spacing:.03em;
+    color:var(--muted);background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;padding:11px 4px;cursor:pointer;text-align:center}
+  .tab.active{color:var(--orange-ink);background:var(--orange);border-color:var(--orange)}
+
+  .phasebar{display:flex;gap:5px;margin-bottom:12px}
+  .phasepill{flex:1;font-family:var(--disp);font-size:11px;font-weight:600;
+    color:var(--muted);background:var(--panel);border:1px solid var(--border);border-radius:9px;
+    padding:9px 2px;cursor:pointer;white-space:nowrap}
+  .phasepill.active{color:var(--text);border-color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}
+
+  .top{background:var(--panel);border:1px solid var(--border);border-radius:12px;
+    padding:14px 15px;margin-bottom:14px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+  .top-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .top-count{font-family:var(--mono);font-size:13px;color:var(--muted)}
+  .top-count b{color:var(--orange);font-size:15px}
+  .bar{height:8px;background:var(--sunk);border-radius:6px;margin-top:11px;overflow:hidden;border:1px solid var(--border-soft)}
+  .bar>i{display:block;height:100%;background:linear-gradient(90deg,#e07d1e,var(--orange));width:0;transition:width .25s;border-radius:6px}
+  .pw-panel{margin-top:12px;padding-top:11px;border-top:1px solid var(--border-soft)}
+  .pw-row{display:flex;gap:8px}
+  .pw-cell{flex:1;background:var(--sunk);border:1px solid var(--border-soft);border-radius:8px;padding:8px 4px 7px;text-align:center}
+  .pw-lbl{font-family:var(--disp);font-size:9.5px;letter-spacing:.06em;color:var(--muted-2);display:block}
+  .pw-val{font-family:var(--mono);font-size:18px;font-weight:600;display:block;line-height:1.15}
+  .pw-u{font-family:var(--mono);font-size:9px;color:var(--muted-2)}
+  .pw-cell.bal.pos .pw-val{color:var(--green)} .pw-cell.bal.neg .pw-val{color:var(--red)}
+  .top-actions{margin-top:11px;display:flex;gap:8px;flex-wrap:wrap}
+  .ghost{font-family:var(--disp);font-size:11px;letter-spacing:.04em;color:var(--muted);
+    background:transparent;border:1px solid var(--border);border-radius:7px;padding:6px 10px;cursor:pointer}
+  .ghost:active{background:var(--panel-2)}
+
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:14px}
+  .card-h{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--orange);margin-bottom:5px}
+  .card p{margin:0 0 9px;font-size:12.5px;color:var(--muted);line-height:1.55}
+  .card p:last-child{margin-bottom:0}
+  .card p b{color:var(--text)}
+  .anchor-row{display:flex;gap:8px;align-items:center;margin-bottom:9px}
+  .anchor-row label{font-family:var(--mono);font-size:11px;color:var(--muted-2);flex:none}
+  .anchor-row input{flex:1;min-width:0;background:var(--sunk);border:1px solid var(--border);
+    border-radius:7px;padding:8px;color:var(--text);font-family:var(--mono);font-size:13px}
+
+  .card.gate{border-color:rgba(197,138,240,.35)}
+  .card.gate .card-h{color:var(--alt)}
+  .grow{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-top:1px solid var(--border-soft);cursor:pointer}
+  .grow.done{opacity:.55}
+  .gbox{width:20px;height:20px;border-radius:6px;border:2px solid #6f7c8b;background:var(--sunk);flex:none;position:relative;margin-top:1px}
+  .grow.done .gbox{background:var(--alt);border-color:var(--alt)}
+  .grow.done .gbox::after{content:"";position:absolute;inset:0;margin:auto;width:6px;height:10px;
+    border:solid #1c1226;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+  .gname{font-weight:600;font-size:14px}
+  .gwhy{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+  .gwhy b{color:var(--text)}
+
+  .nrow{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--border-soft);font-size:13px}
+  .nrow span.nn{color:var(--muted)}
+  .nrow span.nv{font-family:var(--mono);font-size:12.5px;color:var(--text);text-align:right}
+
+  svg.map{width:100%;height:auto;display:block;background:var(--sunk);
+    border:1px solid var(--border);border-radius:12px;margin-bottom:14px}
+  .maplbl{font-family:var(--mono);font-size:9px;fill:var(--muted)}
+  .maplbl.id{font-family:var(--disp);font-size:11px;font-weight:700;fill:var(--text)}
+  .mapnote{font-family:var(--mono);font-size:11px;color:var(--muted-2);text-align:center;margin:-6px 0 14px}
+  .mapnote b.ok{color:var(--green)} .mapnote b.bad{color:var(--red)}
+
+  .fac{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+  .fac-head{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;user-select:none}
+  .chev{color:var(--muted-2);font-size:12px;transition:transform .2s;flex:none;width:12px}
+  .fac.col .chev{transform:rotate(-90deg)}
+  .plotid{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--orange);
+    background:var(--orange-dim);border-radius:5px;padding:2px 6px;flex:none}
+  .fac-name{font-family:var(--disp);font-weight:600;font-size:15px;flex:1;min-width:0}
+  .fac-prog{font-family:var(--mono);font-size:12px;color:var(--muted);flex:none}
+  .fac-prog b{color:var(--text)}
+  .fac.done .fac-name{color:var(--green)} .fac.done .fac-prog b{color:var(--green)}
+  .fbar{height:3px;background:var(--sunk)}
+  .fbar>i{display:block;height:100%;background:var(--orange);width:0;transition:width .25s}
+  .fac.done .fbar>i{background:var(--green)}
+  .fac-body{padding:4px 14px 14px}
+  .fac.col .fac-body{display:none}
+
+  .plan{display:flex;align-items:baseline;gap:9px;background:var(--sunk);border:1px solid var(--border-soft);
+    border-radius:9px;padding:10px 12px;margin:10px 0 2px}
+  .plan-fnd{font-family:var(--disp);font-size:21px;font-weight:700;color:var(--blue);line-height:1}
+  .plan-u{font-family:var(--disp);font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.05em}
+  .plan-m{font-family:var(--mono);font-size:11px;color:var(--muted-2);margin-left:auto;text-align:right}
+
+  .meta{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
+  .chip{font-family:var(--mono);font-size:11px;padding:4px 8px;border-radius:6px;
+    background:var(--panel-2);border:1px solid var(--border-soft);color:var(--muted)}
+  .chip b{color:var(--text)}
+  .chip.geo{border-color:rgba(99,183,232,.35)} .chip.geo b{color:var(--blue)}
+  .chip.raw{border-color:rgba(248,155,60,.3)} .chip.raw b{color:var(--orange)}
+  .chip.pw-neg b{color:var(--red)} .chip.pw-pos b{color:var(--green)}
+
+  .note-b{background:var(--panel-2);border:1px solid var(--border-soft);border-radius:8px;
+    padding:8px 11px;margin:10px 0 2px;font-size:12.5px;color:var(--muted);line-height:1.5}
+  .note-b b{color:var(--text)}
+  .note-b.warn{background:rgba(229,112,95,.08);border-color:rgba(229,112,95,.28)}
+  .note-b.warn b{color:var(--red)}
+  .note-b.out{background:rgba(111,207,127,.07);border-color:rgba(111,207,127,.25)}
+  .note-b.out b{color:var(--green)}
+  .note-b.belts{background:rgba(197,138,240,.06);border-color:rgba(197,138,240,.22)}
+  .note-b.belts b{color:var(--alt)}
+  .note-b.defer{background:rgba(232,214,124,.07);border-color:rgba(232,214,124,.3)}
+  .note-b.defer b{color:#e8d67c}
+  .note-b.flex{background:rgba(99,183,232,.07);border-color:rgba(99,183,232,.28)}
+  .note-b.flex b{color:var(--blue)}
+  .note-b.needs{background:rgba(197,138,240,.08);border-color:rgba(197,138,240,.28)}
+  .note-b.needs b{color:var(--alt)}
+
+  .flr{font-family:var(--disp);font-size:10.5px;font-weight:700;letter-spacing:.05em;color:var(--muted);
+    margin:13px 0 2px;display:flex;align-items:center;gap:8px}
+  .flr .ln{flex:1;height:1px;background:var(--border-soft)}
+
+  .line{border-top:1px solid var(--border-soft);padding:10px 0 9px}
+  .line.done{opacity:.6}
+  .l-top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .l-item{font-weight:600;font-size:14px}
+  .l-rate{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-left:auto}
+  .l-recipe{font-size:11.5px;color:var(--muted);margin-top:1px}
+  .l-recipe.altr{color:var(--alt)}
+  .badge{font-family:var(--disp);font-size:9px;font-weight:700;letter-spacing:.07em;padding:2px 5px;border-radius:4px}
+  .badge.chk{color:var(--alt);border:1px solid rgba(197,138,240,.4)}
+  .l-ctrl{display:flex;align-items:center;gap:9px;margin-top:9px}
+  .bld{font-family:var(--mono);font-size:11.5px;color:var(--muted);flex:none}
+  .bld b{color:var(--text)}
+  .pips{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+  .pip{width:20px;height:20px;border-radius:5px;border:2px solid #6f7c8b;background:var(--sunk);
+    cursor:pointer;flex:none;position:relative}
+  .pip:active{transform:scale(.9)}
+  .pip.on{background:var(--orange);border-color:var(--orange)}
+  .pip.on::after{content:"";position:absolute;inset:0;margin:auto;width:6px;height:10px;
+    border:solid var(--orange-ink);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+  .cnt{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--muted);flex:none;
+    min-width:34px;text-align:right;cursor:pointer}
+  .cnt.full{color:var(--green)}
+
+  .usec{margin-bottom:18px}
+  .usec-h{font-family:var(--disp);font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--orange);
+    margin:0 2px 9px;display:flex;align-items:center;gap:9px}
+  .usec-h .ln{flex:1;height:1px;background:var(--border-soft)}
+  .urow{display:flex;align-items:flex-start;gap:11px;background:var(--panel);border:1px solid var(--border);
+    border-radius:10px;padding:12px 13px;margin-bottom:8px;cursor:pointer}
+  .urow:active{background:var(--panel-2)}
+  .urow.done{opacity:.58}
+  .ubox{width:22px;height:22px;border-radius:6px;border:2px solid #6f7c8b;background:var(--sunk);
+    flex:none;position:relative;margin-top:1px}
+  .urow.done .ubox{background:var(--green);border-color:var(--green)}
+  .urow.done .ubox::after{content:"";position:absolute;inset:0;margin:auto;width:6px;height:11px;
+    border:solid #10231a;border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+  .ubody{flex:1;min-width:0}
+  .utitle{font-weight:600;font-size:14px}
+  .urow.done .utitle{color:var(--green)}
+  .usrc{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
+  .usrc b{color:var(--text)}
+  .tierb{font-family:var(--mono);font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;margin-left:6px}
+  .t-S{background:#4a2f5c;color:#e0b3ff} .t-A{background:#274a30;color:#7fd68a}
+  .t-B{background:#1f3a4a;color:#7cc3e8} .t-C{background:#4a4520;color:#e8d67c}
+  .t-D{background:#4a3320;color:#e8a97c}
+  .reqb{font-family:var(--disp);font-size:9px;font-weight:700;letter-spacing:.05em;color:var(--alt);
+    border:1px solid rgba(197,138,240,.45);border-radius:4px;padding:1px 5px;margin-left:6px}
+  .step-n{font-family:var(--mono);font-size:11px;color:var(--orange);flex:none;width:20px;margin-top:2px;text-align:right}
+
+  .foot{color:var(--muted-2);font-size:11.5px;text-align:center;margin-top:18px;line-height:1.7}
+  .bkp-ta{width:100%;height:56px;background:var(--sunk);color:var(--text);border:1px solid var(--border);
+    border-radius:8px;font-family:var(--mono);font-size:11px;padding:8px;margin-bottom:8px}
+  .bkp-msg{font-family:var(--mono);font-size:11px;color:var(--green);min-height:14px;margin-top:6px}
+  .bkp-msg.err{color:var(--red)}
+  .sd{position:fixed;left:0;right:0;bottom:0;text-align:center;font-family:var(--mono);font-size:11px;
+    padding:6px;background:rgba(18,21,26,.94);border-top:1px solid var(--border-soft);
+    opacity:0;transition:opacity .25s;pointer-events:none;z-index:20}
+  .sd.ok{color:var(--green)} .sd.warn{color:var(--red);opacity:1} .sd.show{opacity:1}
+</style>
+
+<div class="tabs">
+  <button class="tab active" data-t="plots">Plots</button>
+  <button class="tab" data-t="order">Build order</button>
+  <button class="tab" data-t="research">Research</button>
+  <button class="tab" data-t="alts">Alt recipes</button>
+</div>
+
+<div class="phasebar">
+  <button class="phasepill active" data-p="1">Phase 1</button>
+  <button class="phasepill" data-p="2">Phase 2</button>
+  <button class="phasepill" data-p="3">Phase 3</button>
+  <button class="phasepill" data-p="4">Phase 4</button>
+  <button class="phasepill" data-p="5">Phase 5</button>
+</div>
+
+<div id="view-plots">
+  <div class="top">
+    <div class="top-head">
+      <div><h1 id="phTitle">Phase 1</h1><div class="sub" id="phSub"></div></div>
+      <div class="top-count"><b id="gDone">0</b> / <span id="gTot">0</span> machines</div>
+    </div>
+    <div class="bar"><i id="gBar"></i></div>
+    <div class="pw-panel">
+      <div class="pw-row">
+        <div class="pw-cell"><span class="pw-lbl">Draw</span><span class="pw-val" id="pwDraw">0</span><span class="pw-u">MW</span></div>
+        <div class="pw-cell"><span class="pw-lbl">Supply</span><span class="pw-val" id="pwSup">0</span><span class="pw-u">MW</span></div>
+        <div class="pw-cell bal" id="pwBalCell"><span class="pw-lbl">Balance</span><span class="pw-val" id="pwBal">0</span><span class="pw-u">MW</span></div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="ghost" id="expandAll">Expand all</button>
+      <button class="ghost" id="collapseAll">Collapse all</button>
+      <button class="ghost" id="resetAll">Reset progress</button>
+      <button class="ghost" id="bkpBtn">Backup</button>
+    </div>
+  </div>
+
+  <div id="backupPanel" class="card" hidden>
+    <div class="card-h">Backup and restore</div>
+    <p>Copy this code somewhere safe. Paste it back to restore.</p>
+    <textarea id="bkpOut" class="bkp-ta" readonly></textarea>
+    <button class="ghost" id="bkpCopy">Copy code</button>
+    <textarea id="bkpIn" class="bkp-ta" placeholder="paste code here" style="margin-top:12px"></textarea>
+    <button class="ghost" id="bkpRestore">Restore from code</button>
+    <div id="bkpMsg" class="bkp-msg"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-h">The rule</div>
+    <p>One item per building, on one machine type. A constructor floor and an assembler floor do not want the
+      same lane widths, lift positions or door spacing, and refineries want none of it — so they get separate
+      shells, which also makes each shell blueprintable.</p>
+    <p>Commodities are made at their source and arrive on a bus: iron, copper and steel ingot, plastic, rubber,
+      concrete, silica. Fluids never leave their site. The bus runs in the road corridors, and the Depot yard
+      taps it rather than running its own belts across town.</p>
+    <p>Every site gets its own terminal, container row and sink, sized to what that site makes — the Depot is
+      global central storage, so an item needs exactly one depot anywhere in the world, at the place it is made.
+      The town stores its eight, concrete gets its depot at the limestone node, steel and its parts at Site C, polymers at Site D.</p>
+    <p>Storage is one place per site, not many: the depot row. Buildings hold nothing — no input buffers, no output
+      containers — they just belt their item onto the bus, and every lane ends at the row. There each item gets
+      a container with a Depot on top and a Smart Splitter on its feed, overflow lifting onto a shared sushi belt
+      that ends in a hand-feedable container in front of the sink.</p>
+    <p>No "pull from next door" exception any more. Reinforced plate comes from the reinforced plate building
+      whether that is one plot away or four.</p>
+    <p><b>Belt bandwidth decides the column order.</b> One item per building means that building’s whole output
+      has to leave on belts, and a lane caps at the current mark. Anything over one lane goes point to point to
+      its main consumer — the screw building sits directly above the rotor building for exactly this reason —
+      and only the remainder joins the bus.</p>
+    <p>Every size is <b>foundations first</b>. A plan of 8 × 6 means eight foundations east by six south, which
+      is 64 × 48 m. The metre figure is there to sanity-check, never to build to.</p>
+    <p>One, two or three floors. Nothing stacks higher, and no plant is a tower.</p>
+    <p><b>These positions are a sketch, not a survey.</b> The ground will have opinions — a rock where a
+      constructor goes, a slope across half a plot, a lake edge that is not where you want it. Move the plot.
+      Each building carries a siting note saying what it is actually pinned to, and most are pinned to nothing.</p>
+    <p><b>Phases 2 to 5 still show the older grouping</b> — plants that make their own intermediates. They need
+      the same treatment and it is the next job; the counts there will drop the same way Phase 1’s did.</p>
+    <p><b>Set target output, not clock percent.</b> Every clocked line below gives a per-machine output figure —
+      type that into the machine and it derives the exact clock, so awkward numbers like 133.3% cost you nothing.
+      The rate on each line is the whole building; the figure after the recipe is what one machine gets set to.</p>
+    <p><b>Overclock to save a machine where the node is the cap.</b> Power scales at about clock^1.3, so pushing
+      a constructor to 20 concrete costs roughly 10% more power per unit while removing a third of the machines
+      and a belt leg — worth it when a node ceiling rather than the grid is what limits the line. The power
+      panel uses nominal draw, so underclocked buildings come in under what it shows.</p>
+    <p><b>Machines in a single row along the 48 m axis, not opposed banks.</b> A constructor is about 8 × 10 m,
+      so three across a 4-foundation shed leaves 4 m at each side — not enough for a belt lane and somewhere to
+      stand. Five along the long wall is 40 m with 4 m spare at each end: pull them 3 m off the wall for the
+      output merger, manifold in front, and the eastern half of the floor stays clear. Nothing in the town needs
+      more than five, so opposed banks never apply here.</p>
+    <p>Blueprint designers are 4 × 4, 5 × 5 and 6 × 6, so a whole 4 × 6 shed only becomes stampable at Mk.3.
+      Since each shed is built once and is not meant to expand, that is not worth designing around — use whatever
+      arrangement suits the machine count and let the sheds differ inside.</p>
+    <p>Reserve two foundations more than the plan in each direction. Terrain eats the difference, and it leaves
+      room for belts round the outside rather than through the middle. Lifting a plant onto stilts is usually
+      cheaper than terracing the hill it sits on.</p>
+  </div>
+
+  <div id="groundRoot"></div>
+  <div id="beltRoot"></div>
+  <div id="siteRoot"></div>
+  <div id="gateRoot"></div>
+  <div id="nodeRoot"></div>
+
+  <div class="card">
+    <div class="card-h">Grid anchor <span id="anchorSite" style="color:var(--muted);font-weight:600"></span></div>
+    <p>Each phase has its own campus and its own anchor, <b>in metres</b> — stand on the spot, read your
+      position, type it in. Every building then gets a coordinate to walk to, rounded to the nearest 10 m:
+      near enough to find, not precise enough to build to.</p>
+    <p>Site A is set to your HUB at roughly <b>X −560, Y 2369</b>. Confirm the X, I only had two digits of it.</p>
+    <div class="anchor-row">
+      <label>X m</label><input id="ax" type="number" step="1">
+      <label>Y m</label><input id="ay" type="number" step="1">
+    </div>
+    <p>Phase 2 sits on its own ground, so the two campuses never need a belt between them. Everything you
+      hand-build at Site B or C comes out of the Dimensional Depot instead.</p>
+    <p><b>The Depot feeds your inventory, not machines.</b> It solves construction at a distance, not production
+      — every plant at Site C still needs ore and ingots from nodes at Site C.</p>
+  </div>
+
+  <svg class="map" id="map"></svg>
+  <div class="mapnote" id="mapnote"></div>
+  <div id="root"></div>
+  <div class="foot">
+    Tap a slot per machine as you place it. Tap the count to fill a line.<br>
+    +X is east, +Y is south. Gaps between plots are 2-foundation road corridors — widen them where the ground makes you.
+  </div>
+</div>
+
+<div id="view-order" hidden><div id="orderRoot"></div></div>
+<div id="view-research" hidden><div id="researchRoot"></div></div>
+<div id="view-alts" hidden><div id="altsRoot"></div></div>
+<div id="saveDot" class="sd"></div>
+
+<script>
+const KEY="sf_plotplan_v5";
+
+/* ---------------- sites ---------------- */
+const DECK={
+ 1:"Site A decks at 32 × 22 foundations, about 704 of them. That is less than the 750 the individual reserve envelopes come to, because the skirts overlap in the gaps you were leaving anyway. Pour the two road corridors first — 128 foundations, roughly half an hour of concrete — then the row you are working on. Same grid, so it grows without rework.",
+ 2:"Site C decks at 26 × 24. Concrete is no longer the constraint by now, and blueprints make deck tiles a stamp, so pour it in one go before the plants rather than around them.",
+ 3:"Site D is the exception: extractors are pinned to the nodes and the refineries follow the fluid, so pad the extraction end and deck only the parts side where boards, computers and engines sit.",
+ 4:"Site E decks, but plan the water return loop before you pour — pipes under a deck are far easier than pipes threaded between finished buildings.",
+ 5:"Site G decks generously and leaves whole tiles empty. Accelerator and converter halls are the largest footprints in the game and you will not guess their final count right."
+};
+const BELTS={
+ 1:{m:"Mk.2",r:120,d:"One lane carries 120 a minute. Screws at 250 are three lanes, wire at 135 is two, and the two iron shed lanes cannot merge into one. Everything else fits on a single belt."},
+ 2:{m:"Mk.3",r:270,d:"270 a minute. The steel trunk and the coal trunk both fit one lane again, and the Phase 1 iron lanes can finally merge. Verify which tier actually hands you Mk.3 before planning a single-lane trunk."},
+ 3:{m:"Mk.4",r:480,d:"480 a minute, and fluids move by pipe rather than belt anyway. Plastic and rubber leaving Site D fit one lane each with room to spare."},
+ 4:{m:"Mk.5",r:780,d:"780 a minute. Bandwidth stops being the binding constraint here and power takes over."},
+ 5:{m:"Mk.5",r:780,d:"Still 780. At this point trains and the Depot carry more than belts do."}
+};
+const HOME={1:"A",2:"C",3:"D",4:"E",5:"G"};
+const AKEY={A:["ax","ay"],C:["cx","cy"],D:["dx","dy"],E:["ex","ey"],G:["gx","gy"]};
+
+const SITES={3:[
+ {n:"Site D — the oil field",d:"Refining, polymers, fuel power, boards, computers and modular engines. Oil cannot move, so this site is placed by the nodes and everything light comes to it by rail."},
+ {n:"Site C — additions",d:"Heavy modular frames beside the frame and beam plants, control units beside the wiring plant. No new ground, two new plots."},
+ {n:"Rail, everywhere",d:"Tier 6 brings trains, which is what makes a five-site plan reasonable rather than stubborn. Concrete to Site C, copper to Site D, motors and plating to the engine plant."}
+],4:[
+ {n:"Site E — the bauxite field",d:"Alumina, scrap, ingot and the three aluminium products, plus supercomputers and assembly directors. Needs bauxite, a lot of water, and railed coal."},
+ {n:"Site F — more power",d:"Either a Diluted Fuel expansion at Site D or a nuclear plant. Aluminium roughly doubles campus draw, so this is a phase requirement, not an option."}
+],5:[
+ {n:"Site G — the endgame campus",d:"Accelerator, converter and quantum halls plus final assembly. Sited near power rather than near inputs, because by now everything arrives by rail anyway."},
+ {n:"SAM and nitrogen outposts",d:"Scattered small nodes and gas wells rather than one site. Expect several, and expect to rail from all of them."}
+],1:[
+ {n:"Site A — Grass Fields, east plateau",d:"A town rather than a campus: four support plots, six constructor sheds, four assembler sheds, and three smelting sheds plus concrete out on the nodes. Nothing is taller than two floors and most is one."},
+ {n:"The parts bus",d:"Ingot trunks come in along the corridor behind the constructor row; parts run back along the corridor between the constructors and the assemblers. Every building drops onto it and takes off it, and the Depot yard taps it."}
+],2:[
+ {n:"Site B — the north-east lake",d:"Coal power only. Four pure coal nodes and lake frontage. Nothing but power lines leaves, so distance costs nothing — the one site that need not be near anything."},
+ {n:"Site C — the south coal field",d:"A second town, larger than Site A: sixteen production sheds plus three iron sheds, a copper shed, coal miners and a sulfur outpost. Coal, iron and copper are all local, which is what makes it self-sufficient."},
+ {n:"What crosses between them",d:"Power from B to both towns. Concrete from Site A down to Site C for encased beams. The two elevator parts from Site C back up to the elevator. Nothing else, and all of it by truck until hypertubes."}
+]};
+const M=8; // metres per foundation
+
+/* ---------------- required drives ---------------- */
+const DRIVES={3:[
+ {n:"Heavy Encased Frame",why:"<b>Around 15 concrete a minute instead of 200</b> for two heavy frames. On the base recipe the heavy frame plant needs five pure limestone nodes railed across the map. This is not an optimisation, it is the difference between building the plot and not."},
+ {n:"Heavy Oil Residue",why:"Turns residue from a problem into a feedstock and lifts the whole oil site’s efficiency. Worth chasing early in the phase rather than late."},
+ {n:"Recycled Plastic and Recycled Rubber",why:"With a fuel loop these roughly double polymer output per node. Take both if they appear — they pay off again in every later phase that wants plastic."}
+],4:[
+ {n:"Pure Aluminum Ingot",why:"Deletes the silica line, and with it the quartz outpost. The single most shape-changing drive of the phase."},
+ {n:"Sloppy Alumina",why:"Almost no downside — the silica byproduct was going spare anyway."},
+ {n:"Plastic AI Limiter and Silicon High-Speed Connector",why:"Both roughly halve the supercomputer plant, which is the gate on the whole phase."}
+],5:[
+ {n:"Dark Matter Trap",why:"Cuts SAM per dark matter crystal for a power cost, and by Phase 5 power is easier to add than SAM nodes."},
+ {n:"Turbo Pressure Motor and Heat Exchanger",why:"Both feed the rocket assembly. Turbo motors and cooling systems are the two parts most likely to bottleneck it."},
+ {n:"Diluted Fuel or Nitro Rocket Fuel",why:"Whichever you can reach. Phase 5 is a power problem before it is a logistics problem."}
+],1:[
+ {n:"Cast Screw",why:"Screws from ingot at <b>12.5 to 50</b>, no rod step. Still required, because rotors want 100 screw/min and nothing else fixes that."},
+ {n:"Stitched Iron Plate",why:"<b>18.75 plate + 37.5 wire to 5.625 RIP/min</b> from one assembler at 100%, on a 32 s cycle. That is 3.33 plate per reinforced plate against 6 for the base recipe, so 28 iron ingot per 5.625 RIP instead of 67.5. It saves a whole iron shed in Phase 1."}
+],2:[
+ {n:"Solid Steel Ingot",why:"<b>40 ingot + 40 coal to 80 steel/min</b>. Three foundries per steel outpost on one Mk.2 coal trunk. Without it the outpost needs two trunks."},
+ {n:"Steeled Frame",why:"Frames from <b>2 reinforced plate + 10 steel pipe to 3/min</b>. Best frame recipe, and inside a self-contained plant it replaces a rod line with one pipe constructor."},
+ {n:"Encased Industrial Pipe",why:"Encased beams for <b>20 concrete instead of 100</b>. Keeps the beam plant on one limestone node."}
+]};
+
+/* ---------------- node bill ---------------- */
+const NODES={1:{
+ note:"One smelting shed per node. Two iron nodes, not three — with one plate line and one wire line instead of four of each, demand fell by about a third.",
+ rows:[["Iron, pure","2 nodes · FE1 and FE2 · 240 ingot/min vs 215 demand"],
+  ["Copper, pure","1 node · CU1 · 120 vs 108 demand"],
+  ["Limestone, pure","1 node · O3 · 40 concrete/min"],["Wood and leaves","foraged, hand-fed"]]
+},2:{
+ note:"Site C is self-sufficient in ore. Concrete is the single exception and the only thing that has to be freighted in.",
+ rows:[["Site B · coal, pure","4 nodes · 480 coal · two modules now, four later"],
+  ["Site B · water","frontage for 6 extractors, 12 at full build · check this before planning four modules"],
+  ["Site C · iron, pure","3 nodes · 360 ingot vs 271 demand · 2 nodes with Mk.2 miners"],
+  ["Site C · copper, pure","1 node · 120 vs 105 demand, all of it wire"],
+  ["Site C · coal, pure","2 nodes · 150 for steel, a spur for black powder"],
+  ["Site C · sulfur, pure","1 node · still unplaced · gates nobelisks and the blocked caterium"],
+  ["Site A · limestone","40 concrete/min freighted south, or find limestone at Site C"]]
+},3:{
+ note:"Site D is placed by the oil and takes everything else by rail. The copper and iron sheds are only worth building if nodes happen to be close.",
+ rows:[["Oil, pure","3 nodes · 720 crude · 2 for polymers, 1 for fuel"],
+  ["Water","one extractor for residual plastic, more if you expand fuel"],
+  ["Copper, pure","1 node if local · 80 ingot demand · otherwise rail it"],
+  ["Iron, pure","1 node if local · 20 ingot demand · almost certainly rail it"],
+  ["Limestone","concrete for the heavy frame plant · railed from Site A"]]
+},4:{
+ note:"The first phase where I will not give you a node count, because the aluminium drives change it by a factor of two either way.",
+ rows:[["Bauxite, pure","1 to 2 nodes · depends on Sloppy Alumina and Pure Aluminum Ingot"],
+  ["Water","the heaviest water demand so far · close the scrap return loop"],
+  ["Quartz","only if Pure Aluminum Ingot does not drop · then it is mandatory"],
+  ["Coal","railed to the scrap refineries · or Electrode Aluminum Scrap instead"],
+  ["Caterium","quickwire for connectors and limiters"],
+  ["Uranium","only if you choose nuclear over more fuel"]]
+},5:{
+ note:"Structural only. Every number in this phase depends on Somersloop allocation and on the dark matter and quantum alts, so a node bill written now would be fiction.",
+ rows:[["SAM","several small nodes · converters, ficsite, dark matter"],
+  ["Nitrogen gas","resource wells, not nodes · pressurisers and a lot of pipe"],
+  ["Power","the real input · accelerators and converters surge, so build to peak"],
+  ["Everything earlier","aluminium, steel, polymers, computers · all railed in"]]
+}};
+
+/* ---------------- plots ----------------
+   ef/sf = offset east/south in FOUNDATIONS from HUB NW corner. wf/df = footprint in foundations. */
+const PLOTS=[
+
+{id:"C1",phase:2,site:"C",name:"Steel ingot",ef:0,sf:14,wf:4,df:6,
+ raw:[["Iron ingot",150],["Coal, from CO1",150]],
+ needs:["Solid Steel Ingot"],
+ belts:"Out 300 on two lanes: 180 straight down to C2 pipe, 120 across to C3 beam. In two, ingot and coal.",
+ flex:"Pinned above C2 — 180 steel a minute is the heaviest single link on the site. Also wants the coal belt arriving from CO1 on the far wall, so put it on the coal side of town.",
+ note:"Four Foundries set to 75 each. Solid Steel Ingot is what makes this four machines instead of seven and halves the coal.",
+ out:"Steel to C2 and C3. No depot — steel ingot is an intermediate.",
+ floors:[{name:"Ground",lines:[
+   {item:"Steel ingot",recipe:"Solid Steel Ingot · set each to 75/min",rate:300,unit:"/min",bld:"Foundry",n:4,mw:16,alt:true}]}]},
+
+{id:"C3",phase:2,site:"C",name:"Steel beam",ef:6,sf:14,wf:4,df:6,
+ raw:[["Steel ingot",120]],
+ belts:"Out 30 on one lane to C13. In one steel lane.",
+ flex:"Free. Its only consumer is the framework shed and 30/min is a single lane.",
+ note:"Two constructors at full output. Beams have exactly one customer once Encased Industrial Pipe is in.",
+ out:"To C13, and a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Steel beam",recipe:"Steel Beam",rate:30,unit:"/min",bld:"Constructor",n:2,mw:4}]}]},
+
+{id:"C4",phase:2,site:"C",name:"Screws",ef:14,sf:14,wf:4,df:6,
+ raw:[["Iron ingot",63]],
+ needs:["Cast Screw"],
+ belts:"Out 250 on three Mk.2 lanes, or one Mk.3, straight down to C8 rotor. Never touches the bus. In one ingot lane.",
+ flex:"Pinned above C8. 250 a minute is the biggest flow on the site after steel and you do not want it crossing town.",
+ note:"Five constructors at full output, feeding rotors and nothing else. No container, no depot.",
+ out:"Straight down to C8.",
+ floors:[{name:"Ground",lines:[
+   {item:"Screw",recipe:"Cast Screw",rate:250,unit:"/min",bld:"Constructor",n:5,mw:4,alt:true}]}]},
+
+{id:"C6",phase:2,site:"C",name:"Wire",ef:20,sf:14,wf:6,df:6,
+ raw:[["Copper ingot",105]],
+ belts:"Out 210 on two lanes: 100 straight down to C9 cable, 110 to stators and reinforced plate. In one ingot lane.",
+ flex:"Pinned above C9. Wire is the busiest copper flow and two of its three consumers are in the next row.",
+ note:"Seven constructors at full output. Demand is 211 — stators 100, cable 100, reinforced plate 11 — so it runs one short and the reinforced plate line buffers.",
+ out:"To C9, C10 and C7, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Wire",recipe:"Wire",rate:210,unit:"/min",bld:"Constructor",n:7,mw:4}]}]},
+
+{id:"C5",phase:2,site:"C",name:"Iron plate",ef:28,sf:14,wf:4,df:6,
+ raw:[["Iron ingot",9]],
+ belts:"Out 5.6 on one lane to C7. In one ingot lane.",
+ flex:"Free. Tiny building.",
+ note:"One constructor set to 5.6. The smallest shed in the plan — reinforced plate for the frame line is its only customer, and there is only 1.67 of that a minute.",
+ out:"To C7, and a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron plate",recipe:"Iron Plate · set to 5.6/min",rate:5.6,unit:"/min",bld:"Constructor",n:1,mw:4}]}]},
+
+{id:"C2",phase:2,site:"C",name:"Steel pipe",ef:0,sf:22,wf:6,df:6,
+ raw:[["Steel ingot",180]],
+ belts:"Out 120 on two lanes: 48 to C16 encased beam, 37.5 to C10 stator, 30 to C17 nobelisk, 8 to C11 frame. In one steel lane straight down from C1.",
+ flex:"Pinned below C1. Four consumers spread across the site, so it wants to be central despite the pin.",
+ note:"Six constructors at full output. The busiest shed on the site: encased beams, stators, nobelisks and frames all pull from here.",
+ out:"Four lanes out, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Steel pipe",recipe:"Steel Pipe",rate:120,unit:"/min",bld:"Constructor",n:6,mw:4}]}]},
+
+{id:"C10",phase:2,site:"C",name:"Stator",ef:8,sf:22,wf:4,df:6,
+ raw:[["Steel pipe, from C2",37.5],["Wire, from C6",100]],
+ belts:"Out 12.5 on one lane: 10 to C15 motor, 2.5 to C14 wiring. In two.",
+ flex:"Free. Both inputs come off the bus.",
+ note:"Three assemblers set to 4.167 each. Stators feed motors and automated wiring and nothing else, but between them they want 12.5 a minute.",
+ out:"To C15 and C14, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Stator",recipe:"Stator · set each to 4.167/min",rate:12.5,unit:"/min",bld:"Assembler",n:3,mw:15}]}]},
+
+{id:"C8",phase:2,site:"C",name:"Rotor",ef:14,sf:22,wf:4,df:6,
+ raw:[["Screw, from C4",250],["Iron rod, from C12",50]],
+ belts:"Out 10 on one lane to C15. In four: three screw lanes straight down from C4, one rod lane.",
+ flex:"Pinned below C4 by the screw lanes.",
+ note:"Three assemblers set to 3.33 each. Motors want 10 rotors a minute, which is what sets the screw shed at five constructors.",
+ out:"To C15, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Rotor",recipe:"Rotor · set each to 3.33/min",rate:10,unit:"/min",bld:"Assembler",n:3,mw:15}]}]},
+
+{id:"C9",phase:2,site:"C",name:"Cable",ef:20,sf:22,wf:4,df:6,
+ raw:[["Wire, from C6",100]],
+ belts:"Out 50 on one lane to C14. In one wire lane straight down from C6.",
+ flex:"Pinned below C6.",
+ note:"Four constructors set to 12.5 each. Automated wiring eats all of it — 50 cable per 7.5 wiring.",
+ out:"To C14, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Cable",recipe:"Cable · set each to 12.5/min",rate:50,unit:"/min",bld:"Constructor",n:4,mw:4}]}]},
+
+{id:"C12",phase:2,site:"C",name:"Iron rod",ef:26,sf:22,wf:4,df:6,
+ raw:[["Iron ingot",50]],
+ belts:"Out 50 on one lane to C8. In one ingot lane.",
+ flex:"Free, but a shorter run to C8 is better — 50/min is the one flow here that would rather not cross the whole site.",
+ note:"Four constructors set to 12.5 each. Rotors are the only consumer now that Steeled Frame takes rod out of the frame recipe.",
+ out:"To C8, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron rod",recipe:"Iron Rod · set each to 12.5/min",rate:50,unit:"/min",bld:"Constructor",n:4,mw:4}]}]},
+
+{id:"C7",phase:2,site:"C",name:"Reinforced iron plate",ef:32,sf:22,wf:4,df:6,
+ raw:[["Iron plate, from C5",5.6],["Wire, from C6",11.1]],
+ needs:["Stitched Iron Plate"],
+ belts:"Out 1.67 on one lane to C11. In two.",
+ flex:"Free.",
+ note:"One assembler set to 1.67. It exists only to feed the frame line — Steeled Frame wants 2 reinforced plate per 3 frames and the site only needs 2.5 frames a minute.",
+ out:"To C11, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Reinforced iron plate",recipe:"Stitched Iron Plate · set to 1.67/min",rate:1.67,unit:"/min",bld:"Assembler",n:1,mw:15,alt:true}]}]},
+
+{id:"C11",phase:2,site:"C",name:"Modular frame",ef:0,sf:30,wf:4,df:6,
+ raw:[["Reinforced plate, from C7",1.67],["Steel pipe, from C2",8.3]],
+ needs:["Steeled Frame"],
+ belts:"Out 2.5 on one lane to C13. In two.",
+ flex:"Free.",
+ note:"One assembler set to 2.5. Steeled Frame swaps rod for steel pipe, which is why the rod shed only feeds rotors.",
+ out:"To C13, plus a depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Modular frame",recipe:"Steeled Frame · set to 2.5/min",rate:2.5,unit:"/min",bld:"Assembler",n:1,mw:15,alt:true}]}]},
+
+{id:"C13",phase:2,site:"C",name:"Versatile framework",ef:6,sf:30,wf:4,df:6,
+ raw:[["Modular frame, from C11",2.5],["Steel beam, from C3",30]],
+ belts:"Out 5 on one lane to the freight head. In two.",
+ flex:"Free, but put it near C20 — its output leaves the site.",
+ note:"One assembler at full output. Elevator part, so no depot and no sink branch: it goes to a container and then north.",
+ out:"Container, then freight to the elevator at Site A.",
+ floors:[{name:"Ground",lines:[
+   {item:"Versatile framework",recipe:"Versatile Framework",rate:5,unit:"/min",bld:"Assembler",n:1,mw:15},
+   {item:"Output",recipe:"Container only · no depot, no sink",rate:0,unit:"",bld:"Container",n:1,mw:0}]}]},
+
+{id:"C14",phase:2,site:"C",name:"Automated wiring",ef:12,sf:30,wf:4,df:6,
+ raw:[["Stator, from C10",2.5],["Cable, from C9",50]],
+ belts:"Out 7.5 on one lane to the freight head. In two.",
+ flex:"Free, but near C20 for the same reason as C13.",
+ note:"One assembler at full output. The other elevator part, so container only.",
+ out:"Container, then freight to the elevator at Site A.",
+ floors:[{name:"Ground",lines:[
+   {item:"Automated wiring",recipe:"Automated Wiring",rate:7.5,unit:"/min",bld:"Assembler",n:1,mw:15},
+   {item:"Output",recipe:"Container only · no depot, no sink",rate:0,unit:"",bld:"Container",n:1,mw:0}]}]},
+
+{id:"C15",phase:2,site:"C",name:"Motor",ef:18,sf:30,wf:4,df:6,
+ raw:[["Rotor, from C8",10],["Stator, from C10",10]],
+ belts:"Out 5 on one lane. In two.",
+ flex:"Free.",
+ note:"One assembler at full output. Motors are a buildable and a Tier 5 gate part, so the depot matters more than the rate.",
+ out:"Depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Motor",recipe:"Motor",rate:5,unit:"/min",bld:"Assembler",n:1,mw:15}]}]},
+
+{id:"C16",phase:2,site:"C",name:"Encased industrial beam",ef:24,sf:30,wf:4,df:6,
+ raw:[["Steel pipe, from C2",48],["Concrete, freighted in",40]],
+ needs:["Encased Industrial Pipe"],
+ belts:"Out 8 on one lane. In two, one of them the concrete freight.",
+ flex:"Free, but on the freight side — concrete arrives from Site A.",
+ warn:"Concrete is the one input this site cannot make. 40/min is one full limestone node at Site A, so either freight it or find limestone down here. On the base recipe this shed would want 200 concrete instead of 40.",
+ note:"Two assemblers at full output. Main Tier 5 gate currency, so keep the bank deep.",
+ out:"Depot feed.",
+ floors:[{name:"Ground",lines:[
+   {item:"Encased industrial beam",recipe:"Encased Industrial Pipe",rate:8,unit:"/min",bld:"Assembler",n:2,mw:15,alt:true}]}]},
+
+{id:"C17",phase:2,site:"C",name:"Nobelisk",ef:30,sf:30,wf:4,df:6,
+ raw:[["Black powder, from C18",15],["Steel pipe, from C2",30]],
+ belts:"Out 3 on one lane. In two.",
+ flex:"Pinned above C18.",
+ note:"Two assemblers. Verify the rates on the machine — I am not certain of them. Hand-consumed, so container only, no depot and no sink.",
+ warn:"This is also the path to the blocked caterium node: nobelisks clear it, and nothing else will.",
+ out:"Container only.",
+ floors:[{name:"Ground",lines:[
+   {item:"Nobelisk",recipe:"Nobelisk",rate:3,unit:"/min",bld:"Assembler",n:2,mw:15,check:true},
+   {item:"Output",recipe:"Container only",rate:0,unit:"",bld:"Container",n:1,mw:0}]}]},
+
+{id:"C18",phase:2,site:"C",name:"Black powder",ef:30,sf:38,wf:4,df:4,
+ raw:[["Coal, spur from CO1",15],["Sulfur, from SU1",15]],
+ belts:"Out 15 on one lane straight up to C17. In two.",
+ flex:"Pinned below C17. Its only customer.",
+ note:"One assembler. Small, and the only thing on site that needs sulfur.",
+ out:"To C17.",
+ floors:[{name:"Ground",lines:[
+   {item:"Black powder",recipe:"Black Powder",rate:15,unit:"/min",bld:"Assembler",n:1,mw:15,check:true}]}]},
+
+
+
+/* ---- PHASE 2 · Site B · the lake ---- */
+{id:"B1",phase:2,site:"B",name:"Coal power",remote:true,wf:10,df:14,
+ raw:[["Coal, 4 pure nodes on site",480],["Water, from the lake",720]],
+ belts:"No belts leave. Coal never travels; power does.",
+ flex:"Fixed by the shoreline. Extractors need actual frontage and the generators want a flat shelf behind them, so this one gets laid out by the water, not by a grid.",
+ note:"Module is 8 Coal Generators plus 3 Water Extractors, 600 MW. Two modules now, pads for four. Four Mk.1 miners is 480 coal, which is all four modules and 2,400 MW when you want it.",
+ warn:"Do not run the water line at exact balance. Three extractors at 360 against eight generators at 360 starves the middle ones while the far extractors sit full. Fluid buffer after each extractor plus one between generators four and five, or overclock the extractors slightly. Check the shoreline supports 12 extractors before planning four modules — frontage caps this site more often than coal does.",
+ out:"One power trunk to Site A, one to Site C, then Mk.2 poles.",
+ floors:[{name:"Modules 1 and 2",lines:[
+   {item:"Coal",recipe:"Miner Mk.1 on pure node",rate:480,unit:"/min",bld:"Miner Mk.1",n:4,mw:5},
+   {item:"Water",recipe:"Water Extractor",rate:720,unit:"m3/min",bld:"Water Extractor",n:6,mw:20},
+   {item:"Power",recipe:"Coal Generator",rate:1200,unit:"MW",bld:"Coal Generator",n:16,mw:75,gen:true},
+   {item:"Fluid buffers",recipe:"Priming and pressure headroom",rate:0,unit:"",bld:"Fluid Buffer",n:6,mw:0}]}]},
+
+/* ---- PHASE 2 · Site C · south · smelting and ore ---- */
+{id:"FE4",phase:2,site:"C",name:"Iron smelting shed 4",remote:true,wf:4,df:8,
+ raw:[["Iron ore, 1 pure node",120]],
+ belts:"Out 120 on one lane.",
+ flex:"Fixed by the node.",
+ note:"Same 4 × 8 shed as Site A. Three of them here: 360 ingot against 271 of demand, most of it steel.",
+ out:"Ingot trunk to the town.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"FE5",phase:2,site:"C",name:"Iron smelting shed 5",remote:true,wf:4,df:8,
+ raw:[["Iron ore, 1 pure node",120]],
+ belts:"Out 120 on one lane.",
+ flex:"Fixed by the node.",
+ note:"Second of three. Mk.2 miners would let two sheds do the job of three, at eight smelters each.",
+ out:"Ingot trunk to the town.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"FE6",phase:2,site:"C",name:"Iron smelting shed 6",remote:true,wf:4,df:8,
+ raw:[["Iron ore, 1 pure node",120]],
+ belts:"Out 120 on one lane.",
+ flex:"Fixed by the node.",
+ note:"Third of three.",
+ out:"Ingot trunk to the town.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"CU2",phase:2,site:"C",name:"Copper smelting shed",remote:true,wf:4,df:8,
+ raw:[["Copper ore, 1 pure node",120]],
+ belts:"Out 120 on one lane.",
+ flex:"Fixed by the node. You found copper down here, which is what makes the site self-sufficient.",
+ note:"105 ingot of demand against 120: wire takes all of it, and wire feeds reinforced plate, stators and cable.",
+ out:"Ingot trunk to the town.",
+ floors:[{name:"Ground",lines:[
+   {item:"Copper ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Copper ingot",recipe:"Copper Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"CO1",phase:2,site:"C",name:"Coal miners",remote:true,wf:4,df:4,
+ raw:[["Coal, 2 pure nodes",240]],
+ belts:"Out 150 to the foundry shed. One Mk.3 lane if you have it, two Mk.2 lanes if not.",
+ flex:"Fixed by the nodes. Downhill to the town if you get the choice — coal is the one bulk input that travels here.",
+ note:"Steel coal only; generator coal stays at the lake. 150 of the 240 is spoken for, so there is room for the nobelisk spur.",
+ out:"Belt to C1.",
+ floors:[{name:"Ground",lines:[
+   {item:"Coal",recipe:"Miner Mk.1 on pure node",rate:240,unit:"/min",bld:"Miner Mk.1",n:2,mw:5}]}]},
+
+{id:"SU1",phase:2,site:"C",name:"Sulfur outpost",remote:true,wf:4,df:4,
+ raw:[["Sulfur, 1 pure node",120]],
+ belts:"Out 15 on one lane, or truck it.",
+ flex:"Fixed by the node, if you find one. Still the input this plan has never placed.",
+ warn:"Sulfur gates two things: the nobelisk line, and through it the Nobelisk Detonator that clears the blocked caterium node. Worth finding before you need it.",
+ note:"One Mk.1 miner is 120 against a black powder line wanting 15. Size the trunk small.",
+ out:"Belt to C17.",
+ floors:[{name:"Ground",lines:[
+   {item:"Sulfur",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5}]}]},
+
+/* ---- PHASE 2 · Site C town ---- */
+{id:"C0",phase:2,site:"C",name:"Depot terminal",ef:0,sf:0,wf:14,df:2,
+ belts:"Twelve bus lanes in the south wall, one per item out the north wall. One sushi lane out the east end.",
+ flex:"Pinned to the bus along its length. Two foundations deep, same as Site A — it should read as belts passing through.",
+ note:"Same pattern as Site A: splitters, lifts and mergers only, nothing stored. Fourteen slots for twelve items: beam, pipe, plate, rod, wire, cable, reinforced plate, frame, rotor, stator, motor, encased beam.",
+ warn:"Steel ingot, screws, versatile framework and automated wiring do not get depots. Steel is an intermediate, nobody hand-builds with screws, and the two elevator parts belong to the elevator.",
+ out:"Sushi belt east to C19.",
+ floors:[{name:"Ground — sorting",lines:[
+   {item:"Smart Splitters",recipe:"Any on the centre output, Overflow to the lift",rate:0,unit:"",bld:"Smart Splitter",n:12,mw:0},
+   {item:"Overflow lifts",recipe:"4 m rise to the sushi belt",rate:0,unit:"",bld:"Conveyor Lift",n:12,mw:0},
+   {item:"Mergers",recipe:"Chained along the sushi belt",rate:0,unit:"",bld:"Merger",n:11,mw:0}]}]},
+
+{id:"C0B",phase:2,site:"C",name:"Container row",ef:0,sf:2,wf:14,df:2,
+ belts:"One lane in per container, through the terminal wall.",
+ flex:"Outdoors against the terminal wall, 8 m pitch, generous aisle in front.",
+ note:"Twelve containers with a Dimensional Depot on each. Room for fourteen.",
+ out:"Nothing. End of the line except overflow.",
+ floors:[{name:"Ground",lines:[
+   {item:"Item containers",recipe:"One per item, 8 m pitch",rate:0,unit:"",bld:"Container",n:12,mw:0},
+   {item:"Dimensional Depots",recipe:"Snapped on top of each",rate:0,unit:"",bld:"Depot",n:12,mw:0}]}]},
+
+{id:"C19",phase:2,site:"C",name:"Sink and shop",ef:16,sf:6,wf:4,df:4,
+ belts:"One sushi lane in.",
+ flex:"At the end the sushi belt leaves.",
+ note:"Hand-feed container in front of the sink, same as Site A. Site C is the site where you will have most junk to dump — wreckage parts, surplus steel, obsolete intermediates.",
+ out:"Coupons.",
+ floors:[{name:"Ground",lines:[
+   {item:"Sink terminus",recipe:"Container you can hand-feed",rate:0,unit:"",bld:"Container",n:1,mw:0},
+   {item:"AWESOME Sink",recipe:"Draws only while sinking",rate:0,unit:"",bld:"Sink",n:1,mw:30},
+   {item:"AWESOME Shop",recipe:"Coupon spending",rate:0,unit:"",bld:"Shop",n:1,mw:0}]}]},
+
+{id:"C20",phase:2,site:"C",name:"Freight head",ef:22,sf:6,wf:6,df:6,
+ flex:"Flattest edge of the site with a clear run north toward Site A.",
+ note:"Tier 3 truck station and the Tier 4 hypertube head. Concrete comes in here from Site A unless you find limestone locally, and it is how you get between the two towns without a 2 km walk.",
+ warn:"Packaged fuel and the jetpack are Tier 5 and 6, so there is no fuel for vehicles yet. Trucks run on solid biofuel from Site A until then.",
+ floors:[{name:"Ground",lines:[
+   {item:"Truck station",recipe:"Tier 3 Vehicular Transport",rate:0,unit:"",bld:"Truck Station",n:2,mw:20},
+   {item:"Hypertube head",recipe:"Tier 4 Hyper Tubes",rate:0,unit:"",bld:"Hypertube Entrance",n:2,mw:0,check:true}]}]},
+
+
+
+/* ---- PHASE 1 · Site A · one item, one machine type per building ---- */
+{id:"A0",phase:1,site:"A",name:"HUB, MAM and workshop",ef:0,sf:0,wf:6,df:6,
+ flex:"The HUB lands where you land, and the street grid measures off its north-west corner. Move the HUB and the whole town moves with it.",
+ note:"Grid origin. Blueprint Designer drops in here on the Tier 4 flip, and from that point every building below is a stamp rather than a build.",
+ floors:[{name:"Ground",lines:[
+   {item:"HUB",recipe:"Anchor of the grid",rate:0,unit:"",bld:"HUB",n:1,mw:0},
+   {item:"MAM",recipe:"Research, every hard drive",rate:0,unit:"",bld:"MAM",n:1,mw:0},
+   {item:"Workbench and workshop",recipe:"Hand-craft and equipment",rate:0,unit:"",bld:"Bench",n:2,mw:0}]}]},
+
+{id:"A0B",phase:1,site:"A",name:"Depot terminal",ef:0,sf:8,wf:12,df:2,
+ flex:"Pinned to the bus along its whole length — lanes enter the long wall wherever their item sits. Two foundations deep is deliberate: from outside it should read as the belts passing through with one extra belt on the flank.",
+ belts:"Every bus lane in the north wall, one lane per item straight out the south wall into its container. One sushi lane out the east end.",
+ note:"Narrow terminal, and the only enclosed part of the whole arrangement. Splitters, lifts and mergers live here; nothing is stored. Each Smart Splitter sends its item out the south wall to the container and lifts the overflow to the sushi belt running the length of the roof space.",
+ warn:"Twelve foundations long, which is twelve container slots at an 8 m pitch, against eight items the town stores. That is the right kind of slack — lengthening a terminal with live lanes through its walls is a job you do not want, but there is no point sizing it for items that will be stored at another site.",
+ out:"Sushi belt east to A0F.",
+ floors:[{name:"Ground — sorting",lines:[
+   {item:"Smart Splitters",recipe:"One per lane · Any on the centre output, Overflow to the lift",rate:0,unit:"",bld:"Smart Splitter",n:8,mw:0},
+   {item:"Overflow lifts",recipe:"4 m rise to the sushi belt",rate:0,unit:"",bld:"Conveyor Lift",n:8,mw:0},
+   {item:"Mergers",recipe:"Chained along the sushi belt",rate:0,unit:"",bld:"Merger",n:7,mw:0}]}]},
+
+{id:"A0E",phase:1,site:"A",name:"Container row",ef:0,sf:10,wf:12,df:2,
+ flex:"Outdoors, against the terminal’s south wall, on the same pitch as the lanes so nothing crosses. Leave the aisle in front of it generous — that is where you stand to use the depots.",
+ belts:"One lane in per container, straight through the terminal wall.",
+ note:"Containers at an 8 m pitch — one per foundation, 3 m between them for the lifts, and everything stays on the snap grid. A Dimensional Depot on top of each. No walls, no roof; walking the row is the point. Eight here: plate, rod, wire, cable, copper sheet, reinforced plate, rotor, frame. Concrete gets its depot out at the limestone node.",
+ out:"Nothing. This is the end of the line for everything except overflow.",
+ floors:[{name:"Ground",lines:[
+   {item:"Item containers",recipe:"One per item, 8 m pitch · room for 12",rate:0,unit:"",bld:"Container",n:8,mw:0},
+   {item:"Dimensional Depots",recipe:"Snapped on top of each container",rate:0,unit:"",bld:"Depot",n:8,mw:0,check:true}]}]},
+
+{id:"A0F",phase:1,site:"A",name:"Sink and shop",ef:16,sf:0,wf:4,df:4,
+ flex:"At whichever end the sushi belt leaves. Small, and the only part of the arrangement that draws power.",
+ belts:"One sushi lane in. Nothing out.",
+ note:"One sink is enough because the town’s steady overflow, once every container is full, is about 93/min: plate 22.5, rod 11, cable 30, copper sheet 20, reinforced plate 1.25, rotor 4, frame 4, screws and wire normally nothing. Concrete’s 40 would push that past a Mk.2 lane and force a second sushi belt and a second sink, which is the other reason its depot lives at the node. Its own plot rather than part of the row, because it is the one thing there that is neither storage nor sorting. The container in front of it is the important part: it is where you dump inventory you no longer want, so junk becomes coupons without you hand-feeding the sink.",
+ warn:"Never plumb a bus lane straight into the sink. The sink draws its 30 MW only while sinking, but the burner bank has no margin for the spike — that is what the two spare pads at A0D are for.",
+ out:"Coupons.",
+ floors:[{name:"Ground",lines:[
+   {item:"Sink terminus",recipe:"Container you can hand-feed",rate:0,unit:"",bld:"Container",n:1,mw:0},
+   {item:"AWESOME Sink",recipe:"Draws only while sinking",rate:0,unit:"",bld:"Sink",n:1,mw:30},
+   {item:"AWESOME Shop",recipe:"Coupon spending",rate:0,unit:"",bld:"Shop",n:1,mw:0}]}]},
+
+{id:"A0C",phase:1,site:"A",name:"Space Elevator",ef:26,sf:0,wf:7,df:6,
+ flex:"Seven foundations wide, not six — its 54 m dimension does not fit 48 m, so rotate the long axis east-west. Needs clear air above it and a straight belt up from A10. Verify the footprint before pouring the eastern edge.",
+ note:"Phase 1 target is 50 Smart Plating — confirm on the elevator screen.",
+ floors:[{name:"Ground",lines:[
+   {item:"Space Elevator",recipe:"Phase delivery",rate:0,unit:"",bld:"Space Elevator",n:1,mw:0}]}]},
+
+{id:"A0D",phase:1,site:"A",name:"Biomass power",ef:8,sf:0,wf:6,df:6,
+ flex:"Free, and better sited toward whatever tree line you are actually cutting than tucked into the town.",
+ raw:[["Wood",60],["Leaves",120]],
+ note:"Fourteen burners, all connected, 420 MW against a fully built draw of about 350. Feed them solid biofuel, not raw biomass — same trips, far more energy per slot.",
+ warn:"Connect all fourteen. Twelve caps the grid at 360 against 350 of draw and the sink’s 30 MW spike then trips it. Load sharing is not a cost — fuel burn is proportional to load, so the total is the same over fourteen burners as over twelve, and each buffer drains more slowly. Still hand-fed though: Tier 3 coal power is the point of this phase.",
+ floors:[{name:"Upper — biomass",lines:[
+   {item:"Biomass",recipe:"Biomass (Wood)",rate:300,unit:"/min",bld:"Constructor",n:1,mw:4},
+   {item:"Biomass",recipe:"Biomass (Leaves)",rate:60,unit:"/min",bld:"Constructor",n:1,mw:4},
+   {item:"Solid Biofuel",recipe:"Solid Biofuel",rate:60,unit:"/min",bld:"Constructor",n:1,mw:4}]},
+  {name:"Ground — generation",lines:[
+   {item:"Power",recipe:"Biomass Burner · all fourteen connected",rate:420,unit:"MW",bld:"Biomass Burner",n:14,mw:30,gen:true}]}]},
+
+{id:"A1",phase:1,site:"A",name:"Iron plate",ef:0,sf:14,wf:4,df:6,
+ belts:"Out 60: one lane down to A7 with 37.5, one onto the bus with the rest. In one ingot lane.",
+ flex:"Free. Ingot in off the trunk, plate out onto the bus — no neighbour involved. Same shell as A2 to A6.",
+ raw:[["Iron ingot",90]],
+ note:"Three constructors. 37.5 plate to the reinforced plate building, the rest to the bus and the Depot.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron plate",recipe:"Iron Plate",rate:60,unit:"/min",bld:"Constructor",n:3,mw:4}]}]},
+
+{id:"A2",phase:1,site:"A",name:"Iron rod",ef:6,sf:14,wf:4,df:6,
+ belts:"Out 75 on three lanes: 24 straight down to A9, 40 to A8 which is not straight down — rod is in column 6 and rotor in column 12, so that leg runs east underdeck then turns south — and 11 onto the bus. In one ingot lane.",
+ flex:"Pinned above A9 for the frame line. The rotor line cannot also be vertical — rotor sits under the screw column because 200 screw/min on two lanes has the stronger claim — so accept a 48 m lateral leg underdeck for the 40 rod/min.",
+ raw:[["Iron ingot",75]],
+ note:"Five constructors. 24 to frames, 40 to rotors, the rest banked.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron rod",recipe:"Iron Rod",rate:75,unit:"/min",bld:"Constructor",n:5,mw:4}]}]},
+
+{id:"A3",phase:1,site:"A",name:"Screws",ef:12,sf:14,wf:4,df:6,
+ belts:"Out 200 on two lanes, both straight down to A8. Screws never touch the bus. In one ingot lane.",
+ flex:"Free, but keep it directly above A8 — 200 a minute is two lanes and you do not want them crossing the town.",
+ raw:[["Iron ingot",50]],
+ needs:["Cast Screw"],
+ note:"Four constructors straight off ingot, feeding rotors and nothing else. Nobody stores screws, so there is no container and no bus lane here — that is what took this from five constructors to four.",
+ out:"Two lanes down to A8. No container, no Depot feed, no sink branch.",
+ floors:[{name:"Ground",lines:[
+   {item:"Screw",recipe:"Cast Screw",rate:200,unit:"/min",bld:"Constructor",n:4,mw:4,alt:true}]}]},
+
+{id:"A4",phase:1,site:"A",name:"Wire",ef:18,sf:14,wf:4,df:6,
+ belts:"Out 135 on two lanes: 60 down to A5, 75 across the bus to A7. In one ingot lane.",
+ flex:"Free, though putting it on the copper end of the bus keeps the ingot trunk short.",
+ raw:[["Copper ingot",68]],
+ note:"Five constructors set to 27 each. 75 to reinforced plate, 60 to cable.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Wire",recipe:"Wire · set each to 27/min",rate:135,unit:"/min",bld:"Constructor",n:5,mw:4}]}]},
+
+{id:"A5",phase:1,site:"A",name:"Cable",ef:18,sf:22,wf:4,df:6,
+ belts:"Out 30 on one lane. In one wire lane straight down from A4.",
+ flex:"Free.",
+ raw:[["Wire, off the bus",60]],
+ note:"Two constructors. Cable is a buildable more than a component at this stage — power poles and the elevator want it.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Cable",recipe:"Cable",rate:30,unit:"/min",bld:"Constructor",n:2,mw:4}]}]},
+
+{id:"A6",phase:1,site:"A",name:"Copper sheet",ef:24,sf:22,wf:4,df:6,
+ belts:"Out 20 on one lane. In one ingot lane.",
+ flex:"Free.",
+ raw:[["Copper ingot",40]],
+ note:"Two constructors, added on the Tier 3 flip. Pure buildables: water extractors are 10 sheet each, and pipes, junctions and pumps all want it.",
+ warn:"Build the shell in Phase 1 and leave it empty if the recipe is not open yet. Six water extractors is 60 sheet before you place a single pipe, so this wants a standing bank and a Depot feed before the coal power build starts.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Copper sheet",recipe:"Copper Sheet",rate:20,unit:"/min",bld:"Constructor",n:2,mw:4,check:true}]}]},
+
+{id:"A7",phase:1,site:"A",name:"Reinforced iron plate",ef:0,sf:22,wf:4,df:6,
+ belts:"Out 11.25 on one lane. In two: plate from A1 above, wire from A4 across the bus.",
+ flex:"Free. Both inputs come off the bus, which is the whole point of having one.",
+ raw:[["Iron plate, off the bus",37.5],["Wire, off the bus",75]],
+ needs:["Stitched Iron Plate"],
+ note:"Two assemblers at 100% is 11.25 a minute: 6 to frames, 4 to smart plating, the rest banked. Assembler shell, so it gets its own building rather than a floor above the constructors.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Reinforced iron plate",recipe:"Stitched Iron Plate",rate:11.25,unit:"/min",bld:"Assembler",n:2,mw:15,alt:true,check:true}]}]},
+
+{id:"A8",phase:1,site:"A",name:"Rotor",ef:12,sf:22,wf:4,df:6,
+ belts:"Out 8 on one lane. In three: rod from A2 and two screw lanes from A3 directly above.",
+ flex:"Free.",
+ raw:[["Iron rod, off the bus",40],["Screw, off the bus",200]],
+ note:"Two assemblers, 8 a minute: 4 to smart plating, 4 banked. Rotors are one of the heaviest early buildables and every one you place at Sites B and C comes out of the Depot.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Rotor",recipe:"Rotor",rate:8,unit:"/min",bld:"Assembler",n:2,mw:15}]}]},
+
+{id:"A9",phase:1,site:"A",name:"Modular frame",ef:6,sf:22,wf:4,df:6,
+ belts:"Out 4 on one lane. In two: rod from A2 above, reinforced plate from A7 along the row.",
+ flex:"Free.",
+ raw:[["Reinforced plate, off the bus",6],["Iron rod, off the bus",24]],
+ note:"Two assemblers, 4 a minute. Frames are the Tier 4 gate currency, so the bank matters more than the rate.",
+ out:"Onto the parts bus and down to the depot row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Modular frame",recipe:"Modular Frame",rate:4,unit:"/min",bld:"Assembler",n:2,mw:15}]}]},
+
+{id:"A10",phase:1,site:"A",name:"Smart plating",ef:26,sf:14,wf:4,df:6,
+ belts:"Out 4 on one lane straight north to the elevator. In two off the bus.",
+ flex:"The one building with a real constraint: a clear belt north to the elevator. Its inputs come off the bus like everything else.",
+ raw:[["Reinforced plate, off the bus",4],["Rotor, off the bus",4]],
+ warn:"Smart plating goes to the Space Elevator only. Never to the Depot, never to the sink.",
+ note:"Two assemblers. In Phase 3 this line stops feeding the elevator and starts feeding modular engines instead, so leave the belt run out of the north wall reusable.",
+ out:"One belt north to A0C. No overflow branch at all.",
+ floors:[{name:"Ground",lines:[
+   {item:"Smart plating",recipe:"Smart Plating",rate:4,unit:"/min",bld:"Assembler",n:2,mw:15}]}]},
+
+{id:"FE1",phase:1,site:"A",name:"Iron smelting shed 1",remote:true,wf:4,df:8,
+ raw:[["Iron ore, 1 pure node",120]],
+ belts:"Out 120 on one lane — exactly one Mk.2 belt, which is why the shed is one miner and four smelters.",
+ flex:"Fixed by the node. The pad can rotate, step down a slope or sit on stilts — the miner cannot move.",
+ note:"The repeatable shed: one miner, four smelters, 120 ingot, one belt out. Lay the full 4 × 8 pad even though four smelters fill half of it — a Mk.2 miner doubles the node and wants eight.",
+ out:"Ingot trunk to the town, dropped into the corridor between the support row and the constructor row.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"FE2",phase:1,site:"A",name:"Iron smelting shed 2",remote:true,wf:4,df:8,
+ raw:[["Iron ore, 1 pure node",120]],
+ belts:"Out 120 on one lane. The two shed lanes stay parallel into town; do not merge them, 240 will not fit in one belt until Mk.3.",
+ flex:"Fixed by the node.",
+ note:"Two sheds is 240 ingot against a demand of 215. Dropping the duplicated plate, rod and wire lines is what took this from three sheds to two.",
+ out:"Ingot trunk to the town.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"CU1",phase:1,site:"A",name:"Copper smelting shed",remote:true,wf:4,df:8,
+ raw:[["Copper ore, 1 pure node",120]],
+ belts:"Out 120 on one lane, serving A4 and A6.",
+ flex:"Fixed by the node.",
+ note:"108 ingot of demand against 120: wire takes 68, copper sheet 40. One node covers Phase 1 with a little room.",
+ out:"Ingot trunk to the copper end of the town.",
+ floors:[{name:"Ground",lines:[
+   {item:"Copper ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Copper ingot",recipe:"Copper Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"O3",phase:1,site:"A",name:"Concrete outpost",remote:true,wf:4,df:4,
+ raw:[["Limestone, 1 pure node",120]],
+ belts:"Out 40 on one lane. In one miner lane, split 60/60 by a single splitter.",
+ flex:"Fixed by the node.",
+ note:"Two constructors set to 20 concrete each, which draws 60 limestone apiece and eats the node exactly — one machine and one belt leg fewer than three, for two power shards and about 1.5 MW. Three set to 13.333 is the shard-free alternative, but 40 split three ways gives you a repeating decimal to type into every machine, and two integers beat three ugly ones. Concrete’s Dimensional Depot lives here too, which keeps 40/min of overflow out of the town sushi belt.",
+ warn:"Concrete is a commodity, not a component, so it stays at the node like an ingot. It also becomes the binding constraint twice later — encased beams in Phase 2 and heavy frames in Phase 3 — and the useful invariant is that concrete out is always limestone in divided by three — the machine count never changes the output, only the floor space and the shard bill. A Mk.2 miner on a pure node is 240 limestone, so 80 concrete either way: four constructors set to 20 each with four shards, or six set to 13.333 with none. Five is strictly worse than four, since 16 each is still over 100% and still costs a shard per machine.",
+ out:"Trunk to the Depot yard, and a rail feed to Site C from Phase 2 onward.",
+ floors:[{name:"Ground",lines:[
+   {item:"Limestone",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Concrete",recipe:"Concrete · set each to 20/min",rate:40,unit:"/min",bld:"Constructor",n:2,mw:6},
+   {item:"Output",recipe:"Container with a Dimensional Depot on top",rate:0,unit:"",bld:"Container",n:1,mw:0},
+   {item:"Dimensional Depot",recipe:"Concrete uploads from here, not the town",rate:0,unit:"",bld:"Depot",n:1,mw:0,check:true}]}]},
+
+
+/* ---- PHASE 1 · campus ---- */
+/* ---- PHASE 1 · smelting sheds, one per node ---- */
+/* ---- PHASE 2 · campus ---- */
+/* ---- PHASE 2 · outposts ---- */
+{id:"D2",phase:3,site:"D",name:"Fuel power",ef:10,sf:0,wf:10,df:8,
+ flex:"Free within the site, but keep it downhill of D1 if you can — fuel is easier to move down a slope than up one. Generators want a flat shelf.",
+ raw:[["Crude oil, 1 pure node",240],["Fuel, from D1",60],["Water",40]],
+ note:"Four refineries on base Fuel plus D1’s residual fuel is 220 fuel a minute, which runs eleven generators at 250 MW each. The polymer resin the fuel refineries throw off goes to residual plastic rather than a sink.",
+ warn:"2,750 MW here is more than the whole campus needs today, and that is deliberate — Phase 4 aluminium roughly doubles your draw. Build the pads for all eleven generators even if you only run six.",
+ out:"Power to Sites A, C and D. Residual plastic joins the D1 plastic trunk.",
+ floors:[{name:"Ground — generation",lines:[
+   {item:"Power",recipe:"Fuel Generator",rate:2750,unit:"MW",bld:"Fuel Generator",n:11,mw:250,gen:true},
+   {item:"Fluid buffers",recipe:"Priming the fuel manifold",rate:0,unit:"",bld:"Fluid Buffer",n:4,mw:0}]},
+  {name:"Upper — refining",lines:[
+   {item:"Crude oil",recipe:"Oil Extractor on pure node",rate:240,unit:"/min",bld:"Oil Extractor",n:1,mw:40},
+   {item:"Fuel",recipe:"Fuel",rate:160,unit:"/min",bld:"Refinery",n:4,mw:30},
+   {item:"Plastic",recipe:"Residual Plastic",rate:40,unit:"/min",bld:"Refinery",n:2,mw:30}]}]},
+
+{id:"D3",phase:3,site:"D",name:"Circuit board plant",ef:0,sf:10,wf:6,df:6,
+ flex:"Pinned to D4 — it is the campus circuit board source and the computer plant is its main customer.",
+ raw:[["Copper ingot",60],["Plastic, from D1",60]],
+ needs:["Cast Screw"],
+ note:"Five machines. Copper sheet in-house, plastic on the trunk. 15 boards a minute: 10 to the computers next door, 5 to the control units at Site C.",
+ out:"Boards to D4, a rail feed to Site C, and a Depot feed.",
+ floors:[{name:"Ground — sheet",lines:[
+   {item:"Copper sheet",recipe:"Copper Sheet",rate:30,unit:"/min",bld:"Constructor",n:3,mw:4}]},
+  {name:"Upper — assembly",lines:[
+   {item:"Circuit board",recipe:"Circuit Board",rate:15,unit:"/min",bld:"Assembler",n:2,mw:15}]}]},
+
+{id:"D4",phase:3,site:"D",name:"Computer plant",ef:8,sf:10,wf:8,df:6,
+ flex:"Pinned to D3 for boards. Wire, cable and screws are made in-house because nothing else at Site D makes them.",
+ raw:[["Copper ingot",20],["Iron ingot",20],["Circuit board, from D3",10],["Plastic, from D1",40]],
+ needs:["Cast Screw"],
+ note:"Seven machines for 2.5 computers a minute. Modest, but computers are only wanted by the control units and the Depot at this stage.",
+ out:"Computers to a container pair, Depot, rail feed to Site C.",
+ floors:[{name:"Ground — feed lines",lines:[
+   {item:"Wire",recipe:"Wire · set each to 20/min",rate:40,unit:"/min",bld:"Constructor",n:2,mw:4},
+   {item:"Cable",recipe:"Cable · set each to 10/min",rate:20,unit:"/min",bld:"Constructor",n:2,mw:4},
+   {item:"Screw",recipe:"Cast Screw · set each to 40/min",rate:80,unit:"/min",bld:"Constructor",n:2,mw:4,alt:true}]},
+  {name:"Upper — manufacturing",lines:[
+   {item:"Computer",recipe:"Computer",rate:2.5,unit:"/min",bld:"Manufacturer",n:1,mw:55}]}]},
+
+{id:"D5",phase:3,site:"D",name:"Modular engine plant",ef:18,sf:10,wf:6,df:6,
+ flex:"Pinned to D1 for rubber, which is the bulk input at 15 per engine. Motors and smart plating arrive by rail, so put it near the freight head.",
+ raw:[["Rubber, from D1",30],["Motor, railed from Site C",4],["Smart plating, railed from Site A",4]],
+ note:"Two manufacturers. Sited here rather than at Site C because rubber is the heavy input and oil cannot move — the motors and plating are light by comparison. This is the plant that finally gives Site A’s smart plating line a job after the Phase 2 delivery.",
+ out:"Engines to a container pair, Depot, and the elevator rail.",
+ floors:[{name:"Ground",lines:[
+   {item:"Input buffer",recipe:"Three manifold heads with containers",rate:0,unit:"",bld:"Industrial Storage",n:4,mw:0},
+   {item:"Modular engine",recipe:"Modular Engine",rate:2,unit:"/min",bld:"Manufacturer",n:2,mw:55}]}]},
+
+{id:"CU3",phase:3,site:"D",name:"Copper smelting shed",remote:true,wf:4,df:8,
+ raw:[["Copper ore, 1 pure node",120]],
+ flex:"Fixed by the node, if there is one in range. This is the input most likely to force a rail link instead.",
+ note:"80 copper ingot for boards and cable against 120 from one shed. Same 4 × 8 shed as everywhere else.",
+ warn:"If there is no copper near the oil, rail ingots in from Site A rather than moving the plants. Trains arrive with Tier 6, which is exactly why Phase 3 is the phase that stops caring about distance.",
+ floors:[{name:"Ground",lines:[
+   {item:"Copper ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Copper ingot",recipe:"Copper Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"FE7",phase:3,site:"D",name:"Iron smelting shed",remote:true,wf:4,df:8,
+ raw:[["Iron ore, 1 pure node",120]],
+ flex:"Fixed by the node. Only 20 ingot of demand, so a shared shed or a rail feed is just as good.",
+ note:"Screws for the computer plant, and nothing else. The smallest justification for a shed in the whole plan — rail it instead if iron is scarce near the oil.",
+ floors:[{name:"Ground",lines:[
+   {item:"Iron ore",recipe:"Miner Mk.1 on pure node",rate:120,unit:"/min",bld:"Miner Mk.1",n:1,mw:5},
+   {item:"Iron ingot",recipe:"Iron Ingot",rate:120,unit:"/min",bld:"Smelter",n:4,mw:4}]}]},
+
+{id:"P15",phase:3,site:"C",name:"Heavy modular frame plant",ef:0,sf:46,wf:8,df:6,
+ flex:"Pinned loosely to P8 for frames and P11 for encased beams. Both need to grow to feed it, so if the ground is awkward, move this and lengthen the belts rather than splitting the suppliers.",
+ raw:[["Modular frame, from P8",6],["Encased beam, from P11",7],["Steel ingot",90],["Concrete, railed in",15]],
+ needs:["Heavy Encased Frame"],
+ note:"Three machines plus its own pipe line, for 2 heavy frames a minute. The alt recipe is what makes this buildable at all.",
+ warn:"On the base recipe this plant wants 200 concrete a minute — five pure limestone nodes. Heavy Encased Frame drops that to about 15. Do not lay this plot before that drive lands.",
+ out:"Heavy frames to P16, a container pair and a Depot feed.",
+ floors:[{name:"Ground — pipe",lines:[
+   {item:"Steel pipe",recipe:"Steel Pipe · set each to 12/min",rate:36,unit:"/min",bld:"Constructor",n:3,mw:4}]},
+  {name:"Upper — manufacturing",lines:[
+   {item:"Heavy modular frame",recipe:"Heavy Encased Frame",rate:2,unit:"/min",bld:"Manufacturer",n:1,mw:55,alt:true,check:true}]}]},
+
+{id:"P16",phase:3,site:"C",name:"Control unit plant",ef:10,sf:46,wf:6,df:6,
+ flex:"Pinned to P15 for heavy frames and P9 for wiring. Boards and computers arrive by rail, so the freight head wants to be on this side of the site.",
+ raw:[["Automated wiring, from P9",5],["Heavy frame, from P15",1],["Circuit board, railed from D3",5],["Computer, railed from D4",2]],
+ note:"One manufacturer and a deep input bank. Every one of its four inputs is made somewhere else, which is the whole point of having a rail network by now.",
+ out:"Control units to a container pair, Depot, and the elevator.",
+ floors:[{name:"Ground",lines:[
+   {item:"Input buffer",recipe:"Four manifold heads with containers",rate:0,unit:"",bld:"Industrial Storage",n:6,mw:0},
+   {item:"Adaptive control unit",recipe:"Adaptive Control Unit",rate:1,unit:"/min",bld:"Manufacturer",n:1,mw:55}]}]},
+
+/* ---- PHASE 4 · Site E, the bauxite field ---- */
+{id:"E1",phase:4,site:"E",name:"Bauxite refining",ef:0,sf:0,wf:10,df:8,
+ flex:"Pinned to bauxite and to a lot of water. Alumina is a fluid, so this block wants to be uphill of the foundry rather than beside it.",
+ raw:[["Bauxite, pure node",240],["Water","heavy"],["Coal, railed in","for scrap"]],
+ deferred:"Alumina and scrap counts depend entirely on which drives you hold. Sloppy Alumina, Electrode Aluminum Scrap and Pure Aluminum Ingot each reshape this block, and Pure Aluminum Ingot deletes the silica line outright. Machines below are a placeholder shape, not a plan.",
+ note:"The water loop is the real engineering here, not the machine count: scrap refining returns water, and if you do not route it back you will be extracting far more than you need.",
+ warn:"Silica is the trap. Base aluminium ingot wants 75 silica a minute against the 10 the bauxite byproduct gives you, so without Pure Aluminum Ingot you are also building a quartz outpost.",
+ out:"Aluminium ingot to E2. Silica byproduct to a Depot feed, never a sink — it is a Fine Concrete input later.",
+ floors:[{name:"Ground — provisional",lines:[
+   {item:"Alumina solution",recipe:"Alumina Solution · provisional",rate:0,unit:"",bld:"Refinery",n:3,mw:30,check:true},
+   {item:"Aluminium scrap",recipe:"Aluminum Scrap · provisional",rate:0,unit:"",bld:"Refinery",n:2,mw:30,check:true},
+   {item:"Water",recipe:"Water Extractor · size after the loop is closed",rate:0,unit:"",bld:"Water Extractor",n:4,mw:20,check:true}]}]},
+
+{id:"E2",phase:4,site:"E",name:"Aluminium products",ef:12,sf:0,wf:8,df:8,
+ flex:"Pinned to E1 for ingot. Sheet, casing and heat sink all live here because nothing else on the site makes ingot.",
+ raw:[["Aluminium ingot, from E1","provisional"],["Copper ingot, railed in","for alclad"],["Rubber, railed from Site D","for heat sinks"]],
+ deferred:"Sized once the aluminium chain above is settled. Heat sinks in particular are worth deferring until you know whether Heat Exchanger dropped.",
+ note:"Three end products off one ingot bus: alclad sheet, casing and heat sink. By the rule they would be three buildings, but they share a single feedstock made next door, so this is one plant with a floor each.",
+ out:"All three to container pairs and Depot feeds. Casings feed the radio control units in Phase 5.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Alclad aluminium sheet",recipe:"Alclad Aluminum Sheet · provisional",rate:0,unit:"",bld:"Assembler",n:2,mw:15,check:true},
+   {item:"Aluminium casing",recipe:"Aluminum Casing · provisional",rate:0,unit:"",bld:"Constructor",n:2,mw:4,check:true},
+   {item:"Heat sink",recipe:"Heat Sink · provisional",rate:0,unit:"",bld:"Assembler",n:2,mw:15,check:true}]}]},
+
+{id:"E3",phase:4,site:"E",name:"Supercomputer plant",ef:0,sf:10,wf:8,df:6,
+ flex:"Free on the site. Every input arrives by rail, so put it on the freight side and forget about it.",
+ raw:[["Computer, railed from D4","provisional"],["Plastic, railed from Site D","provisional"],["Quickwire and caterium","for AI limiters and connectors"]],
+ deferred:"AI limiters and high-speed connectors both have alt recipes that halve their machine count — Plastic AI Limiter and Silicon High-Speed Connector. Scan both before sizing this.",
+ note:"The gate on the whole phase. Assembly director systems need supercomputers and nothing else does, so this plant’s rate sets your delivery clock.",
+ out:"Supercomputers to E4 and a Depot feed.",
+ floors:[{name:"Provisional",lines:[
+   {item:"AI limiter",recipe:"provisional · scan Plastic AI Limiter first",rate:0,unit:"",bld:"Assembler",n:2,mw:15,check:true},
+   {item:"High-speed connector",recipe:"provisional · scan Silicon High-Speed Connector first",rate:0,unit:"",bld:"Assembler",n:2,mw:15,check:true},
+   {item:"Supercomputer",recipe:"Supercomputer · provisional",rate:0,unit:"",bld:"Manufacturer",n:1,mw:55,check:true}]}]},
+
+{id:"E4",phase:4,site:"E",name:"Assembly director plant",ef:10,sf:10,wf:6,df:6,
+ flex:"Pinned to E3 for supercomputers. Control units come by rail from Site C.",
+ raw:[["Adaptive control unit, railed from P16","provisional"],["Supercomputer, from E3","provisional"]],
+ deferred:"Two inputs, one assembler, and the count follows whatever E3 can actually sustain.",
+ note:"Small plant, long queue. Two control units and one supercomputer per director, so Site C’s control unit line almost certainly needs to grow before this is worth building.",
+ out:"Directors straight to the elevator, plus a container pair. No sink branch.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Assembly director system",recipe:"Assembly Director System · provisional",rate:0,unit:"",bld:"Assembler",n:2,mw:15,check:true},
+   {item:"Input buffer",recipe:"Two manifold heads",rate:0,unit:"",bld:"Industrial Storage",n:4,mw:0}]}]},
+
+{id:"F1",phase:4,site:"F",name:"Phase 4 power",remote:true,wf:12,df:12,
+ flex:"Fixed by water, and by whether you go nuclear at all. Fuel is the lower-risk answer and Site D already has the oil.",
+ raw:[["Fuel or uranium","your call"],["Water","heavy either way"]],
+ deferred:"Deliberately unsized. Aluminium roughly doubles campus draw, and there are two credible answers: expand Site D on Diluted Fuel with a blender, or open a nuclear plant. They are different builds with different risks.",
+ note:"Diluted Fuel is the safe route — same site, same fluid, no waste to manage. Nuclear is more power per node but adds uranium waste, which is a permanent chore rather than a one-off build.",
+ warn:"Whichever you pick, get the power in before the aluminium plants run. Pipe-fill inrush on a fresh fluid network is exactly when a marginal grid trips, and a trip during alumina fill means draining and re-priming.",
+ out:"Power to every site.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Generation",recipe:"Fuel Generator or Nuclear Power Plant · provisional",rate:0,unit:"",bld:"Generator",n:8,mw:0,check:true}]}]},
+
+/* ---- PHASE 5 · Site G, the endgame campus ---- */
+{id:"G1",phase:5,site:"G",name:"Particle accelerator hall",ef:0,sf:0,wf:12,df:10,
+ flex:"Free, but it needs to be near your biggest power feed rather than near its inputs — accelerators are the heaviest draw in the game and they surge.",
+ raw:[["Copper powder","for nuclear pasta"],["Pressure conversion cubes","fused frames and control units"]],
+ deferred:"Unsized on purpose. Accelerator recipes are power-shaped rather than material-shaped, and the answer depends on how much generation you have standing.",
+ note:"Nuclear pasta comes out of here and nothing else does. Copper powder is the bulk input and it is copper-hungry beyond anything earlier in the plan.",
+ warn:"Accelerator draw is variable, not flat. Sizing generation to the average will trip the grid on every cycle peak — build to the peak or put a battery bank in front of it.",
+ out:"Nuclear pasta to the elevator and a container pair.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Nuclear pasta",recipe:"provisional",rate:0,unit:"",bld:"Particle Accelerator",n:4,mw:0,check:true},
+   {item:"Copper powder",recipe:"provisional",rate:0,unit:"",bld:"Constructor",n:4,mw:4,check:true}]}]},
+
+{id:"G2",phase:5,site:"G",name:"Converter hall",ef:14,sf:0,wf:10,df:10,
+ flex:"Pinned to the SAM outposts by belt or rail, and to power. Converters are the other big draw.",
+ raw:[["SAM ore, railed in","multiple outposts"],["Reanimated SAM","in-house"]],
+ deferred:"Ficsite and dark matter chains, both alt-sensitive. Dark Matter Trap and Dark Matter Crystallization change the shape substantially.",
+ note:"Feeds the warp drives and the quantum hall. SAM is scattered in small nodes, so expect several outposts rather than one.",
+ out:"Ficsite and dark matter to G3 and G5.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Converter output",recipe:"provisional",rate:0,unit:"",bld:"Converter",n:4,mw:0,check:true}]}]},
+
+{id:"G3",phase:5,site:"G",name:"Quantum encoding hall",ef:0,sf:12,wf:10,df:10,
+ flex:"Pinned to G2 for dark matter and to the nitrogen line.",
+ raw:[["Dark matter crystal, from G2","provisional"],["Nitrogen gas, railed in","from the wells"],["Excited photonic matter","in-house"]],
+ deferred:"Quantum computers and superposition oscillators. Sized last, after everything feeding it is stable.",
+ note:"The deepest chain in the game sits here, and it is also the least forgiving of an unstable input — build the banks deep before you switch it on.",
+ out:"Oscillators and processors to G4 and G5.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Quantum encoding",recipe:"provisional",rate:0,unit:"",bld:"Quantum Encoder",n:4,mw:0,check:true}]}]},
+
+{id:"G4",phase:5,site:"G",name:"Rocket and field generator assembly",ef:12,sf:12,wf:10,df:10,
+ flex:"Free. Everything arrives by rail from earlier sites, which by now is most of the map.",
+ raw:[["Modular engines, turbo motors, cooling systems","railed in"],["Fused frames, batteries, control rods","railed in"]],
+ deferred:"Thermal propulsion rockets and magnetic field generators. Both are pure assembly from parts made elsewhere, so the counts follow whatever the upstream sites sustain.",
+ note:"Two elevator parts out of one building because they share most of their supply chain and neither makes its own inputs.",
+ out:"Both straight to the elevator, with deep container banks in front.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Thermal propulsion rocket",recipe:"provisional",rate:0,unit:"",bld:"Manufacturer",n:2,mw:55,check:true},
+   {item:"Magnetic field generator",recipe:"provisional",rate:0,unit:"",bld:"Manufacturer",n:2,mw:55,check:true}]}]},
+
+{id:"G5",phase:5,site:"G",name:"Warp drive assembly",ef:24,sf:12,wf:8,df:10,
+ flex:"Pinned to G2, G3 and G4 — it eats a rocket, singularity cells, oscillators and dark matter. Put it in the middle of them.",
+ raw:[["Thermal propulsion rocket, from G4","provisional"],["Singularity cells, oscillators, dark matter","from G2 and G3"]],
+ deferred:"The last plant you will size, and the one most worth Somerslooping rather than scaling.",
+ note:"Ballistic warp drives are the deepest single item in the delivery. One assembly line fed by three halls.",
+ out:"Straight to the elevator.",
+ floors:[{name:"Provisional",lines:[
+   {item:"Ballistic warp drive",recipe:"provisional",rate:0,unit:"",bld:"Manufacturer",n:2,mw:55,check:true}]}]},
+
+];
+
+/* ---------------- build order ---------------- */
+const ORDER={3:[
+ {t:"Unlock all of Tier 5",d:"Refinery, plastic, rubber, packager, fuel. Nothing at Site D exists without it."},
+ {t:"Walk the oil field, set the Site D anchor",d:"Three pure nodes and water in reach. Place the extractors first and lay the refinery block around them — the fluid inputs decide the layout here, not the grid."},
+ {t:"Trickle for Tier 6",d:"Tier 6 wants plastic, rubber and computers you cannot make yet. Run a small refinery pair into containers and hand-feed the milestone rather than building anything you will tear down."},
+ {t:"Unlock all of Tier 6",d:"Trains and fuel generators. Build the rail spine before the plants — concrete to Site C and copper to Site D are already overdue."},
+ {t:"Hunt Heavy Encased Frame and Heavy Oil Residue",d:"After the Tier 5 flip. The first decides whether the heavy frame plant is buildable; the second decides whether the oil site is pleasant."},
+ {t:"D1 oil and polymers",d:"Extraction and refining together, residual fuel refineries included from the start. A backed-up residue pipe stops the whole block."},
+ {t:"D2 fuel power",d:"Eleven generator pads, six running. 2,750 MW sounds absurd today and will not in Phase 4."},
+ {t:"D3 boards, then D4 computers",d:"Boards first — the computer plant is its customer and sits next door."},
+ {t:"P15 heavy modular frames at Site C",d:"Grow P8’s frame line and P11’s beam line to feed it. Concrete arrives by rail."},
+ {t:"P16 control units at Site C",d:"All four inputs come from elsewhere. Deep input bank, one manufacturer."},
+ {t:"D5 modular engines",d:"Rubber local, motors and smart plating by rail. Site A’s plating line finally has a job again."},
+ {t:"Deliver Phase 3",d:"Versatile framework in bulk, modular engines, control units. Confirm counts on the elevator screen. Completing it opens Tiers 7 and 8."}
+],4:[
+ {t:"Unlock all of Tier 7",d:"Bauxite refinement end to end before you lay a single foundation at Site E."},
+ {t:"Hunt the four aluminium drives",d:"Pure Aluminum Ingot, Sloppy Alumina, Plastic AI Limiter, Silicon High-Speed Connector. All four only appear after the Tier 7 flip, and all four change floor counts. This is the phase where scanning before building matters most — the plots below are deliberately unsized until you hold them."},
+ {t:"Site F power, before anything else",d:"Diluted Fuel expansion at Site D or a nuclear plant. Aluminium roughly doubles draw, and a grid trip during alumina pipe-fill means draining and re-priming."},
+ {t:"Walk the bauxite field, set the Site E anchor",d:"Bauxite, water, and a rail head. Plan the water return loop before the machine layout — scrap refining gives water back and the loop decides where things sit."},
+ {t:"E1 bauxite refining",d:"Alumina and scrap, with the water loop closed from the start."},
+ {t:"E2 aluminium products",d:"Sheet, casing and heat sink off one ingot bus."},
+ {t:"Trickle for Tier 8",d:"Aluminium parts into containers to buy blenders and the accelerator. No temporary plant needed — E2 is already the trickle."},
+ {t:"Unlock all of Tier 8",d:"Blender, particle accelerator, nuclear. The accelerator is what Phase 5 is built on."},
+ {t:"E3 supercomputers, then E4 directors",d:"Supercomputers gate the phase, so build and stabilise them before the director plant. Site C’s control unit line probably needs to grow too."},
+ {t:"Deliver Phase 4",d:"Assembly director systems plus bulk earlier parts. Confirm counts on the elevator. Completing it opens Tier 9."}
+],5:[
+ {t:"Unlock all of Tier 9",d:"Converters, quantum encoding, the lot. There is no second tier to gate behind a trickle this time — Phase 5 is one tier and one long build."},
+ {t:"Power first, and then more power",d:"Accelerators and converters surge rather than draw flat. Size generation to the peak, or put a battery bank in front of the halls. This is the single most common way an endgame campus fails."},
+ {t:"SAM and nitrogen survey",d:"Several small SAM nodes and gas wells rather than one site. Map them and plan rail before committing Site G’s position."},
+ {t:"Walk Site G, set the anchor",d:"Near the power, not near the inputs. By now everything arrives by rail regardless."},
+ {t:"G2 converter hall, then G3 quantum encoding",d:"Converters feed the quantum hall, so they come first. Build the input banks deep before switching either on."},
+ {t:"G1 accelerator hall",d:"Nuclear pasta, and the heaviest single draw you will ever place."},
+ {t:"G4 rockets and field generators",d:"Pure assembly from railed parts. Its rate is whatever the upstream sites sustain, so expect to go back and grow Phase 3 and 4 plants."},
+ {t:"G5 warp drives",d:"Last plant, deepest item. Worth Somerslooping rather than scaling."},
+ {t:"Deliver Phase 5",d:"Nuclear pasta, thermal propulsion rockets, magnetic field generators, ballistic warp drives. Confirm every count on the elevator screen — I have not verified the Phase 5 quantities and would not build a bank on my numbers."}
+],1:[
+ {t:"Place the HUB and set the origin",d:"Read its coordinates into the grid anchor. A0 goes on the corner and the street grid measures off it."},
+ {t:"Unlock all of Tier 1",d:"Base Building, Logistics, Field Research. Field Research turns the MAM on, which is the whole drive pipeline."},
+ {t:"Automate before you unlock anything",d:"Nothing here is hand-fed. Build FE1 for real — it is at the node, its position is already decided and it needs no deck — then four constructors on a scratch pad beside it, two on plate and two on rod, belt-fed with containers on the output. Copper next, then limestone to concrete. Tiers 1 and 2 then get paid out of containers rather than out of the craft bench. When the deck goes down, dismantle those constructors into A1 and A2; dismantling refunds in full."},
+ {t:"Unlock all of Tier 2",d:"Assembler, Mk.2 belts, sink and shop. Everything built from here is permanent."},
+ {t:"Hunt Cast Screw and Stitched Iron Plate",d:"Before any shed goes up. Cast Screw removes the rod step from screws, the stitched alt removes screws from reinforced plate, and between them they set the size of five buildings. The pool only offers recipes your tiers can make, so scanning now with two tiers open keeps the odds good."},
+ {t:"Smelting sheds: FE1, FE2, CU1, O3",d:"One shed per node, three plus concrete. Build the first properly and copy it — same 4 × 8 pad every time, and the first thing you will blueprint at Tier 4."},
+ {t:"A0D biomass power",d:"Twelve burners. Get the solid biofuel constructor running before you start feeding them by hand — same trips, far more energy per slot. Power before product."},
+ {t:"Pour the corridors, then deck as you go",d:"The two road corridors first, on 4 m pillars with 1 m foundations on top, above the high point. They are the bus, the truck route and the snap reference for everything after — free placement on dirt is where controller building stops being fun. Extend the deck row by row rather than pouring 704 foundations at 40 concrete a minute."},
+ {t:"Constructor row: A1 to A5",d:"Plate, rod, screws, wire, cable. Identical shells, three to five constructors each, straight onto the bus. A6 copper sheet gets its shell now and its machines on the Tier 3 flip."},
+ {t:"Assembler row: A7 to A10",d:"Reinforced plate, rotor, frame, smart plating. Two assemblers each. A7 and A8 first — the frame and plating sheds are empty without them."},
+ {t:"A0B depot yard",d:"One Depot feed per item tapped off the bus, sink on the Overflow. Nothing overflows to the sink before the Depot is fed."},
+ {t:"A0C elevator, deliver Phase 1",d:"Smart plating only, straight belt north. Completing the phase opens Tiers 3 and 4."},
+ {t:"Leave the road corridors alone",d:"They are the bus and the truck route. Blueprint proper road tiles over them in Phase 2 once the designer unlocks."}
+],2:[
+ {t:"Unlock all of Tier 3",d:"Coal Power and Vehicular Transport, paid with Phase 1 output."},
+ {t:"Site B first, then power south",d:"Generators at the lake with fluid buffers in from the start, pads for four modules and two built. The trunk to Site A retires the burner bank; a second goes south ahead of Site C. Everything you place there comes out of the Depot."},
+ {t:"Trickle for Tier 4",d:"No steel yet, so the gate is paid in frames, rotors, concrete and cable — Site A already makes all of it. Run its sheds into containers for a while rather than building anything temporary."},
+ {t:"Unlock all of Tier 4",d:"Advanced Steel Production, Hyper Tubes, Blueprints, Mk.3 belts. Mk.3 matters here: it turns the steel trunk and the screw link into single lanes."},
+ {t:"Hunt the three steel drives",d:"Solid Steel Ingot, Steeled Frame, Encased Industrial Pipe. Scan after the Tier 4 flip — steel recipes are not in the pool before it — and before laying C1, C11 or C16, which are all sized on them."},
+ {t:"Walk Site C, pour the corridors",d:"Three iron nodes, a copper node, two coal nodes. Set the anchor, then the terminal and container row first: this town is nineteen buildings and the bus has to be right before any go up."},
+ {t:"Ore first: FE4 to FE6, CU2, CO1",d:"Four smelting sheds and the coal miners. Same 4 × 8 pad every time, and by now it is a blueprint."},
+ {t:"C1 steel ingot, then C2 pipe and C3 beam",d:"Four Foundries and the two shape sheds. 300 steel a minute, 180 of it straight down to pipe."},
+ {t:"C5, C6, C12, C4: the parts sheds",d:"Plate, wire, rod, screws. Wire is seven constructors and the busiest copper flow here; screws are five, on three lanes straight down to rotors."},
+ {t:"C7, C10, C8, C9: the intermediates",d:"Reinforced plate, stator, rotor, cable. Suppliers before consumers, as always."},
+ {t:"C11 frame, then C13 framework and C14 wiring",d:"The two elevator parts. Container only — no depot and no sink branch."},
+ {t:"C15 motor and C16 encased beam",d:"Motors for Tier 5, encased beams as the Tier 5 gate currency. Sort the concrete freight before C16 or it stands idle."},
+ {t:"B1 module 2",d:"Second 600 MW before the phase ends. Both towns fully built draw about 1,080 MW."},
+ {t:"SU1 sulfur, C18 powder, C17 nobelisks",d:"Last, and only once you have found sulfur. It also unblocks the caterium node."},
+ {t:"C20 freight head, then deliver Phase 2",d:"Truck route north with the framework and wiring. Confirm the counts on the elevator screen. Completing it opens Tiers 5 and 6 — oil, refineries, trains, jetpack."}
+]};
+
+/* ---------------- research ---------------- */
+const RESEARCH={3:[
+ {g:"What opens in Phase 3",items:[
+  {n:"Tier 5 · oil",d:"Refinery, plastic, rubber, packager, fuel. The whole of Site D depends on this, so it is the first thing you buy."},
+  {n:"Tier 6 · trains and fuel generators",d:"Monorail track and fuel generators. Trains are what make the multi-site plan work rather than merely survivable."},
+  {n:"Hard drives · oil era",d:"The pool changes again on the Tier 5 flip. Heavy Encased Frame, Heavy Oil Residue and the recycled polymers all live behind it."},
+  {n:"Quartz · crystal oscillator",d:"Needed for radio control units later, and for Fine Concrete if concrete stays tight."},
+  {n:"Alien Technology · Somersloops",d:"First real chance to amplify. Best spent on the manufacturer with the slowest single output — probably the control units."}]}
+],4:[
+ {g:"What opens in Phase 4",items:[
+  {n:"Tier 7 · bauxite",d:"Aluminium from ore to alclad sheet, plus the hoverpack. Buy the whole tier before laying any of Site E."},
+  {n:"Tier 8 · nuclear, blender, accelerator",d:"Blenders unlock Diluted Fuel; the accelerator is what Phase 5 is built on. Both matter more than the nuclear power itself."},
+  {n:"Hard drives · aluminium era",d:"Three of the phase’s four required drives only appear after the Tier 7 flip. Bank drives through Phase 3."},
+  {n:"Caterium · remainder",d:"Quickwire volume for limiters and connectors."}]}
+],5:[
+ {g:"What opens in Phase 5",items:[
+  {n:"Tier 9 · converters and quantum encoding",d:"Converters, quantum encoders, ficsite, dark matter. Everything at Site G sits behind this."},
+  {n:"Alien Technology · power augmenters",d:"Somersloops in an augmenter rather than a machine. At this scale that is usually the better trade."},
+  {n:"Hard drives · whatever is left",d:"By now the pool is mostly picked over. Chase the dark matter and rocket fuel alts and ignore the rest."}]}
+],1:[
+ {g:"MAM trees that open in Phase 1",items:[
+  {n:"Hard drives",d:"Field Research. Two required drives this phase, and the pool is at its smallest while only Tiers 1 and 2 are open."},
+  {n:"Power Slugs",d:"Overclocking and power shards. Enables the 88.9% concrete underclock at O3 and extractor overclocking at R1."},
+  {n:"Alien Organisms",d:"Inhalers, fabric, parachute, expanded toolbelt. Cheap quality of life."},
+  {n:"Alien Technology",d:"Dimensional Depot, off Mercer Spheres. Worth a deliberate detour early: milestone materials reach you wherever you are instead of you walking back to a container. A0B is designed around it."},
+  {n:"Caterium",d:"Quickwire, Mk.2 poles, zipline, Smart and Programmable Splitter. A0B's overflow topology needs Smart Splitters, so this is not optional. Also the road to Caterium Wire, which is the answer to the copper problem this rule created."},
+  {n:"Quartz",d:"Silica, blade runners, expanded inventory. Needs a quartz node in range, which from this campus is a trek."}]}
+],2:[
+ {g:"MAM trees that open in Phase 2",items:[
+  {n:"Sulfur",d:"Black powder, nobelisks, cluster nobelisks, explosive rebar, compacted coal. Gated on the O6 outpost anyway."},
+  {n:"Caterium, remainder",d:"Mk.3 poles and daisy chaining, which matters once there are a dozen separate buildings to wire."},
+  {n:"Quartz, remainder",d:"Crystal oscillator and silica at volume."},
+  {n:"Alien Technology, remainder",d:"Somersloop production amplification. Best spent on the single slowest assembler, so the framework or motor plant."},
+  {n:"Hard drives, steel era",d:"The pool changes on the Tier 4 flip and three required drives sit behind it. Bank drives through Phase 1 and spend them straight after."}]}
+]};
+
+/* ---------------- alt recipes ---------------- */
+const ALTS={3:[
+ {n:"Heavy Encased Frame",t:"A",req:true,d:"Required. Concrete per heavy frame drops from about 100 to 7. Without it the heavy frame plant is a rail line and five limestone nodes."},
+ {n:"Heavy Oil Residue",t:"S",req:true,d:"Required in spirit — residue management is the whole difficulty of an oil site, and this turns the byproduct into the point."},
+ {n:"Recycled Plastic",t:"S",d:"Closed loop with fuel, roughly doubles plastic per node. Take it and Recycled Rubber together or not at all."},
+ {n:"Recycled Rubber",t:"S",d:"Same loop, same reasoning. Rubber is the bulk input to modular engines."},
+ {n:"Silicon Circuit Board",t:"A",d:"Best board recipe, and silica is cheap once quartz is running. Rebuilds the board plant."},
+ {n:"Crystal Computer",t:"A",d:"Cuts wire out of computers, which matters because Site D has no copper of its own."},
+ {n:"Steel Rotor",t:"A",d:"Still worth chasing if it never dropped — the motor plant feeds the modular engines now, so its size compounds."}
+],4:[
+ {n:"Pure Aluminum Ingot",t:"S",req:true,d:"Required if you want to skip the quartz outpost. Base ingot wants 75 silica a minute against 10 from the bauxite byproduct."},
+ {n:"Sloppy Alumina",t:"S",req:true,d:"Required. More alumina per bauxite and the silica byproduct was going spare anyway."},
+ {n:"Plastic AI Limiter",t:"S",req:true,d:"Required. Swaps fiddly copper sheet for plastic you already rail in, and halves the limiter line."},
+ {n:"Silicon High-Speed Connector",t:"S",req:true,d:"Required. Makes the default obsolete outright."},
+ {n:"Electrode Aluminum Scrap",t:"C",d:"Only if railing coal to Site E turns out to be the annoying part. Otherwise skip."},
+ {n:"Heat Exchanger",t:"A",d:"Swaps two awkward parts for two easy ones with better output. Decide before sizing the heat sink floor."},
+ {n:"Radio Control System",t:"A",d:"Fewer buildings than the default for radio control units, which Phase 5 needs in volume."},
+ {n:"OC Supercomputer",t:"A",d:"Efficient and easy to Somersloop, but it depends on earlier alts — check what you hold before committing."}
+],5:[
+ {n:"Dark Matter Trap",t:"S",req:true,d:"Required. Cuts SAM per crystal for power, and power is the easier of the two to add by now."},
+ {n:"Nitro Rocket Fuel",t:"S",d:"Top-tier generation, pairs with Diluted Fuel. Phase 5 is a power problem first."},
+ {n:"Turbo Pressure Motor",t:"A",d:"Best turbo motor recipe, and turbo motors gate the rocket assembly."},
+ {n:"Plutonium Fuel Unit or Uranium Fuel Unit",t:"S",d:"Only if you went nuclear. Both are large gains on the same ore."},
+ {n:"Turbo Diamonds or Petroleum Diamonds",t:"A",d:"For the dark matter chain. Turbo is more efficient, petroleum is easier to fit."},
+ {n:"Dark Matter Crystallization",t:"C",d:"Mostly a way to dispose of excess. Situational, but useful if the converter hall overruns."}
+],1:[
+ {n:"Cast Screw",t:"B",req:true,d:"Required. Both screw paths cost 0.25 ingot per screw, so the win is machine count rather than efficiency. It stays because rotors want 100 screw/min and there is no better route to them this phase."},
+ {n:"Stitched Iron Plate",t:"A",req:true,d:"Required. 5.625 RIP/min from one assembler at 100% on 18.75 plate and 37.5 wire, so 3.33 plate per unit against 6 for the base recipe. Per 5.625 RIP that is 28 iron ingot instead of 67.5, bought with 19 copper. Worth an iron node on its own."},
+ {n:"Caterium Wire",t:"S",d:"15 caterium ingot to 120 wire. Now that every reinforced plate line is a wire consumer, this is what would take copper off the critical path for good. Needs a caterium outpost."},
+ {n:"Basic Iron Ingot",t:"A",d:"Iron plus limestone into ingots — more output per shed, so fewer sheds. It competes with concrete for the limestone node, so only with a second one."},
+ {n:"Bolted Frame",t:"B",d:"Skip. About seven reinforced plates per frame, and Steeled Frame in Phase 2 is strictly better."},
+ {n:"Iron Wire",t:"C",d:"The copper-free fallback, not a skip. 12.5 ingot to 22.5 wire, so 0.556 iron per wire against 0.5 copper — a wash on ore. Stitched plus Iron Wire is 49 iron ingot per 5.625 RIP against 67.5 for the base recipe, and it makes every plate plant single-feedstock. Worth taking only if copper is out of belt range from your start, since copper has nothing else to do in Phase 1 and Iron Wire makes 25% less per constructor."}
+],2:[
+ {n:"Solid Steel Ingot",t:"A",req:true,d:"Required. 40 ingot plus 40 coal to 80 steel. Three foundries per outpost on a single Mk.2 coal trunk."},
+ {n:"Steeled Frame",t:"A",req:true,d:"Required. Best frame recipe, and inside a self-contained plant it replaces a rod line with one pipe constructor."},
+ {n:"Encased Industrial Pipe",t:"A",req:true,d:"Required. 20 concrete instead of 100 keeps P11 on the limestone node you already have."},
+ {n:"Steel Rotor",t:"A",d:"Strongly recommended — the difference between a 21-machine and an 11-machine motor plant, and it saves a whole iron node and its shed, since the base recipe burns 135 ingot/min on screws and rods. Verify the rates in game before planning the floor, I am not sure of them."},
+ {n:"Molded Steel Pipe",t:"S",d:"Every self-contained plant makes its own pipe, so a better pipe recipe now pays off in five places at once. Wants limestone, which P11 is already eating. Revisit with a second limestone node."},
+ {n:"Steel Screws",t:"C",d:"Skip, Cast Screw is already in."},
+ {n:"Compacted Coal",t:"D",d:"Generally not worth it, but it buys generator headroom at R1 once sulfur flows for P12."},
+ {n:"Wet Concrete, Pure Iron Ingot, Pure Copper Ingot",t:"A",d:"Scan when they appear, build in Phase 3 — all three need a refinery from Tier 5. Pure Copper Ingot is the long-term fix for copper."}
+]};
+
+/* ---------------- state ---------------- */
+let STATE={placed:{},collapsed:{},steps:{},res:{},alts:{},tab:"plots",phase:1,ax:-560,ay:2369,cx:0,cy:0,dx:0,dy:0,ex:0,ey:0,gx:0,gy:0};
+const lkey=(p,fi,li)=>p.id+"|"+fi+"|"+li;
+const plotLines=p=>p.floors.reduce((a,f)=>a.concat(f.lines),[]);
+const plotTotal=p=>plotLines(p).reduce((s,l)=>s+l.n,0);
+const phasePlots=ph=>PLOTS.filter(p=>p.phase===ph);
+
+/* ---------------- storage ---------------- */
+let ready=false,saveT=null,statusT=null,mode="none";
+function status(kind){
+  const el=document.getElementById("saveDot");if(!el)return;clearTimeout(statusT);
+  if(kind==="none"){el.textContent="Auto-save unavailable here — use Backup to keep progress";el.className="sd warn";return;}
+  el.textContent=kind==="local"?"Saved (this browser only)":"Saved";
+  el.className="sd ok show";statusT=setTimeout(()=>{el.className="sd ok";},1200);
+}
+function lsOk(){try{localStorage.setItem(KEY+"_t","1");localStorage.removeItem(KEY+"_t");return true;}catch(e){return false;}}
+async function detect(){
+  try{const p=String(Date.now());await window.storage.set(KEY+"_hc",p,false);
+    const r=await window.storage.get(KEY+"_hc",false);if(r&&r.value===p){mode="cloud";return;}}catch(e){}
+  mode=lsOk()?"local":"none";
+}
+async function get(){
+  if(mode==="cloud"){try{const r=await window.storage.get(KEY,false);return r&&r.value!==undefined?r.value:null;}catch(e){return null;}}
+  if(mode==="local"){try{return localStorage.getItem(KEY);}catch(e){return null;}}
+  return null;
+}
+function setSync(v){try{if(mode==="cloud")window.storage.set(KEY,v,false);else if(mode==="local")localStorage.setItem(KEY,v);}catch(e){}}
+async function flush(){
+  if(!ready)return;const v=JSON.stringify(STATE);
+  try{
+    if(mode==="cloud"){await window.storage.set(KEY,v,false);status("ok");}
+    else if(mode==="local"){localStorage.setItem(KEY,v);status("local");}
+    else status("none");
+  }catch(e){if(mode==="cloud"&&lsOk()){mode="local";try{localStorage.setItem(KEY,v);status("local");return;}catch(e2){}}status("none");}
+}
+function save(){if(!ready)return;clearTimeout(saveT);saveT=setTimeout(flush,300);}
+function hard(){if(ready&&mode!=="none")setSync(JSON.stringify(STATE));}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")hard();});
+addEventListener("pagehide",hard);addEventListener("blur",hard);
+async function load(){const raw=await get();if(raw){try{Object.assign(STATE,JSON.parse(raw));}catch(e){}}}
+
+/* ---------------- overlap check (in foundations) ---------------- */
+function overlaps(){
+  const g=PLOTS.filter(p=>!p.remote);const bad=[];
+  for(let i=0;i<g.length;i++)for(let j=i+1;j<g.length;j++){
+    const a=g[i],b=g[j];
+    if(a.site===b.site&&a.ef<b.ef+b.wf&&b.ef<a.ef+a.wf&&a.sf<b.sf+b.df&&b.sf<a.sf+a.df)bad.push(a.id+"/"+b.id);
+  }
+  return bad;
+}
+
+/* ---------------- map ---------------- */
+function drawMap(){
+  const svg=document.getElementById("map");
+  const shown=PLOTS.filter(p=>!p.remote&&p.phase===STATE.phase&&p.site===HOME[STATE.phase]);
+  if(!shown.length){document.getElementById("map").innerHTML="";document.getElementById("map").removeAttribute("viewBox");document.getElementById("mapnote").textContent="";return;}
+  const maxE=Math.max(...shown.map(p=>p.ef+p.wf)),maxS=Math.max(...shown.map(p=>p.sf+p.df));
+  const K=8,m=14,W=maxE*K+m*2,H=maxS*K+m*2;
+  let g="";
+  for(let x=0;x<=maxE;x++)g+=`<line x1="${m+x*K}" y1="${m}" x2="${m+x*K}" y2="${m+maxS*K}" stroke="#1f252d" stroke-width="0.6"/>`;
+  for(let y=0;y<=maxS;y++)g+=`<line x1="${m}" y1="${m+y*K}" x2="${m+maxE*K}" y2="${m+y*K}" stroke="#1f252d" stroke-width="0.6"/>`;
+  let r="";
+  shown.forEach(p=>{
+    const tot=plotTotal(p);
+    const done=doneCount(p)>=tot&&tot>0;
+    const fill=done?"rgba(111,207,127,.16)":"rgba(248,155,60,.16)";
+    const stroke=done?"#6fcf7f":"#f89b3c";
+    r+=`<rect x="${m+p.ef*K}" y="${m+p.sf*K}" width="${p.wf*K}" height="${p.df*K}" rx="2" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/>
+    <text class="maplbl id" x="${m+(p.ef+p.wf/2)*K}" y="${m+(p.sf+p.df/2)*K-1}" text-anchor="middle">${p.id}</text>
+    <text class="maplbl" x="${m+(p.ef+p.wf/2)*K}" y="${m+(p.sf+p.df/2)*K+10}" text-anchor="middle">${p.wf}×${p.df}</text>`;
+  });
+  svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  svg.innerHTML=g+r+`<circle cx="${m}" cy="${m}" r="3" fill="#f89b3c"/>`;
+  const bad=overlaps();
+  document.getElementById("mapnote").innerHTML=bad.length
+    ? `<b class="bad">Overlap: ${bad.join(", ")}</b>`
+    : `Site ${HOME[STATE.phase]} · about ${maxE} × ${maxS} foundations, ${maxE*M} × ${maxS*M} m · relative arrangement, not a survey · <b class="ok">plots do not collide</b>`;
+}
+
+/* ---------------- panels ---------------- */
+function buildGate(){
+  const root=document.getElementById("gateRoot");
+  const list=DRIVES[STATE.phase];
+  const have=list.filter(d=>STATE.alts[d.n]).length;
+  root.innerHTML=`<div class="card gate"><div class="card-h">Required drives — ${have} of ${list.length}</div>
+    <p>Every count in this phase assumes these. Scan them before building the plants that name them.</p>`+
+    list.map(d=>`<div class="grow${STATE.alts[d.n]?" done":""}"><div class="gbox"></div>
+      <div><div class="gname">${d.n}</div><div class="gwhy">${d.why}</div></div></div>`).join("")+`</div>`;
+  root.querySelectorAll(".grow").forEach((el,i)=>{
+    el.onclick=()=>{const n=list[i].n;STATE.alts[n]=!STATE.alts[n];buildGate();save();};
+  });
+}
+function buildGround(){
+  const deck=DECK[STATE.phase];
+  document.getElementById("groundRoot").innerHTML=
+    `<div class="card"><div class="card-h">Ground</div><p>${deck}</p>
+     <p>Deck the town sites, pad the node sites. A shared plane is worth it where buildings feed each other and
+       belts have to line up; it is worth nothing where the position is decided by ore or water.</p>
+     <p><b>One shell language across the town.</b> Concrete deck and pillars in natural grey, lower wall course
+       charcoal, upper courses warm light grey, charcoal roofs. Orange for doors, wall-hole collars and external
+       lifts. One identity panel beside each door: muted red for iron products, oxidised teal for copper, safety
+       yellow for assembly, dark green for biomass, orange for the terminal, white for the civic buildings.
+       One panel wide, not a whole wall — enough to read the town at a glance without it becoming a rainbow.</p>
+     <p>Raise the deck on 4 m pillars with 1 m foundations on top, not on 4 m foundations — that leaves about 3 m of usable clearance underneath rather than a solid block.
+       That gives a service void for the bus, keeps the roads clean on top, and means you never terrace.
+       Foundations refund in full, so an early mistake costs time rather than materials.</p></div>`;
+}
+function buildBelts(){
+  const b=BELTS[STATE.phase];
+  document.getElementById("beltRoot").innerHTML=
+    `<div class="card"><div class="card-h">Belt budget · best available is ${b.m}</div>
+     <p>${b.d}</p>
+     <p>An item whose flow exceeds one lane either runs on several lanes or goes point to point to its main
+       consumer, with only the surplus joining the bus. That is why the columns matter: a building sits directly
+       above the one it feeds heaviest, so the heavy lanes drop straight across the corridor and never enter
+       the bus at all.</p></div>`;
+}
+function buildSites(){
+  document.getElementById("siteRoot").innerHTML=
+    `<div class="card"><div class="card-h">Sites in this phase</div>`+
+    SITES[STATE.phase].map(x=>`<div class="nrow" style="display:block"><div style="font-weight:600;font-size:13.5px">${x.n}</div>
+      <div style="color:var(--muted);font-size:12.5px;line-height:1.5;margin-top:3px">${x.d}</div></div>`).join("")+`</div>`;
+}
+function buildNodes(){
+  const nb=NODES[STATE.phase];
+  document.getElementById("nodeRoot").innerHTML=
+    `<div class="card"><div class="card-h">Node bill for this phase</div><p>${nb.note}</p>`+
+    nb.rows.map(([a,b])=>`<div class="nrow"><span class="nn">${a}</span><span class="nv">${b}</span></div>`).join("")+`</div>`;
+}
+
+/* ---------------- plots view ---------------- */
+const refs={},fref={};
+function doneCount(p){
+  let d=0;p.floors.forEach((f,fi)=>f.lines.forEach((l,li)=>{d+=Math.min(STATE.placed[lkey(p,fi,li)]||0,l.n);}));return d;
+}
+function fmt(n){return Number.isInteger(n)?n:n.toFixed(2).replace(/\.?0+$/,"");}
+function buildPlots(){
+  const root=document.getElementById("root");root.innerHTML="";
+  document.getElementById("phTitle").textContent="Phase "+STATE.phase;
+  document.getElementById("phSub").textContent=STATE.phase===1
+    ? "Self-contained plants, one or two floors"
+    : "Self-contained plants, two or three floors";
+  phasePlots(STATE.phase).forEach(p=>{
+    const tot=plotTotal(p);
+    const card=document.createElement("div");
+    card.className="fac"+(STATE.collapsed[p.id]?" col":"");
+    const head=document.createElement("div");head.className="fac-head";
+    head.innerHTML=`<span class="chev">&#9660;</span><span class="plotid">${p.id}</span>
+      <span class="fac-name"></span><span class="fac-prog"><b class="fp">0</b>/${tot}</span>`;
+    head.querySelector(".fac-name").textContent=p.name;
+    head.onclick=()=>{card.classList.toggle("col");STATE.collapsed[p.id]=card.classList.contains("col");save();};
+    card.appendChild(head);
+    const fbar=document.createElement("div");fbar.className="fbar";fbar.innerHTML="<i></i>";card.appendChild(fbar);
+    const body=document.createElement("div");body.className="fac-body";
+
+    const plan=document.createElement("div");plan.className="plan";
+    plan.innerHTML=`<span class="plan-fnd">${p.wf} × ${p.df}</span><span class="plan-u">foundations<br>reserve ${p.wf+2} × ${p.df+2}</span>
+      <span class="plan-m">${p.wf*M} × ${p.df*M} m<br>${p.floors.length} floor${p.floors.length>1?"s":""}</span>`;
+    body.appendChild(plan);
+
+    const meta=document.createElement("div");meta.className="meta";
+    meta.innerHTML+=`<span class="chip geo">Site <b>${p.site}</b></span>`;
+    if(p.remote){meta.innerHTML+=`<span class="chip geo">At the node <b>off grid</b></span>`;}
+    else{
+      const k=AKEY[p.site]||["ax","ay"];
+      const ax=STATE[k[0]]||0, ay=STATE[k[1]]||0;
+      meta.innerHTML+=`<span class="chip geo">Roughly <b>${p.ef*M} m E, ${p.sf*M} m S</b></span>`;
+      if(ax||ay){
+        const rx=Math.round((ax+p.ef*M)/10)*10, ry=Math.round((ay+p.sf*M)/10)*10;
+        meta.innerHTML+=`<span class="chip">Near <b>X ${rx} · Y ${ry}</b></span>`;
+      } else meta.innerHTML+=`<span class="chip">Site ${p.site} anchor <b>not set</b></span>`;
+    }
+    (p.raw||[]).forEach(([n,a])=>{meta.innerHTML+=`<span class="chip raw">${n}${a?` <b>${a}/min</b>`:""}</span>`;});
+    let draw=0,sup=0;
+    plotLines(p).forEach(l=>{if(l.gen)sup+=l.n*l.mw;else draw+=l.n*l.mw;});
+    meta.innerHTML+=sup>0?`<span class="chip pw-pos">Power <b>+${sup-draw} MW</b></span>`
+      :`<span class="chip pw-neg">Power <b>${draw} MW</b></span>`;
+    body.appendChild(meta);
+
+    if(p.needs){
+      const n=document.createElement("div");n.className="note-b needs";
+      n.innerHTML="<b>Needs</b> — "+p.needs.join(", ")+". Counts here assume it.";
+      body.appendChild(n);
+    }
+    if(p.belts){const n=document.createElement("div");n.className="note-b belts";n.innerHTML="<b>Belts</b> — "+p.belts;body.appendChild(n);}
+    if(p.deferred){const n=document.createElement("div");n.className="note-b defer";n.innerHTML="<b>Counts provisional</b> — "+p.deferred;body.appendChild(n);}
+    if(p.flex){const n=document.createElement("div");n.className="note-b flex";n.innerHTML="<b>Siting</b> — "+p.flex;body.appendChild(n);}
+    if(p.note){const n=document.createElement("div");n.className="note-b";n.innerHTML=p.note;body.appendChild(n);}
+    if(p.warn){const n=document.createElement("div");n.className="note-b warn";n.innerHTML="<b>Watch this</b> — "+p.warn;body.appendChild(n);}
+    if(p.out){const n=document.createElement("div");n.className="note-b out";n.innerHTML="<b>Output</b> — "+p.out;body.appendChild(n);}
+
+    p.floors.forEach((fl,fi)=>{
+      const h=document.createElement("div");h.className="flr";
+      h.innerHTML=`<span>${fl.name}</span><span class="ln"></span>`;body.appendChild(h);
+      fl.lines.forEach((l,li)=>{
+        const k=lkey(p,fi,li),placed=STATE.placed[k]||0;
+        const row=document.createElement("div");row.className="line";
+        const top=document.createElement("div");top.className="l-top";
+        top.innerHTML=`<span class="l-item"></span>${l.check?'<span class="badge chk">verify</span>':''}
+          ${l.rate?`<span class="l-rate">${fmt(l.rate)} ${l.unit}</span>`:""}`;
+        top.querySelector(".l-item").textContent=l.item;row.appendChild(top);
+        const rc=document.createElement("div");rc.className="l-recipe"+(l.alt?" altr":"");
+        rc.textContent=l.recipe;row.appendChild(rc);
+        const ctrl=document.createElement("div");ctrl.className="l-ctrl";
+        const bld=document.createElement("div");bld.className="bld";bld.innerHTML=`<b>${l.n}×</b> ${l.bld}`;ctrl.appendChild(bld);
+        const pw=document.createElement("div");pw.className="pips";const pips=[];
+        for(let i=0;i<l.n;i++){
+          const pip=document.createElement("div");pip.className="pip"+(i<placed?" on":"");
+          pip.onclick=()=>{const cur=STATE.placed[k]||0;STATE.placed[k]=(cur===i+1)?i:i+1;
+            updLine(p,fi,li);updPlot(p);updGlobal();drawMap();save();};
+          pips.push(pip);pw.appendChild(pip);
+        }
+        ctrl.appendChild(pw);
+        const cnt=document.createElement("div");cnt.className="cnt";
+        cnt.onclick=()=>{const cur=STATE.placed[k]||0;STATE.placed[k]=(cur>=l.n)?0:l.n;
+          updLine(p,fi,li);updPlot(p);updGlobal();drawMap();save();};
+        ctrl.appendChild(cnt);row.appendChild(ctrl);body.appendChild(row);
+        refs[k]={pips,cnt,row,n:l.n};
+      });
+    });
+    card.appendChild(body);root.appendChild(card);
+    fref[p.id]={prog:head.querySelector(".fp"),bar:fbar.firstChild,card,tot};
+    p.floors.forEach((fl,fi)=>fl.lines.forEach((_,li)=>updLine(p,fi,li)));
+    updPlot(p);
+  });
+  buildGround();buildBelts();buildSites();buildGate();buildNodes();updGlobal();drawMap();
+}
+function updLine(p,fi,li){
+  const k=lkey(p,fi,li),r=refs[k],placed=STATE.placed[k]||0;
+  r.pips.forEach((pip,i)=>pip.classList.toggle("on",i<placed));
+  r.cnt.textContent=placed+"/"+r.n;r.cnt.classList.toggle("full",placed>=r.n);
+  r.row.classList.toggle("done",placed>=r.n);
+}
+function updPlot(p){
+  const r=fref[p.id];if(!r)return;const d=doneCount(p);
+  r.prog.textContent=d;r.bar.style.width=(r.tot?d/r.tot*100:0)+"%";
+  r.card.classList.toggle("done",d>=r.tot&&r.tot>0);
+}
+function updGlobal(){
+  let d=0,t=0;phasePlots(STATE.phase).forEach(p=>{d+=doneCount(p);t+=plotTotal(p);});
+  document.getElementById("gDone").textContent=d;
+  document.getElementById("gTot").textContent=t;
+  document.getElementById("gBar").style.width=(t?d/t*100:0)+"%";
+  let draw=0,sup=0;
+  PLOTS.forEach(p=>p.floors.forEach((f,fi)=>f.lines.forEach((l,li)=>{
+    const n=STATE.placed[lkey(p,fi,li)]||0;
+    if(l.gen)sup+=n*l.mw;else draw+=n*l.mw;
+  })));
+  const bal=sup-draw;
+  document.getElementById("pwDraw").textContent=draw;
+  document.getElementById("pwSup").textContent=sup;
+  document.getElementById("pwBal").textContent=(bal>=0?"+":"")+bal;
+  const c=document.getElementById("pwBalCell");
+  c.classList.toggle("pos",bal>=0);c.classList.toggle("neg",bal<0);
+}
+
+/* ---------------- checklist views ---------------- */
+function rowHtml(done,title,sub,extra,n){
+  return `<div class="urow${done?" done":""}">${n!==undefined?`<div class="step-n">${n}</div>`:""}
+    <div class="ubox"></div><div class="ubody"><span class="utitle">${title}${extra||""}</span>
+    <div class="usrc">${sub}</div></div></div>`;
+}
+function buildOrder(){
+  const root=document.getElementById("orderRoot");
+  const steps=ORDER[STATE.phase];
+  root.innerHTML=`<div class="usec"><div class="usec-h"><span>Phase ${STATE.phase} sequence</span><span class="ln"></span></div>`+
+    steps.map((s,i)=>rowHtml(!!STATE.steps[STATE.phase+"|"+i],s.t,s.d,"",i+1)).join("")+`</div>`;
+  root.querySelectorAll(".urow").forEach((el,i)=>{
+    el.onclick=()=>{const k=STATE.phase+"|"+i;STATE.steps[k]=!STATE.steps[k];el.classList.toggle("done");save();};
+  });
+}
+function buildResearch(){
+  const root=document.getElementById("researchRoot");
+  root.innerHTML=RESEARCH[STATE.phase].map(g=>
+    `<div class="usec"><div class="usec-h"><span>${g.g}</span><span class="ln"></span></div>`+
+    g.items.map(it=>rowHtml(!!STATE.res[it.n],it.n,it.d)).join("")+`</div>`).join("");
+  const flat=RESEARCH[STATE.phase].flatMap(g=>g.items);
+  root.querySelectorAll(".urow").forEach((el,i)=>{
+    el.onclick=()=>{const n=flat[i].n;STATE.res[n]=!STATE.res[n];el.classList.toggle("done");save();};
+  });
+}
+function buildAlts(){
+  const root=document.getElementById("altsRoot");
+  const list=ALTS[STATE.phase];
+  root.innerHTML=`<div class="usec"><div class="usec-h"><span>Phase ${STATE.phase} drives</span><span class="ln"></span></div>`+
+    list.map(a=>rowHtml(!!STATE.alts[a.n],a.n,a.d,
+      `${a.req?'<span class="reqb">required</span>':''}<span class="tierb t-${a.t}">${a.t}</span>`)).join("")+
+    `</div><div class="foot">Tier is the general community ranking. The reason line is why it matters to a campus of self-contained plants, which shifts the value of anything that shrinks a feed line.</div>`;
+  root.querySelectorAll(".urow").forEach((el,i)=>{
+    el.onclick=()=>{const n=list[i].n;STATE.alts[n]=!STATE.alts[n];el.classList.toggle("done");buildGate();save();};
+  });
+}
+
+/* ---------------- chrome ---------------- */
+function applyTab(t){
+  STATE.tab=t;
+  ["plots","order","research","alts"].forEach(x=>{document.getElementById("view-"+x).hidden=(x!==t);});
+  document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.t===t));
+  if(t==="order")buildOrder();
+  if(t==="research")buildResearch();
+  if(t==="alts")buildAlts();
+}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{applyTab(b.dataset.t);save();});
+document.querySelectorAll(".phasepill").forEach(b=>b.onclick=()=>{
+  STATE.phase=Number(b.dataset.p);
+  document.querySelectorAll(".phasepill").forEach(x=>x.classList.toggle("active",Number(x.dataset.p)===STATE.phase));
+  bindAnchor();buildPlots();applyTab(STATE.tab);save();
+});
+document.getElementById("expandAll").onclick=()=>{PLOTS.forEach(p=>STATE.collapsed[p.id]=false);buildPlots();save();};
+document.getElementById("collapseAll").onclick=()=>{PLOTS.forEach(p=>STATE.collapsed[p.id]=true);buildPlots();save();};
+document.getElementById("resetAll").onclick=()=>{if(!confirm("Reset all machine progress?"))return;STATE.placed={};buildPlots();save();};
+const SITENAME={A:"Site A — Grass Fields, east plateau",C:"Site C — south of Grass Fields",
+ D:"Site D — the oil field",E:"Site E — the bauxite field",G:"Site G — the endgame campus"};
+function bindAnchor(){
+  const ax=document.getElementById("ax"),ay=document.getElementById("ay"),lbl=document.getElementById("anchorSite");
+  const site=HOME[STATE.phase],k=AKEY[site];
+  if(lbl)lbl.textContent=SITENAME[site];
+  ax.value=STATE[k[0]]||"";ay.value=STATE[k[1]]||"";
+  const upd=()=>{STATE[k[0]]=Number(ax.value)||0;STATE[k[1]]=Number(ay.value)||0;buildPlots();save();};
+  ax.onchange=upd;ay.onchange=upd;
+}
+function enc(){return btoa(unescape(encodeURIComponent(JSON.stringify(STATE))));}
+document.getElementById("bkpBtn").onclick=()=>{
+  const p=document.getElementById("backupPanel");p.hidden=!p.hidden;
+  if(!p.hidden){document.getElementById("bkpOut").value=enc();document.getElementById("bkpMsg").textContent="";}
+};
+document.getElementById("bkpCopy").onclick=()=>{
+  const ta=document.getElementById("bkpOut"),m=document.getElementById("bkpMsg");
+  ta.value=enc();ta.focus();ta.select();
+  const ok=()=>{m.className="bkp-msg";m.textContent="Copied. Paste it somewhere safe.";};
+  const manual=()=>{m.className="bkp-msg";m.textContent="Select the code above and copy it by hand.";};
+  try{
+    if(navigator.clipboard&&navigator.clipboard.writeText)
+      navigator.clipboard.writeText(ta.value).then(ok,()=>{try{document.execCommand("copy");ok();}catch(e){manual();}});
+    else{document.execCommand("copy");ok();}
+  }catch(e){manual();}
+};
+document.getElementById("bkpRestore").onclick=()=>{
+  const m=document.getElementById("bkpMsg"),raw=document.getElementById("bkpIn").value.trim();
+  if(!raw){m.className="bkp-msg err";m.textContent="Paste a code first.";return;}
+  try{
+    Object.assign(STATE,JSON.parse(decodeURIComponent(escape(atob(raw)))));
+    document.querySelectorAll(".phasepill").forEach(x=>x.classList.toggle("active",Number(x.dataset.p)===STATE.phase));
+    bindAnchor();buildPlots();applyTab(STATE.tab||"plots");save();
+    m.className="bkp-msg";m.textContent="Restored.";
+  }catch(e){m.className="bkp-msg err";m.textContent="That code did not parse. Check you copied all of it.";}
+};
+
+(async()=>{
+  await detect();await load();
+  document.querySelectorAll(".phasepill").forEach(x=>x.classList.toggle("active",Number(x.dataset.p)===STATE.phase));
+  bindAnchor();buildPlots();applyTab(STATE.tab||"plots");
+  ready=true;if(mode==="none")status("none");else flush();
+})();
+</script>
