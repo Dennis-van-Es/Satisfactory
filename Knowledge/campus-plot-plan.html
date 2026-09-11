@@ -34,6 +34,19 @@
     padding:9px 2px;cursor:pointer;white-space:nowrap}
   .phasepill.active{color:var(--text);border-color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}
 
+  .swrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
+  .sw{flex:1 1 148px;background:var(--panel);border:1px solid var(--border);border-radius:10px;
+    padding:9px 10px;cursor:pointer}
+  .sw:active{border-color:var(--orange)}
+  .sw-bar{height:26px;border-radius:6px;border:1px solid rgba(0,0,0,.45);display:flex;
+    overflow:hidden;margin-bottom:7px}
+  .sw-bar i{display:block;height:100%}
+  .sw-n{font-family:var(--disp);font-size:11.5px;font-weight:600;letter-spacing:.02em}
+  .sw-hex{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:2px}
+  .sw-d{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+  .acc{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px;
+    vertical-align:-1px;border:1px solid rgba(0,0,0,.5)}
+
   .top{background:var(--panel);border:1px solid var(--border);border-radius:12px;
     padding:14px 15px;margin-bottom:14px;box-shadow:0 6px 20px rgba(0,0,0,.35)}
   .top-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -209,6 +222,7 @@
   <button class="tab" data-t="order">Build order</button>
   <button class="tab" data-t="research">Research</button>
   <button class="tab" data-t="alts">Alt recipes</button>
+  <button class="tab" data-t="colors">Colours</button>
 </div>
 
 <div id="view-plots">
@@ -326,6 +340,7 @@
 <div id="view-order" hidden><div id="orderRoot"></div></div>
 <div id="view-research" hidden><div id="researchRoot"></div></div>
 <div id="view-alts" hidden><div id="altsRoot"></div></div>
+<div id="view-colors" hidden><div id="colorsRoot"></div></div>
 <div id="saveDot" class="sd"></div>
 
 <script>
@@ -1264,6 +1279,49 @@ let STATE={placed:{},collapsed:{},steps:{},res:{},alts:{},tab:"plots",phase:1,ax
 const lkey=(p,fi,li)=>p.id+"|"+fi+"|"+li;
 const plotLines=p=>p.floors.reduce((a,f)=>a.concat(f.lines),[]);
 const plotTotal=p=>plotLines(p).reduce((s,l)=>s+l.n,0);
+/* ---------------- paint ----------------
+   Two shell colours and one accent per building, so no building ever wears more than
+   three. The accent says what a building does, because phase is already obvious from
+   which site you are standing on. */
+const PAINT={
+ shell:[
+  {n:"Shell A",p:"#B4BAC0",s:"#14171B",d:"Walls and roofs, for pieces that take the primary on the main panel."},
+  {n:"Shell B",p:"#14171B",s:"#B4BAC0",d:"The same pair inverted, for pieces that map the primary to the trim instead."}
+ ],
+ accent:[
+  {k:"ext",n:"Extraction & smelting",p:"#D14F4F",s:"#14171B",d:"Miners, extractors, smelters, foundries."},
+  {k:"fab",n:"Fabrication",p:"#4A9BD1",s:"#14171B",d:"Constructors — one input, one output."},
+  {k:"asm",n:"Assembly",p:"#8E6FC7",s:"#14171B",d:"Assemblers and manufacturers, and the exotic machines later on."},
+  {k:"pwr",n:"Power",p:"#E8C44A",s:"#14171B",d:"Burners and generators."},
+  {k:"log",n:"Logistics",p:"#3FA88A",s:"#14171B",d:"Terminal, container row, Depots, sink and shop, freight."},
+  {k:"lnd",n:"Landmark",p:"#E8EDF2",s:"#14171B",d:"HUB, MAM, Space Elevator. Cut this one first if the accents need mirrored pairs."}
+ ],
+ pipe:[
+  {n:"Water",p:"#2E7FB8",s:"#14171B"},
+  {n:"Crude oil",p:"#3A2E22",s:"#14171B"},
+  {n:"Heavy Oil Residue",p:"#7B4FA8",s:"#14171B",d:"Keeps the colour the fluid already is in game."},
+  {n:"Fuel",p:"#D9A441",s:"#14171B"},
+  {n:"Alumina solution",p:"#C8D6DE",s:"#14171B"},
+  {n:"Nitrogen",p:"#6FD0C0",s:"#14171B"}
+ ]
+};
+const ACC={};PAINT.accent.forEach(a=>ACC[a.k]=a);
+const BCLASS={
+ "Miner Mk.1":"ext","Oil Extractor":"ext","Water Extractor":"ext","Smelter":"ext","Foundry":"ext",
+ "Constructor":"fab",
+ "Assembler":"asm","Manufacturer":"asm","Refinery":"asm","Converter":"asm",
+ "Particle Accelerator":"asm","Quantum Encoder":"asm",
+ "Biomass Burner":"pwr","Coal Generator":"pwr","Fuel Generator":"pwr","Generator":"pwr",
+ "HUB":"lnd","MAM":"lnd","Space Elevator":"lnd","Bench":"lnd"
+};
+/* A plot wears the accent of the most defining thing in it; anything unlisted is logistics. */
+const CPREC=["pwr","ext","asm","fab","lnd","log"];
+function plotClass(p){
+  const seen=new Set();
+  p.floors.forEach(f=>f.lines.forEach(l=>seen.add(BCLASS[l.bld]||"log")));
+  return CPREC.find(c=>seen.has(c))||"log";
+}
+
 const phasePlots=ph=>PLOTS.filter(p=>p.phase===ph);
 
 /* ---------------- storage ---------------- */
@@ -1421,6 +1479,8 @@ function buildPlots(){
 
     const meta=document.createElement("div");meta.className="meta";
     meta.innerHTML+=`<span class="chip geo">Site <b>${p.site}</b></span>`;
+    const acc=ACC[plotClass(p)];
+    meta.innerHTML+=`<span class="chip geo"><i class="acc" style="background:${acc.p}"></i>Paint <b>${acc.n}</b></span>`;
     if(p.remote){meta.innerHTML+=`<span class="chip geo">At the node <b>off grid</b></span>`;}
     else{
       const k=AKEY[p.site]||["ax","ay"];
@@ -1552,14 +1612,61 @@ function buildAlts(){
   });
 }
 
+function copyHex(txt,el){
+  const slot=el.querySelector(".sw-hex"),was=slot.textContent;
+  const done=()=>{slot.textContent="copied";setTimeout(()=>{slot.textContent=was;},900);};
+  const manual=()=>{
+    try{
+      const ta=document.createElement("textarea");
+      ta.value=txt;ta.style.position="fixed";ta.style.opacity="0";
+      document.body.appendChild(ta);ta.select();document.execCommand("copy");
+      document.body.removeChild(ta);done();
+    }catch(e){slot.textContent="copy failed";setTimeout(()=>{slot.textContent=was;},1400);}
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText)
+    navigator.clipboard.writeText(txt).then(done).catch(manual);
+  else manual();
+}
+
+function buildColors(){
+  const root=document.getElementById("colorsRoot");
+  const sw=o=>`<div class="sw" data-hex="${o.p}">
+    <div class="sw-bar"><i style="background:${o.p};flex:3"></i><i style="background:${o.s};flex:1"></i></div>
+    <div class="sw-n">${o.n}</div>
+    <div class="sw-hex">${o.p} / ${o.s}</div>
+    ${o.d?`<div class="sw-d">${o.d}</div>`:""}</div>`;
+  const sec=(title,list,note)=>
+    `<div class="usec"><div class="usec-h"><span>${title}</span><span class="ln"></span></div>
+     <div class="swrow">${list.map(sw).join("")}</div>
+     ${note?`<div class="sw-d" style="margin:9px 2px 2px">${note}</div>`:""}</div>`;
+
+  root.innerHTML=
+    sec("Shell — every building, everywhere",PAINT.shell,
+      "One pair, two swatches, because some buildables take the primary on the main panel and others on the trim. "+
+      "Choose the light grey on a poured foundation rather than a steel wall: concrete does not take paint the way "+
+      "steel does, and the foundations are the largest surface on the site.")+
+    sec("Accent — machine bodies and door frames",PAINT.accent,
+      "One accent per building, so nothing wears more than three colours. The accent carries what a building does, "+
+      "because the phase is already obvious from which site you are standing on.")+
+    sec("Pipes — by contents, from Phase 2 onward",PAINT.pipe,
+      "Site A has no fluids at all; the first pipe in the plan is Site B water in Phase 2. Reserved now so the slots "+
+      "are not spent on something else first.")+
+    `<div class="foot">14 of 20 swatches — 2 shell, 6 accent, 6 pipe, six spare. If the accent pieces turn out to need
+     mirrored pairs as well, the total is exactly 20 with nothing left over: cut Landmark first, then fold Power into
+     Extraction. Tap any swatch to copy its primary hex.</div>`;
+
+  root.querySelectorAll(".sw").forEach(el=>{el.onclick=()=>copyHex(el.dataset.hex,el);});
+}
+
 /* ---------------- chrome ---------------- */
 function applyTab(t){
   STATE.tab=t;
-  ["plots","order","research","alts"].forEach(x=>{document.getElementById("view-"+x).hidden=(x!==t);});
+  ["plots","order","research","alts","colors"].forEach(x=>{document.getElementById("view-"+x).hidden=(x!==t);});
   document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active",b.dataset.t===t));
   if(t==="order")buildOrder();
   if(t==="research")buildResearch();
   if(t==="alts")buildAlts();
+  if(t==="colors")buildColors();
 }
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{applyTab(b.dataset.t);save();});
 document.querySelectorAll(".phasepill").forEach(b=>b.onclick=()=>{

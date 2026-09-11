@@ -48,10 +48,46 @@ produced 200 m square towers that were unpleasant to look at and no fun to build
     road tiles after Tier 4.
 
 ### Look
-Concrete deck and pillars natural grey; lower wall course charcoal, upper courses
-warm light grey; charcoal roofs. Orange for doors, wall-hole collars, lifts. One
-identity panel beside each door: muted red iron, oxidised teal copper, safety
-yellow assembly, dark green biomass, orange terminal, white civic.
+
+**The concrete deck and pillars stay natural grey — unpainted.** Concrete does not take
+paint the way steel does, and the deck is the largest surface on the site, so the safe
+move is not to fight it. Everything built on top follows a three-colour rule: two shell
+colours and one accent, so no building ever wears more than three.
+
+| Shell | Hex | On |
+|---|---|---|
+| Light | `#B4BAC0` | walls, roofs |
+| Dark | `#14171B` | frames, pillars, trim, roads |
+
+That one pair costs **two** swatches — `Shell A` light/dark and `Shell B` dark/light —
+because some buildables take the primary on the main panel and others on the trim.
+
+The accent goes on machine bodies and door frames and says what a building *does*.
+Phase is deliberately not painted: each site already is a phase, so colouring it
+encodes nothing you could be confused about, while leaving every building on a site
+identical.
+
+| Accent | Hex | |
+|---|---|---|
+| Extraction & smelting | `#D14F4F` | miners, extractors, smelters, foundries |
+| Fabrication | `#4A9BD1` | constructors |
+| Assembly | `#8E6FC7` | assemblers, manufacturers, exotic machines |
+| Power | `#E8C44A` | burners and generators |
+| Logistics | `#3FA88A` | terminal, container row, Depots, sink, freight |
+| Landmark | `#E8EDF2` | HUB, MAM, Space Elevator |
+
+Pipes are painted by contents from Phase 2 onward — water `#2E7FB8`, crude oil
+`#3A2E22`, Heavy Oil Residue `#7B4FA8` (the colour it already is in game), fuel
+`#D9A441`, alumina solution `#C8D6DE`, nitrogen `#6FD0C0`. Site A has no fluids at all.
+
+That is **14 of the 20 swatch slots** — 2 shell, 6 accent, 6 pipe — leaving six spare.
+If the accent pieces turn out to need mirrored pairs as well, the total is exactly 20
+with nothing left over: cut Landmark first, then fold Power into Extraction. **No FICSIT
+orange anywhere.** This supersedes the earlier scheme of orange doors and per-ore
+identity panels, which needed a colour per chain and would have read as a patchwork.
+
+The Colours tab in the plot plan carries the same swatches, and every plot card shows
+the accent it should wear.
 
 Decisions taken from the concept renders:
 - **Polished concrete inside the sheds, metal plate as the threshold and apron
